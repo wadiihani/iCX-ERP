@@ -81,6 +81,11 @@ interface WorkspaceContextValue {
   setSidebarOpen: (open: boolean) => void;
   isCommandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
+  isDataSettingsOpen: boolean;
+  setDataSettingsOpen: (open: boolean) => void;
+  activeIntakeType: string | null;
+  openQuickIntake: (type: string) => void;
+  closeQuickIntake: () => void;
 }
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
@@ -90,10 +95,14 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [currentLc] = useState<string>('LC Rabat');
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [isCommandPaletteOpen, setCommandPaletteOpen] = useState<boolean>(false);
+  const [isDataSettingsOpen, setDataSettingsOpen] = useState<boolean>(false);
+  const [activeIntakeType, setActiveIntakeType] = useState<string | null>(null);
 
   const roleConfig = useMemo(() => AVAILABLE_ROLES[currentRole], [currentRole]);
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+  const openQuickIntake = (type: string) => setActiveIntakeType(type);
+  const closeQuickIntake = () => setActiveIntakeType(null);
 
   const value = useMemo<WorkspaceContextValue>(
     () => ({
@@ -106,8 +115,21 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       setSidebarOpen,
       isCommandPaletteOpen,
       setCommandPaletteOpen,
+      isDataSettingsOpen,
+      setDataSettingsOpen,
+      activeIntakeType,
+      openQuickIntake,
+      closeQuickIntake,
     }),
-    [currentRole, roleConfig, currentLc, isSidebarOpen, isCommandPaletteOpen]
+    [
+      currentRole,
+      roleConfig,
+      currentLc,
+      isSidebarOpen,
+      isCommandPaletteOpen,
+      isDataSettingsOpen,
+      activeIntakeType,
+    ]
   );
 
   return (

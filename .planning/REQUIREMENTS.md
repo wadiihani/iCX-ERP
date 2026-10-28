@@ -99,5 +99,65 @@ Requirements for initial release. Each maps to roadmap phases.
 - Unmapped: 0 ✓
 
 ---
+
+## v2.0 Requirements: Vercel Audit & Core Architectural Overhaul
+
+Based on authoritative audit specification: `aiesec_icx_erp_vercel_audit_and_complete_changes_blueprint.md`.
+
+### Phase 11: Global Layout, Sidebar Navigation & Zero-CTA Command Dashboard
+- [ ] **CHG-01**: Consolidate navigation into 4-group Left Sidebar (Command, External Engine BD, Internal Engine Ops/CXP, Finance & People FnL/TM).
+- [ ] **CHG-02**: Remove permanent 8-button launchpad banner from `<main>`; add contextual actions and compact `+ Quick Add (⌘K)`.
+- [ ] **CHG-03**: Context-aware Quick Add dropdown menu for 8 stakeholder intake drawers.
+- [ ] **CHG-04**: Sticky Global Context Filter Bar (Term, Peak, Product, Rabat Engine, Owner) reactive across all views.
+- [ ] **CHG-05**: Relocate Export JSON/CSV, Import, and Reset to dedicated `⚙️ Data & Settings` modal at bottom of sidebar.
+- [ ] **CHG-06**: Eliminate all redundant `switchTab(...)` and `"Manage All EPs →"` navigation buttons from Dashboard.
+- [ ] **CHG-07**: 9 Clickable Domain KPI Cards (3×3 Grid) displaying Primary MoS and 3 headline KPIs.
+- [ ] **CHG-08**: In-Place Expanded KPI Scorecard, Domain Graphs, and Inline Exception Drawer upon clicking cards.
+- [ ] **CHG-09**: Remove fake `+ 3` math; calculate real cumulative funnel volumes, stage-to-stage CR% bridges, and approval velocity.
+- [ ] **CHG-10**: 18-cell Exchange Standards compliance heatmap matrix with RAG color coding.
+- [ ] **CHG-11**: Dynamic subtitles on all KPI cards driven by live calculated data.
+- [ ] **CHG-12**: Unified Cross-ERP SLA Exception Center with filter pills.
+
+### Phase 12: Dedicated Member Engagement, Attendance Tiers & Team Standards (`TeSt`)
+- [ ] **CHG-40**: Dedicated `/members` module with Rabat roster, Composite MES formula (0-100%), and 4-tier classification (Tier 1 Core to Tier 4 Drop-Off).
+- [ ] **CHG-41**: Rabat 6 Governance Routines weekly attendance grid (GitHub-style heatmap) and Monthly O2O coaching logger drawer.
+- [ ] **CHG-42**: Interactive AIESEC Team Standards (`TeSt`) Scorecard per Team Leader across Building, Performing, Closing stages.
+
+### Phase 13: B2B Partner CRM, Multi-Contacts, 8-Stage Stepper & Kanban View
+- [ ] **CHG-13**: Normalize partner entity: `db.organizations` (Master Partner Profile, Moroccan Legal/Tax IDs) and `db.b2bDeals` (1 Org : N Deals).
+- [ ] **CHG-14**: Full Edit/Update drawer for Partners, Deals, and Contacts with archive actions.
+- [ ] **CHG-15**: 8-Stage Deal Stepper with `CLOSED_LOST` / `DISQUALIFIED` and mandatory `lossReason`.
+- [ ] **CHG-16**: Enforce BANT/Discovery gate before `PROPOSAL_SENT` and Contract gate before `CONTRACT_SIGNED`.
+- [ ] **CHG-17**: Top view switcher: Kanban Board, Master CRM Table, Detailed Cards.
+- [ ] **CHG-18**: Render OP Candidate Rejection Counter badge (`X / 3 Max`) per AEPP 4.2.2.1.7.
+- [ ] **CHG-19**: Pre-select partner when clicking `+ Add Contact` or `+ Spawn Opportunity`.
+
+### Phase 14: Contracts (`MoUs`), Dynamic Product Opportunities & Multi-Slot Waves
+- [ ] **CHG-20**: Normalize into `db.contracts` (1) → `db.opportunities` (N) → `db.opportunitySlots` (N) with `+ Add Slot Wave`.
+- [ ] **CHG-21**: Dynamic product rules: 16 official GV projects for iGV (lock salary = 0, weeks 6-8); 6 iGTa fields (lock fee = 0, full-time supervisor); iGTe teaching subjects (fee = 0, weeks >= 9, salary >= 3000).
+- [ ] **CHG-22**: `PARTLY_REMOTE` validation (`remoteWeeks`, ICB Audit URL) and 1-year advance slot validation.
+- [ ] **CHG-23**: Dynamically compute applicant and approval counts from linked EPs.
+- [ ] **CHG-24**: Edit Opportunity drawer locking salary, hours, accommodation, and fee once approved EPs exist.
+
+### Phase 15: EP Lifecycle, Relational Foreign Keys, Live Date-Math SLAs & 18 Standards Split
+- [ ] **CHG-25**: Split 6 concatenated strings into atomic typed fields (`dob`, `email`, `whatsappPhone`, `passportNumber`, `passportExpiryDate`, `arrivalPort`, `flightNumber`, `accommProviderId`, `bedId`, etc.).
+- [ ] **CHG-26**: Searchable nationality + residence country + Morocco visa regime (`VISA_FREE_90D`, `AEVM_EVISA`, `CONSULAR_EMBASSY_VISA`).
+- [ ] **CHG-27**: Live date-math SLA timers (14d post-APD visa pack SLA, 7d/14d visa application, 14d pre-arrival lock, 3d pickup guide, 48h unreachable safety heartbeat).
+- [ ] **CHG-28**: Exception modal supporting `REJECTED`, `WITHDRAWN`, `APPROVAL_BROKEN`, `REALIZATION_BROKEN`, `REMOTE_BROKEN`, `FINISHED_EARLIER` with Annex 2 timer.
+- [ ] **CHG-29**: `REALIZED` validation gate (±20d iGV rule and Standards #4-#9 verified).
+- [ ] **CHG-30**: 18 Standards drawer split into #10a (Week 1 Middle) and #10b (Final Week), internal delivery vs EXPA survey discrepancy, and #17 regular touchpoints log.
+- [ ] **CHG-31**: Matchmaker Score badge (Visa lead time 30% + Language 25% + SDG 25% + Dates 20%).
+
+### Phase 16: IR Supply Quotas, Housing Bed Allocations, Airport Logistics, ECB Cases (`Annex 2`) & AFPM Invoicing
+- [ ] **CHG-32**: Replace string quotas with numeric `targetApp/Acc/Apd/Re/Co` and live computed actuals, CR%, and SE standards fulfillment.
+- [ ] **CHG-33**: IR card action buttons: Edit IR Partner & Quotas, Log Bi-Weekly Sync Call, Generate Rabat IR Opportunity Pack.
+- [ ] **CHG-34**: Dedicated `db.accommodations` schema with beds array and vetting checkboxes; dedicated `db.pickups` schema with port, flight, buddy, 3d guide sent, SIM, MAD exchanged.
+- [ ] **CHG-35**: Housing & Pickup card action buttons: Inspect/Edit, Assign Bed, Log Check-In/Out & Deposit, Mark Pickup Completed.
+- [ ] **CHG-36**: Separate CSR Sponsors from Quality Cases. Quality Case cards with live Stage 1 (24h/48h/72h), Stage 2 (48h/96h), Stage 3 (48h/5d) countdowns, 14d/7d replacement timer, confidentiality mask on Annex 1 harassment.
+- [ ] **CHG-37**: Save Annex 2 calculation as Case Claim & AFPM Liability Reserve.
+- [ ] **CHG-38**: Completely separate Finance (`db.finance`) from Team Members (`db.teamMembers`).
+- [ ] **CHG-39**: Invoices & Accounts Receivable Table (`db.invoices`) with >14d overdue tracking and iGV partner/CSR coverage gauge.
+
+---
 *Requirements defined: 2026-10-27*  
-*Last updated: 2026-10-27 after baseline creation*
+*Milestone 2 added: 2026-10-29 via aiesec_icx_erp_vercel_audit_and_complete_changes_blueprint.md*

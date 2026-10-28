@@ -5,6 +5,7 @@ import { WorkspaceProvider } from './workspace-context';
 import { SideNav } from './side-nav';
 import { TopNavBar } from './top-nav-bar';
 import { CommandPalette } from './command-palette';
+import { DataSettingsModal } from './data-settings-modal';
 
 export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   return (
@@ -26,6 +27,9 @@ export function WorkspaceShell({ children }: { children: React.ReactNode }) {
 
         {/* Global Quick Command Palette (Cmd+K) */}
         <CommandPalette />
+
+        {/* Global Data & System Settings Modal (CHG-05) */}
+        <DataSettingsModal />
       </div>
     </WorkspaceProvider>
   );

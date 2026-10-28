@@ -19,23 +19,17 @@ A reliable, table-first operational data workspace where every number reconciles
 
 ### Validated
 
-(None yet — fresh tracker-first build baseline)
+- [x] **Milestone 1**: Tracker-First Platform baseline, PostgreSQL schema, core UI tables, initial deal and slot records, and Phase 10 Command Dashboard.
 
-### Active
+### Active (Milestone 2: Vercel Audit & Core Architectural Overhaul)
 
-- [ ] **DATA-01**: PostgreSQL 16 schema with 54 normalized tables, multi-tenant `lc_id` isolation, and Row-Level Security (RLS).
-- [ ] **DATA-02**: Append-only tamper-evident audit log with hash chaining (`prev_hash` → `hash`) and strict revocation of UPDATE/DELETE.
-- [ ] **DATA-03**: PostgreSQL `btree_gist` exclusion constraints mathematically preventing overlapping check-in/out on accommodation beds.
-- [ ] **UI-01**: Table-first operational interface across all entities with multi-column filtering, sort, column visibility, and saved views.
-- [ ] **UI-02**: Standardized Record Detail Pages featuring Identity, State, Key Details, Relationships, Timeline, Next Actions, Evidence, and Audit.
-- [ ] **CRM-01**: B2B Lead and Deal Pipeline tracking with 9 verified stages (`SM-01`), meeting logs, proposals, and contract attachments.
-- [ ] **HANDOFF-01**: Atomic, non-negotiable stakeholder handoff protocol (`handoff_id`, dual-owner confirmation, transfer packet, escalation timer).
-- [ ] **EP-01**: Comprehensive EP Dossier tracking screening, matching, visa status, realization, and departure milestones.
-- [ ] **OPS-01**: 18 Exchange Standards delivery matrix (13 mandatory + 5 non-mandatory) with time-stamped proof links and SLA countdowns.
-- [ ] **CASE-01**: Restricted Case Solving Vault with severity-based access, 3-tier escalation clocks, and Morrocan Law 09-08 compliance.
-- [ ] **FIN-01**: Dual-approval financial transaction tracking, invoicing, deposit aging, and reserve fund reconciliation.
-- [ ] **SYNC-01**: EXPA / GIS read-only background synchronization with idempotency keys and human-in-the-loop Action Outbox (`SM-09`).
-- [ ] **ANALYTICS-01**: Live drill-down KPI dashboards where every aggregate metric links directly to its constituent filtered rows.
+- [ ] **CHG-SEC01**: Global 4-Group Left Sidebar Navigation, Clean Top Header, and Sticky Context Filter Bar (`CHG-01` – `CHG-05`).
+- [ ] **CHG-SEC02**: 9-Card Clickable Command Dashboard with zero redundant CTAs, dynamic subtitles, and real funnel math (`CHG-06` – `CHG-12`).
+- [ ] **CHG-SEC03**: Dedicated Member Engagement, 4-Tier Attendance, Governance Routines & Team Standards (`TeSt`) Module (`CHG-40` – `CHG-42`).
+- [ ] **CHG-SEC04**: B2B Partner CRM, Multi-Contacts, 8-Stage Deal Stepper & Kanban/Table View (`CHG-13` – `CHG-19`).
+- [ ] **CHG-SEC05**: Contracts (`MoUs`), Multi-Slot Waves, Product Rule Normalization & Dynamic Capacity (`CHG-20` – `CHG-24`).
+- [ ] **CHG-SEC06**: EP Lifecycle, Relational Atomic Fields, Live Date-Math SLAs & 18 Standards Split (`CHG-25` – `CHG-31`).
+- [ ] **CHG-SEC07**: IR Supply Quotas, Housing Bed Allocations, Airport Logistics, ECB Cases (`Annex 2`) & AFPM Invoicing (`CHG-32` – `CHG-39`).
 
 ### Out of Scope
 

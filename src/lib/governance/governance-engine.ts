@@ -202,6 +202,9 @@ export function evaluatePartnerScoreGate(params: {
     'UNDER_INVESTIGATION',
     'RESOLUTION_PROPOSED',
     'ESCALATED',
+    'STAGE_1_LC' as any,
+    'STAGE_2_ECB' as any,
+    'STAGE_3_ICB' as any,
   ];
 
   const hasUnresolvedCase = params.linkedCaseStatuses.some((status) =>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INITIAL_OPPORTUNITIES } from '../src/app/opportunities/page';
+import { INITIAL_OPPORTUNITIES } from '../src/lib/opportunity/opportunity-data';
 import { INITIAL_IR_PARTNERS } from '../src/lib/irm/irm-data';
 import { INITIAL_EPS } from '../src/lib/ep/ep-data';
 
