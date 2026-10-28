@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 211 98% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 211 98% 48%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 15%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 15%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 211 98% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 45%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 22%;
+    --input: 217.2 32.6% 22%;
+    --ring: 211 98% 52%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Operational Table Primitives */
+@layer components {
+  .tracker-table-container {
+    @apply w-full overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-subtle dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .tracker-table {
+    @apply w-full border-collapse text-left text-xs;
+  }
+
+  .tracker-table thead {
+    @apply sticky top-0 z-10 border-b border-slate-200 bg-slate-50/90 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-800/90;
+  }
+
+  .tracker-table th {
+    @apply whitespace-nowrap px-3 py-2.5 font-semibold text-slate-700 dark:text-slate-300;
+  }
+
+  .tracker-table td {
+    @apply whitespace-nowrap border-b border-slate-100 px-3 py-2 text-slate-700 dark:border-slate-800/60 dark:text-slate-300;
+  }
+
+  .tracker-table tbody tr {
+    @apply transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/50;
+  }
+
+  .tracker-badge {
+    @apply inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium tracking-wide;
+  }
+
+  .badge-success {
+    @apply border border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800/40 dark:bg-emerald-950/40 dark:text-emerald-300;
+  }
+
+  .badge-warning {
+    @apply border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800/40 dark:bg-amber-950/40 dark:text-amber-300;
+  }
+
+  .badge-critical {
+    @apply border border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800/40 dark:bg-rose-950/40 dark:text-rose-300;
+  }
+
+  .badge-info {
+    @apply border border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800/40 dark:bg-blue-950/40 dark:text-blue-300;
+  }
+
+  .badge-neutral {
+    @apply border border-slate-200 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300;
+  }
+}
+
+/* Subtle Custom Scrollbar for dense data tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
