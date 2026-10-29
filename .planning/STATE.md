@@ -4,10 +4,10 @@ status: in_progress
 milestone: 'v3.0'
 progress:
   total_phases: 18
-  completed_phases: 14
+  completed_phases: 15
   total_plans: 48
-  completed_plans: 37
-  percent: 77
+  completed_plans: 39
+  percent: 81
 ---
 
 # Project State: AIESEC iCX ERP
@@ -17,16 +17,16 @@ progress:
 See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (Hub-Based Operating Model aligned 2026-10-29)
 
 **Core value:** One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.  
-**Current focus:** Milestone 3 (v3.0) — Phase 13 Completed, Ready for Phase 14 (Project Portfolio iGV/iGTa/iGTe, Opportunities & Capacity Waves)
+**Current focus:** Milestone 3 (v3.0) — Phase 14 Completed, Ready for Phase 15 (IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle)
 
 ## Current Position
 
-Phase: 14 of 18 (Phase 14: Project Portfolio iGV/iGTa/iGTe, Opportunities & Capacity Waves)  
-Plan: 0 of 2 in Phase 14 (Total: 37/48 Complete)  
+Phase: 15 of 18 (Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle)  
+Plan: 0 of 3 in Phase 15 (Total: 39/48 Complete)  
 Status: In progress  
-Last activity: 2026-10-29 — Executed and verified Phase 13 (Plans 13-01, 13-02, 13-03): relational B2B organizations and multi-deals separation, slide-over partner edit drawer, 8-stage visual sales stepper with mandatory loss reasons, BANT discovery gate, contract gate, 6-checkpoint Partner Standards Register, and 3-way view switcher on /sales. All 46 Vitest suites (358 tests) and Next.js build (21 routes) passed.  
+Last activity: 2026-10-29 — Executed and verified Phase 14 (Plans 14-01 & 14-02): normalized Contract → Opportunity → Multi-Slot Waves, 16 Official GV projects mapped to UN SDGs with activity & output indicators, iGTa 6 functional fields & Moroccan statutory salary floor (3,500 MAD) with zero EP fee, iGTe curriculum outline & teacher levels, partly-remote ICB audit gate, AEPP 4.2.1.4 benefit lock, and slot wave manager on /opportunities. All 47 Vitest suites (375 tests) and Next.js build (21 routes) passed.  
 
-Progress: [████████░░] 77%
+Progress: [████████░░] 81%
 
 ## Performance Metrics
 

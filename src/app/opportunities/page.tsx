@@ -14,11 +14,23 @@ import {
   CheckCircle,
   AlertTriangle,
   Globe2,
+  Sparkles,
+  Lock,
+  ChevronRight,
+  Info,
+  CheckCircle2,
 } from 'lucide-react';
 import { CreateOpportunityModal } from '@/components/opportunity/create-opportunity-modal';
-import { transitionOpportunityStatus, checkOpportunityReviewSLA, type OpportunityLifecycleRecord } from '@/lib/opportunity/opportunity-machine';
+import { SlotWaveManager } from '@/components/opportunity/slot-wave-manager';
+import {
+  transitionOpportunityStatus,
+  checkOpportunityReviewSLA,
+  type OpportunityLifecycleRecord,
+} from '@/lib/opportunity/opportunity-machine';
 import { reserveSlot, type OpportunitySlot } from '@/lib/opportunity/slot-machine';
 import type { OpportunityInput } from '@/lib/opportunity/opportunity-validator';
+import type { OpportunitySlotWave } from '@/lib/opportunity/opportunity-portfolio-data';
+import { SDG_CATALOG } from '@/lib/opportunity/opportunity-portfolio-data';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import {
   INITIAL_OPPORTUNITIES,
@@ -27,25 +39,49 @@ import {
 
 export default function OpportunitiesPage() {
   const [opportunities, setOpportunities] = useState<ExtendedOpportunity[]>(INITIAL_OPPORTUNITIES);
-  const [viewMode, setViewMode] = useState<'table' | 'capacity'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'waves' | 'capacity'>('table');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedOppForDetail, setSelectedOppForDetail] = useState<ExtendedOpportunity | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
 
   // Computed counters
   const totalOpenings = opportunities.reduce((acc, o) => acc + o.totalOpenings, 0);
-  const confirmedSlots = opportunities.flatMap(o => o.slots).filter(s => s.status === 'CONFIRMED').length;
-  const reservedSlots = opportunities.flatMap(o => o.slots).filter(s => s.status === 'RESERVED').length;
-  const unallocatedSlots = opportunities.flatMap(o => o.slots).filter(s => s.status === 'UNALLOCATED').length;
+  const totalWavesCount = opportunities.reduce((acc, o) => acc + (o.slotWaves?.length || 0), 0);
+  const confirmedSlots = opportunities.flatMap((o) => o.slots).filter((s) => s.status === 'CONFIRMED').length;
+  const reservedSlots = opportunities.flatMap((o) => o.slots).filter((s) => s.status === 'RESERVED').length;
+  const unallocatedSlots = opportunities.flatMap((o) => o.slots).filter((s) => s.status === 'UNALLOCATED').length;
 
   const handleCreated = (input: OpportunityInput) => {
+    const oppId = `opp-${Date.now()}`;
+    const initialWave: OpportunitySlotWave = {
+      id: `wave-${Date.now()}-1`,
+      opportunityId: oppId,
+      waveLabel: `Wave 1 — Initial Intake`,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      capacity: input.totalOpenings,
+      appliedCount: 0,
+      acceptedCount: 0,
+      approvedCount: 0,
+      realizedCount: 0,
+      completedCount: 0,
+    };
+
     const newOpp: ExtendedOpportunity = {
-      id: `opp-${Date.now()}`,
+      id: oppId,
       lcId: 'lc_rabat_001',
-      organizationId: 'org_rabat_001',
-      organizationName: 'Corporate Partner',
+      organizationId: input.organizationId || 'org_rabat_001',
+      organizationName: input.organizationName || 'Corporate Partner',
+      contractId: input.contractId || 'ct_001',
       title: input.title,
       product: input.product,
-      sdgTarget: input.sdgTarget || 4,
+      portfolioProject: input.portfolioProject,
+      primarySdg: input.primarySdg || input.sdgTarget || 4,
+      secondarySdgs: input.secondarySdgs || [],
+      targetBeneficiaries: input.targetBeneficiaries,
+      plannedActivities: input.plannedActivities || [],
+      expectedOutputs: input.expectedOutputs,
+      sdgTarget: input.primarySdg || input.sdgTarget || 4,
       status: 'DRAFT',
       createdAt: new Date().toISOString(),
       totalOpenings: input.totalOpenings,
@@ -53,35 +89,96 @@ export default function OpportunitiesPage() {
       durationWeeks: input.durationWeeks,
       weeklyWorkingHours: input.weeklyWorkingHours,
       fundingPercentage: input.fundingPercentage,
+      modality: input.modality || 'PHYSICAL',
+      remoteWeeks: input.remoteWeeks || 0,
+      icbAuditUrl: input.icbAuditUrl,
+      monthlySalaryMad: input.monthlySalaryMad || 0,
+      epFeeMad: 0,
+      professionalField: input.professionalField,
+      teachingSubject: input.teachingSubject,
+      teachingLevel: input.teachingLevel,
+      curriculumOutline: input.curriculumOutline,
+      supervisorName: input.supervisorName,
+      supervisorTitle: input.supervisorTitle,
+      isBenefitsLocked: false,
       history: [],
       slots: Array.from({ length: input.totalOpenings }, (_, i) => ({
         id: `s-${Date.now()}-${i + 1}`,
-        opportunityId: `opp-${Date.now()}`,
+        opportunityId: oppId,
         slotNumber: i + 1,
         startDate: input.startDate,
         endDate: input.endDate,
         status: 'UNALLOCATED',
       })),
+      slotWaves: [initialWave],
     };
 
     setOpportunities([newOpp, ...opportunities]);
-    setNotification(`Opportunity "${newOpp.title}" created with verified statutory parameters.`);
+    setNotification(`Opportunity "${newOpp.title}" created with verified statutory portfolio parameters.`);
+    setTimeout(() => setNotification(null), 5000);
+  };
+
+  const handleAddWave = (opportunityId: string, newWave: OpportunitySlotWave) => {
+    setOpportunities((prev) =>
+      prev.map((opp) => {
+        if (opp.id === opportunityId) {
+          const currentSlotsCount = opp.slots.length;
+          const newSlots: OpportunitySlot[] = Array.from({ length: newWave.capacity }, (_, i) => ({
+            id: `s-${Date.now()}-${i + 1}`,
+            opportunityId: opp.id,
+            slotNumber: currentSlotsCount + i + 1,
+            startDate: newWave.startDate,
+            endDate: newWave.endDate,
+            status: 'UNALLOCATED',
+          }));
+
+          return {
+            ...opp,
+            totalOpenings: opp.totalOpenings + newWave.capacity,
+            availableOpenings: opp.availableOpenings + newWave.capacity,
+            slotWaves: [...(opp.slotWaves || []), newWave],
+            slots: [...opp.slots, ...newSlots],
+          };
+        }
+        return opp;
+      })
+    );
+    setNotification(`New slot wave "${newWave.waveLabel}" added with ${newWave.capacity} open slots.`);
     setTimeout(() => setNotification(null), 4000);
   };
 
   const tableColumns: ColumnDef<ExtendedOpportunity>[] = [
     {
       id: 'title',
-      header: 'Opportunity & Partner',
+      header: 'Opportunity & Project Portfolio',
       sortable: true,
       cell: (opp) => (
         <div>
-          <span className="font-semibold text-slate-900 dark:text-white block hover:text-aiesec-blue">
+          <button
+            onClick={() => setSelectedOppForDetail(opp)}
+            className="font-bold text-slate-900 dark:text-white block hover:text-aiesec-blue text-left"
+          >
             {opp.title}
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono">
-            {opp.organizationName} • ODD {opp.sdgTarget}
-          </span>
+          </button>
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono mt-0.5">
+            <span>{opp.organizationName}</span>
+            <span>•</span>
+            {opp.portfolioProject ? (
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                Proj: {opp.portfolioProject} (SDG {opp.primarySdg || opp.sdgTarget})
+              </span>
+            ) : opp.professionalField ? (
+              <span className="font-semibold text-teal-600 dark:text-teal-400">
+                {opp.professionalField.replace('_', ' ')}
+              </span>
+            ) : opp.teachingSubject ? (
+              <span className="font-semibold text-orange-600 dark:text-orange-400">
+                {opp.teachingSubject.replace('_', ' ')}
+              </span>
+            ) : (
+              <span>ODD {opp.sdgTarget}</span>
+            )}
+          </div>
         </div>
       ),
     },
@@ -108,6 +205,32 @@ export default function OpportunitiesPage() {
           </span>
         );
       },
+    },
+    {
+      id: 'modality',
+      header: 'Modality & Governance',
+      cell: (opp) => (
+        <div>
+          <span
+            className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${
+              opp.modality === 'PARTLY_REMOTE'
+                ? 'bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-300'
+                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+            }`}
+          >
+            {opp.modality === 'PARTLY_REMOTE' ? `Partly Remote (${opp.remoteWeeks}w)` : 'Onsite (Physical)'}
+          </span>
+          {opp.isBenefitsLocked && (
+            <span
+              title="AEPP 4.2.1.4: Benefit Lock Active (Approved EPs)"
+              className="ml-1.5 inline-flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 font-semibold"
+            >
+              <Lock className="h-3 w-3" />
+              <span>Locked</span>
+            </span>
+          )}
+        </div>
+      ),
     },
     {
       id: 'status',
@@ -137,37 +260,63 @@ export default function OpportunitiesPage() {
     },
     {
       id: 'statutory',
-      header: 'Duration & Hours',
+      header: 'Terms & Compensation',
       cell: (opp) => (
-        <span className="text-xs text-slate-700 dark:text-slate-300 font-mono">
-          {opp.durationWeeks} wks • {opp.weeklyWorkingHours}h/wk
-        </span>
+        <div className="text-xs font-mono">
+          <div className="text-slate-700 dark:text-slate-300">
+            {opp.durationWeeks} wks • {opp.weeklyWorkingHours}h/wk
+          </div>
+          <div className="text-[10px] text-slate-400">
+            {opp.product === 'igv' ? (
+              <span className="text-emerald-600 font-semibold">0 MAD (Unpaid Volunteer)</span>
+            ) : (
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {opp.monthlySalaryMad?.toLocaleString()} MAD/mo
+              </span>
+            )}
+          </div>
+        </div>
       ),
     },
     {
-      id: 'slots_progress',
-      header: 'Slot Allocation Matrix',
+      id: 'waves_progress',
+      header: 'Wave Allocation',
       cell: (opp) => {
-        const conf = opp.slots.filter(s => s.status === 'CONFIRMED').length;
-        const res = opp.slots.filter(s => s.status === 'RESERVED').length;
-        const unalloc = opp.slots.filter(s => s.status === 'UNALLOCATED').length;
+        const wavesCount = opp.slotWaves?.length || 0;
+        const totalCap = (opp.slotWaves || []).reduce((acc, w) => acc + w.capacity, 0);
+        const approvedCap = (opp.slotWaves || []).reduce((acc, w) => acc + w.approvedCount, 0);
         return (
-          <div className="space-y-1">
+          <div>
             <div className="flex items-center gap-1.5 text-[10px] font-mono">
-              <span className="text-emerald-600 font-bold">{conf} Confirmed</span>
+              <span className="font-bold text-slate-900 dark:text-white">
+                {wavesCount} Wave{wavesCount !== 1 ? 's' : ''}
+              </span>
               <span>•</span>
-              <span className="text-amber-600 font-bold">{res} Reserved</span>
-              <span>•</span>
-              <span className="text-slate-400">{unalloc} Free</span>
+              <span className="text-emerald-600 font-bold">{approvedCap} Approved</span>
+              <span>/</span>
+              <span className="text-slate-500">{totalCap || opp.totalOpenings} Cap</span>
             </div>
-            <div className="w-36 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden flex">
-              <div style={{ width: `${(conf / opp.totalOpenings) * 100}%` }} className="bg-emerald-500 h-full" />
-              <div style={{ width: `${(res / opp.totalOpenings) * 100}%` }} className="bg-amber-500 h-full" />
-              <div style={{ width: `${(unalloc / opp.totalOpenings) * 100}%` }} className="bg-slate-300 dark:bg-slate-700 h-full" />
+            <div className="w-28 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden flex mt-1">
+              <div
+                style={{ width: `${totalCap ? (approvedCap / totalCap) * 100 : 0}%` }}
+                className="bg-emerald-500 h-full"
+              />
             </div>
           </div>
         );
       },
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: (opp) => (
+        <button
+          onClick={() => setSelectedOppForDetail(opp)}
+          className="rounded border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+        >
+          Manage Waves
+        </button>
+      ),
     },
   ];
 
@@ -183,11 +332,14 @@ export default function OpportunitiesPage() {
             <span>/</span>
             <span className="text-aiesec-blue font-semibold">Opportunity Registry</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Opportunities & Slot Capacity Board
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <span>Project Portfolio & Capacity Waves</span>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300">
+              16 Official GV Projects
+            </span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Governed by State Machines `SM-02` (Review Lifecycle) & `SM-03` (Slot Reservation with Accommodation Lock).
+            Governed by Contract → Opportunity → Multi-Slot Waves (`1:N:N`), AEPP 4.2.1.4 Benefit Lock, and APIP 5.2 ICB Audit Gate.
           </p>
         </div>
 
@@ -197,44 +349,44 @@ export default function OpportunitiesPage() {
             className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-subtle hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
             <Globe2 className="h-3.5 w-3.5 text-aiesec-blue" />
-            <span>IR Partners & Supply Directory</span>
+            <span>IR Partners Directory</span>
           </Link>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg bg-aiesec-blue px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-aiesec-blue/90 transition"
+            className="flex items-center gap-1.5 rounded-lg bg-aiesec-blue px-3.5 py-1.5 text-xs font-semibold text-white shadow hover:bg-blue-600 transition"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span>Create Opportunity</span>
+            <span>+ Create Opportunity</span>
           </button>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
+      {/* Headline Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Slots Quota</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Total Wave Capacity</span>
             <Briefcase className="h-4 w-4 text-aiesec-blue" />
           </div>
           <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
             {totalOpenings} Openings
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Across {opportunities.length} active projects
+            Across {totalWavesCount} active intake waves
           </div>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Confirmed EPs</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Approved Candidates</span>
             <CheckCircle className="h-4 w-4 text-emerald-500" />
           </div>
           <div className="mt-2 text-2xl font-bold text-emerald-600">
             {confirmedSlots} Confirmed
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Matched & approved on EXPA
+            Matched & verified on EXPA
           </div>
         </div>
 
@@ -247,32 +399,33 @@ export default function OpportunitiesPage() {
             {reservedSlots} In-Flight
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Pending interview & MoU signoff
+            Pending interview & contract signoff
           </div>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Free Unallocated</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Available Capacity</span>
             <Layers className="h-4 w-4 text-slate-400" />
           </div>
           <div className="mt-2 text-2xl font-bold text-slate-700 dark:text-slate-300">
             {unallocatedSlots} Free Slots
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Available for IR partner matching
+            Open for IR supply matching
           </div>
         </div>
       </div>
 
       {/* Notification Banner */}
       {notification && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900">
-          {notification}
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900 flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <span>{notification}</span>
         </div>
       )}
 
-      {/* View Toggle */}
+      {/* 3-way View Toggle */}
       <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div className="flex items-center gap-2">
           <button
@@ -288,6 +441,18 @@ export default function OpportunitiesPage() {
           </button>
 
           <button
+            onClick={() => setViewMode('waves')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              viewMode === 'waves'
+                ? 'bg-aiesec-blue text-white shadow-sm'
+                : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+            }`}
+          >
+            <Layers className="h-3.5 w-3.5" />
+            <span>Multi-Slot Wave Manager ({totalWavesCount} Waves)</span>
+          </button>
+
+          <button
             onClick={() => setViewMode('capacity')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
               viewMode === 'capacity'
@@ -296,7 +461,7 @@ export default function OpportunitiesPage() {
             }`}
           >
             <Columns3 className="h-3.5 w-3.5" />
-            <span>Individual Slot Capacity Board ({totalOpenings} Slots)</span>
+            <span>Slot Registry Grid ({totalOpenings} Slots)</span>
           </button>
         </div>
       </div>
@@ -313,7 +478,73 @@ export default function OpportunitiesPage() {
         />
       )}
 
-      {/* Tab 2: Individual Slot Capacity Board */}
+      {/* Tab 2: Wave Manager View */}
+      {viewMode === 'waves' && (
+        <div className="space-y-6">
+          {opportunities.map((opp) => (
+            <div key={opp.id} className="space-y-3">
+              {/* Opportunity Summary Card */}
+              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">
+                        {opp.title}
+                      </span>
+                      <span className="rounded px-2 py-0.5 text-[10px] font-bold border uppercase text-blue-600 bg-blue-50 border-blue-200">
+                        {opp.product === 'igt' ? 'iGTa' : opp.product.toUpperCase()}
+                      </span>
+                      {opp.isBenefitsLocked && (
+                        <span className="rounded bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 border border-amber-200 flex items-center gap-1">
+                          <Lock className="h-3 w-3" />
+                          <span>AEPP 4.2.1.4 Benefit Lock Active</span>
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-mono">
+                      <span>Partner: <strong>{opp.organizationName}</strong></span>
+                      <span>•</span>
+                      <span>Duration: {opp.durationWeeks} weeks ({opp.weeklyWorkingHours}h/wk)</span>
+                      <span>•</span>
+                      <span>Modality: {opp.modality}</span>
+                    </div>
+
+                    {/* iGV Activity Evidence Showcase */}
+                    {opp.product === 'igv' && opp.plannedActivities && opp.plannedActivities.length > 0 && (
+                      <div className="mt-3 rounded-lg bg-red-50/30 p-2.5 border border-red-100 text-xs text-slate-700 dark:border-red-950/40 dark:bg-red-950/10 dark:text-slate-300">
+                        <div className="font-semibold text-[#F85A40] text-[11px] mb-1 flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5" />
+                          <span>Project: {opp.portfolioProject} (Primary SDG {opp.primarySdg}) — Beneficiaries: {opp.targetBeneficiaries}</span>
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          <strong>Planned Deliverables:</strong> {opp.plannedActivities.join(' • ')}
+                        </div>
+                        {opp.expectedOutputs && (
+                          <div className="text-[11px] text-slate-500 mt-0.5">
+                            <strong>Expected Output:</strong> {opp.expectedOutputs}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* iGTa / iGTe Supervisor Showcase */}
+                    {opp.supervisorName && (
+                      <div className="mt-2 text-xs text-slate-500 font-mono">
+                        Designated Supervisor: <strong>{opp.supervisorName}</strong> ({opp.supervisorTitle || 'Technical Lead'}) • Monthly Salary: <strong>{opp.monthlySalaryMad?.toLocaleString()} MAD</strong>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Slot Wave Manager for this opportunity */}
+              <SlotWaveManager opportunity={opp} onAddWave={handleAddWave} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Tab 3: Individual Slot Capacity Board */}
       {viewMode === 'capacity' && (
         <div className="space-y-6">
           {opportunities.map((opp) => (
@@ -387,6 +618,98 @@ export default function OpportunitiesPage() {
         onClose={() => setIsModalOpen(false)}
         onCreated={handleCreated}
       />
+
+      {/* Slide-over or Modal for Opportunity Detail & Wave Management */}
+      {selectedOppForDetail && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/60 backdrop-blur-sm">
+          <div className="w-full max-w-xl bg-white dark:bg-slate-900 h-full overflow-y-auto p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                  Opportunity & Wave Console
+                </h3>
+                <p className="text-xs text-slate-500">{selectedOppForDetail.title}</p>
+              </div>
+              <button
+                onClick={() => setSelectedOppForDetail(null)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {selectedOppForDetail.isBenefitsLocked && (
+              <div className="rounded-lg bg-amber-50 p-3 border border-amber-200 text-amber-800 text-xs flex items-center gap-2 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300">
+                <Lock className="h-4 w-4 shrink-0 text-amber-600" />
+                <span>
+                  <strong>AEPP 4.2.1.4 Benefit Lock Active:</strong> Candidates are approved on this opportunity. Compensation, duration, and accommodation are legally locked.
+                </span>
+              </div>
+            )}
+
+            {/* Wave Manager */}
+            <SlotWaveManager
+              opportunity={selectedOppForDetail}
+              onAddWave={(id, newWave) => {
+                handleAddWave(id, newWave);
+                setSelectedOppForDetail((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        totalOpenings: prev.totalOpenings + newWave.capacity,
+                        slotWaves: [...(prev.slotWaves || []), newWave],
+                      }
+                    : null
+                );
+              }}
+            />
+
+            {/* Statutory Specs Breakdown */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-2.5 text-xs dark:border-slate-800 dark:bg-slate-800/40">
+              <span className="font-bold text-slate-900 dark:text-white block">
+                Statutory Specification Audit
+              </span>
+              <div className="grid grid-cols-2 gap-2 text-slate-600 dark:text-slate-300 font-mono">
+                <div>Product: <strong className="uppercase">{selectedOppForDetail.product}</strong></div>
+                <div>Modality: <strong>{selectedOppForDetail.modality}</strong></div>
+                <div>Duration: <strong>{selectedOppForDetail.durationWeeks} Weeks</strong></div>
+                <div>Hours: <strong>{selectedOppForDetail.weeklyWorkingHours} h/wk</strong></div>
+                <div>
+                  Salary:{' '}
+                  <strong>
+                    {selectedOppForDetail.monthlySalaryMad
+                      ? `${selectedOppForDetail.monthlySalaryMad.toLocaleString()} MAD`
+                      : '0 MAD (Unpaid Volunteer)'}
+                  </strong>
+                </div>
+                <div>EP Fee Charged: <strong>0 MAD (Locked)</strong></div>
+              </div>
+              {selectedOppForDetail.icbAuditUrl && (
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px]">
+                  <span>ICB Audit Reference: </span>
+                  <a
+                    href={selectedOppForDetail.icbAuditUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-aiesec-blue underline font-mono"
+                  >
+                    {selectedOppForDetail.icbAuditUrl}
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-3">
+              <button
+                onClick={() => setSelectedOppForDetail(null)}
+                className="rounded-lg bg-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-200"
+              >
+                Close Console
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

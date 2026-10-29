@@ -118,8 +118,8 @@ Governed by:
   5. Opportunity capacity counts (applied, accepted, approved, realized) aggregate dynamically from linked EPs.
 **Exit Gate**: Opportunities cannot be published without signed agreement, verified details, dates, and owner; project deliverables are tied to real activity evidence.
 **Plans**: 2 plans
-- [ ] 14-01: Contract to Opportunity to Multi-Slot relational normalization and wave manager.
-- [ ] 14-02: Dynamic product rules (`iGV/iGTa/iGTe`), SDG activity/output evidence, partly-remote ICB audit gate, and post-approval benefit locking.
+- [x] 14-01: Contract to Opportunity to Multi-Slot relational normalization and wave manager. (Completed 2026-10-29)
+- [x] 14-02: Dynamic product rules (`iGV/iGTa/iGTe`), SDG activity/output evidence, partly-remote ICB audit gate, and post-approval benefit locking. (Completed 2026-10-29)
 
 ---
 

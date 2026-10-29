@@ -14,6 +14,26 @@ export interface OpportunityInput {
   totalOpenings: number;
   startDate: string; // ISO date
   endDate: string; // ISO date
+  organizationId?: string;
+  organizationName?: string;
+  contractId?: string;
+  modality?: 'PHYSICAL' | 'PARTLY_REMOTE' | 'FULLY_REMOTE';
+  remoteWeeks?: number;
+  icbAuditUrl?: string;
+  portfolioProject?: string;
+  primarySdg?: number;
+  secondarySdgs?: number[];
+  targetBeneficiaries?: string;
+  plannedActivities?: string[];
+  expectedOutputs?: string;
+  monthlySalaryMad?: number;
+  epFeeMad?: number;
+  professionalField?: string;
+  teachingSubject?: string;
+  teachingLevel?: string;
+  curriculumOutline?: string;
+  supervisorName?: string;
+  supervisorTitle?: string;
 }
 
 export interface OpportunityValidationResult {
