@@ -1,4 +1,4 @@
-# Roadmap: AIESEC iCX ERP (Hub-Based Operating Model)
+﻿# Roadmap: AIESEC iCX ERP (Hub-Based Operating Model)
 
 ## Overview
 
@@ -19,7 +19,7 @@ Governed by:
 | **Phase 12** | Member Management, Team Handovers & Team Standards (`TeSt`) | `/members` module, Composite MES (0-100%), 4 tiers, Rabat 6 routines heatmap, O2O logger, TeSt scorecard, mandate handover pack | `ui-ux-pro-max`, `frontend-design`, `impeccable`, `vercel-composition-patterns` |
 | **Phase 13** | Data Integrity, B2B Partner CRM & Partner Standards Register | Split Org & Deals, full edit drawer, 8-stage sales stepper, closed-lost reasons, BANT discovery gate, Partner Standards Register | `vercel-composition-patterns`, `impeccable`, `ask-sonner`, `ui-styling` |
 | **Phase 14** | Project Portfolio (iGV/iGTa/iGTe), Opportunities & Capacity Waves | 1 Contract : N Opps : N Slots, official 16 GV projects linked to SDGs, product rules (iGTa/e), partly-remote ICB audit check, capacity waves | `vercel-composition-patterns`, `supabase-postgres-best-practices`, `ui-ux-pro-max` |
-| **Phase 15** | IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle | Numeric IR quotas, EXPA status mapping & discrepancy report, atomic typed EP fields, live date-math SLAs, exception/break modal, ±20d rule | `supabase-postgres-best-practices`, `impeccable`, `mobile-native`, `pdf` |
+| **Phase 15** | IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle | Numeric IR quotas, EXPA status mapping & discrepancy report, atomic typed EP fields, live date-math SLAs, exception/break modal, Â±20d rule | `supabase-postgres-best-practices`, `impeccable`, `mobile-native`, `pdf` |
 | **Phase 16** | Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault | Exact Refreshed Standards register, per-EP checklists, Standards #10a/#10b, human-verified visa registry, restricted Case Vault with 3-tier timers, bed exclusion & pickups | `supabase-postgres-best-practices`, `pdf`, `mobile-native`, `impeccable` |
 | **Phase 17** | AFPM Finance Controls, Unified Task Engine & KPI Dictionary | AFPM finance ledger (>14d overdue warning), cross-module unified task engine, non-fictional KPI Dictionary, validated CSV import/export, restore drill | `supabase-postgres-best-practices`, `xlsx`, `ui-ux-pro-max`, `ask-sonner` |
 
@@ -42,10 +42,10 @@ Governed by:
 | Phase 10: Module 1 Interactive Command Dashboard & Graph Analytics | Command Center | 4/4 | Complete | 2026-10-28 |
 | Phase 11: Global Layout, Sidebar Navigation & Zero-CTA Dashboard | Hub Milestone | 3/3 | Complete | 2026-10-29 |
 | Phase 12: Member Management, Team Handovers & Team Standards (`TeSt`) | Hub Milestone | 2/2 | Complete | 2026-10-29 |
-| Phase 13: Data Integrity, B2B Partner CRM & Partner Standards Register | Hub Milestone | 0/3 | Queued | - |
-| Phase 14: Project Portfolio, Opportunities & Capacity Waves | Hub Milestone | 0/2 | Queued | - |
-| Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle | Hub Milestone | 0/3 | Queued | - |
-| Phase 16: Refreshed Exchange Standards, CXP, Human Visa & Case Vault | Hub Milestone | 0/3 | Queued | - |
+| Phase 13: Data Integrity, B2B Partner CRM & Partner Standards Register | Hub Milestone | 3/3 | Complete | 2026-10-29 |
+| Phase 14: Project Portfolio, Opportunities & Capacity Waves | Hub Milestone | 2/2 | Complete | 2026-10-29 |
+| Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle | Hub Milestone | 3/3 | Complete | 2026-10-29 |
+| Phase 16: Refreshed Exchange Standards, CXP, Human Visa & Case Vault | Hub Milestone | 3/3 | Complete | 2026-10-29 |
 | Phase 17: AFPM Finance Controls, Unified Task Engine & KPI Dictionary | Hub Milestone | 0/3 | Queued | - |
 
 ---
@@ -56,9 +56,9 @@ Governed by:
 **Status**: Completed 2026-10-29  
 **Accomplished**:
 - 4-group Left Sidebar (`Command`, `External Engine BD`, `Internal Engine Ops`, `Finance & People`).
-- Clean top header with `+ Quick Add` (8 universal intake types) and `⌘K` command bar.
+- Clean top header with `+ Quick Add` (8 universal intake types) and `âŒ˜K` command bar.
 - Sticky Context Filter Bar (`Term`, `Peak`, `Product`, `Engine`, `Role`).
-- `⚙️ Data & Settings` modal for JSON backup, CSV export, restore, and seed reset.
+- `âš™ï¸ Data & Settings` modal for JSON backup, CSV export, restore, and seed reset.
 - Zero-CTA Dashboard verification and cumulative funnel mathematics.
 **Plans**:
 - [x] 11-01: Global 4-group Left Sidebar and Top Header clean action dropdown overhaul.
@@ -73,7 +73,7 @@ Governed by:
 **Requirements**: HUB-TM-01, HUB-TM-02, HUB-TM-03, HUB-TM-04
 **Target Skills**: `ui-ux-pro-max`, `frontend-design`, `impeccable`, `vercel-composition-patterns`
 **Success Criteria**:
-  1. `/members` route displays Rabat roster with Composite MES score and 4-tier badges (`🟢 Tier 1 Core`, `🔵 Tier 2 Strong`, `🟡 Tier 3 Moderate`, `🔴 Tier 4 Drop-Off Risk`).
+  1. `/members` route displays Rabat roster with Composite MES score and 4-tier badges (`ðŸŸ¢ Tier 1 Core`, `ðŸ”µ Tier 2 Strong`, `ðŸŸ¡ Tier 3 Moderate`, `ðŸ”´ Tier 4 Drop-Off Risk`).
   2. Rabat 6 governance routines weekly attendance grid displays meeting attendance heatmap.
   3. Monthly O2O coaching logger drawer captures wellbeing scores, KPI reviews, blockers, and action items.
   4. Team Standards (TeSt) scorecard allows Team Leaders to assess Building, Performing, and Closing deliverables.
@@ -124,7 +124,7 @@ Governed by:
 ---
 
 ### Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle
-**Goal**: Replace string quotas with numeric targets and live metrics, implement EXPA status mapping and discrepancy reporting, split concatenated EP strings into typed atomic fields, implement live date-math SLA countdowns, exception modal, and ±20d realization rule.
+**Goal**: Replace string quotas with numeric targets and live metrics, implement EXPA status mapping and discrepancy reporting, split concatenated EP strings into typed atomic fields, implement live date-math SLA countdowns, exception modal, and Â±20d realization rule.
 **Depends on**: Phase 14
 **Requirements**: HUB-IR-01, HUB-IR-02, HUB-SYNC-01, HUB-EP-01, HUB-EP-02, HUB-EP-03, HUB-EP-04, HUB-EP-05
 **Target Skills**: `supabase-postgres-best-practices`, `impeccable`, `mobile-native`, `pdf`
@@ -134,12 +134,12 @@ Governed by:
   3. Atomic typed fields replace concatenated strings; relational foreign keys connect to accommodations, buddies, and managers.
   4. Live date-math SLA countdowns track 14d visa pack, 14d pre-arrival lock, 3d pickup guide, and 48h safety heartbeat.
   5. Exception modal handles `REJECTED` (with AEPP feedback and rejection counter), `WITHDRAWN`, `APPROVAL_BROKEN`, `REALIZATION_BROKEN`.
-  6. Transition to `REALIZED` validates ±20d slot start rule for iGV and Standards #4–#9 delivery.
+  6. Transition to `REALIZED` validates Â±20d slot start rule for iGV and Standards #4â€“#9 delivery.
 **Exit Gate**: An EP can be traced from application through matching and exception/completion states with external and local statuses fully reconcilable.
 **Plans**: 3 plans
 - [x] 15-01: IR Partner numeric supply quotas, live performance rollups, and EXPA status mapping with discrepancy reporting. (Completed 2026-10-29)
 - [x] 15-02: Atomic typed EP fields, relational foreign keys, and live date-math SLA countdowns. (Completed 2026-10-29)
-- [x] 15-03: AEPP exception/break/rejection modal, realization validation gates (±20d rule), and touchpoint log. (Completed 2026-10-29)
+- [x] 15-03: AEPP exception/break/rejection modal, realization validation gates (Â±20d rule), and touchpoint log. (Completed 2026-10-29)
 
 ---
 
@@ -157,9 +157,9 @@ Governed by:
   6. Dedicated Airport Pickups schema with flight details, pickup owner, mobile view, and handover acknowledgment.
 **Exit Gate**: An upcoming exchange can be prepared, delivered, monitored, and closed with evidence, responsible owners, and safe exception handling.
 **Plans**: 3 plans
-- [ ] 16-01: Refreshed Exchange Standards evidence checklist, Standards #10a/#10b split, and customer feedback action loop.
-- [ ] 16-02: Human-verified visa registry, expiry reminders, and restricted Case Solving Vault with 3-tier timers and Annex 2 links.
-- [ ] 16-03: Dedicated Accommodation bed allocation board (with PostgreSQL exclusion constraints) and Airport Pickup logistics tracker.
+- [x] 16-01: Refreshed Exchange Standards evidence checklist, Standards #10a/#10b split, and customer feedback action loop. (Completed 2026-10-29)
+- [x] 16-02: Human-verified visa registry, expiry reminders, and restricted Case Solving Vault with 3-tier timers and Annex 2 links. (Completed 2026-10-29)
+- [x] 16-03: Dedicated Accommodation bed allocation board (with PostgreSQL exclusion constraints) and Airport Pickup logistics tracker. (Completed 2026-10-29)
 
 ---
 

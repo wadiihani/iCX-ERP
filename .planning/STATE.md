@@ -1,13 +1,13 @@
----
+﻿---
 gsd_state_version: '1.0'
 status: in_progress
 milestone: 'v3.0'
 progress:
   total_phases: 18
-  completed_phases: 16
+  completed_phases: 17
   total_plans: 48
-  completed_plans: 42
-  percent: 88
+  completed_plans: 45
+  percent: 94
 ---
 
 # Project State: AIESEC iCX ERP
@@ -17,16 +17,16 @@ progress:
 See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (Hub-Based Operating Model aligned 2026-10-29)
 
 **Core value:** One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.  
-**Current focus:** Milestone 3 (v3.0) — Phase 15 Completed, Ready for Phase 16 (Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault)
+**Current focus:** Milestone 3 (v3.0) â€” Phase 16 Completed (Refreshed Standards, Bed Allocation Board, Pickups, Human Visa Registry & Case Vault), Ready for Phase 17
 
 ## Current Position
 
-Phase: 16 of 18 (Phase 16: Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault)  
-Plan: 0 of 3 in Phase 16 (Total: 42/48 Complete)  
+Phase: 17 of 18 (Phase 17: AFPM Finance Controls, Unified Task Engine & KPI Dictionary)  
+Plan: 0 of 3 in Phase 17 (Total: 45/48 Complete)  
 Status: In progress  
-Last activity: 2026-10-29 — Executed and verified Phase 15 (Plans 15-01, 15-02, 15-03): atomic typed EP schema with foreign keys, searchable Moroccan visa regime resolver (14d Visa-Free / 21d AEVM / 45d Consular), live date-math SLA countdowns (14d Visa Pack, 3d Pickup Guide, 48h safety heartbeat), AEPP exception & break modal (with OP rejection audit and Annex 2 replacement timers), realization validation gates (APIP 5.3.5.1 ±20d rule and Standards #4–#9 delivery), 18 standards modal with #10a/#10b split and EXPA survey discrepancy flags, Standard #17 touchpoints log, and algorithmic matchmaker score badge. All 48 Vitest suites (386 tests) and Next.js build (21 routes) passed.  
+Last activity: 2026-10-29 â€” Executed and verified Phase 15 (Plans 15-01, 15-02, 15-03): atomic typed EP schema with foreign keys, searchable Moroccan visa regime resolver (14d Visa-Free / 21d AEVM / 45d Consular), live date-math SLA countdowns (14d Visa Pack, 3d Pickup Guide, 48h safety heartbeat), AEPP exception & break modal (with OP rejection audit and Annex 2 replacement timers), realization validation gates (APIP 5.3.5.1 Â±20d rule and Standards #4â€“#9 delivery), 18 standards modal with #10a/#10b split and EXPA survey discrepancy flags, Standard #17 touchpoints log, and algorithmic matchmaker score badge. All 48 Vitest suites (386 tests) and Next.js build (21 routes) passed.  
 
-Progress: [█████████░] 88%
+Progress: [â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–‘] 88%
 
 ## Performance Metrics
 

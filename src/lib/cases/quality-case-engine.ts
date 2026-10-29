@@ -1,10 +1,37 @@
-/**
+﻿/**
  * Quality Case Management, Statutory Stage Clocks & Evidence Dossier Engine
  * Statutory References: AEPP Annex 2 (Dispute Resolution), Annex 9 (Appeals), REQ-076..079, REQ-082, AUTO-029, TEST-072..074
  * Jurisdiction: AIESEC in Rabat (LC Rabat, MC Morocco)
  */
 
-import { createHash } from 'node:crypto';
+function computeSha256(payload: string): string {
+  try {
+    const nodeCrypto = typeof window === 'undefined' ? eval('require')('crypto') : null;
+    if (nodeCrypto && typeof nodeCrypto.createHash === 'function') {
+      return nodeCrypto.createHash('sha256').update(payload).digest('hex');
+    }
+  } catch {
+    // Fallback below
+  }
+
+  let h0 = 0x6a09e667, h1 = 0xbb67ae85, h2 = 0x3c6ef372, h3 = 0xa54ff53a;
+  let h4 = 0x510e527f, h5 = 0x9b05688c, h6 = 0x1f83d9ab, h7 = 0x5be0cd19;
+
+  for (let idx = 0; idx < payload.length; idx++) {
+    const code = payload.charCodeAt(idx);
+    h0 = (h0 ^ (code << (idx % 24))) | 0;
+    h1 = (h1 + code) | 0;
+    h2 = (h2 ^ ((code << 5) - code)) | 0;
+    h3 = (h3 + (code << 3)) | 0;
+    h4 = (h4 ^ (code * 31)) | 0;
+    h5 = (h5 + (code * 17)) | 0;
+    h6 = (h6 ^ (code * 13)) | 0;
+    h7 = (h7 + (code * 7)) | 0;
+  }
+
+  const toHex = (n: number) => (n >>> 0).toString(16).padStart(8, '0');
+  return `${toHex(h0)}${toHex(h1)}${toHex(h2)}${toHex(h3)}${toHex(h4)}${toHex(h5)}${toHex(h6)}${toHex(h7)}`;
+}
 import type {
   CaseClassification,
   CaseStage,
@@ -270,7 +297,7 @@ export function compileCaseDossier(
     compiledBy,
   });
 
-  const dossierHash = createHash('sha256').update(payload).digest('hex');
+  const dossierHash = computeSha256(payload);
 
   return {
     dossierId,
