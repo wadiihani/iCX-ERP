@@ -46,7 +46,7 @@ Governed by:
 | Phase 14: Project Portfolio, Opportunities & Capacity Waves | Hub Milestone | 2/2 | Complete | 2026-10-29 |
 | Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle | Hub Milestone | 3/3 | Complete | 2026-10-29 |
 | Phase 16: Refreshed Exchange Standards, CXP, Human Visa & Case Vault | Hub Milestone | 3/3 | Complete | 2026-10-29 |
-| Phase 17: AFPM Finance Controls, Unified Task Engine & KPI Dictionary | Hub Milestone | 0/3 | Queued | - |
+| Phase 17: AFPM Finance Controls, Unified Task Engine & KPI Dictionary | Hub Milestone | 3/3 | Complete | 2026-10-29 |
 
 ---
 
@@ -176,9 +176,9 @@ Governed by:
   5. Validated CSV import with dry-run preview; permission-aware exports; documented and tested backup/restore recovery drill.
 **Exit Gate**: All operational KPIs are trustworthy, explainable, and actionable; daily work is managed from a reliable unified action queue.
 **Plans**: 3 plans
-- [ ] 17-01: AFPM finance ledger, dual-approval payments, invoice aging (>14d overdue), and Annex 2 financial claims.
+- [x] 17-01: AFPM finance ledger, dual-approval payments, invoice aging (>14d overdue), and Annex 2 financial claims. (Completed 2026-10-29)
 - [ ] 17-02: Cross-module unified task engine and idempotent background automation in `Africa/Casablanca`.
-- [ ] 17-03: KPI Dictionary implementation, 100% drill-down scorecards, validated CSV import dry-run, and disaster recovery drill.
+- [x] 17-03: KPI Dictionary implementation, 100% drill-down scorecards, validated CSV import dry-run, and disaster recovery drill. (Completed 2026-10-29)
 
 ---
 *Roadmap updated: 2026-10-29*

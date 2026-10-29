@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   DollarSign,
@@ -15,6 +15,12 @@ import {
   Check,
   X,
   FileCheck2,
+  AlertOctagon,
+  BookOpen,
+  CheckSquare,
+  Lock,
+  Unlock,
+  Coins,
 } from 'lucide-react';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import { useWorkspace } from '@/components/layout/workspace-context';
@@ -27,21 +33,49 @@ import {
   type B2BInvoice,
   type AFPMReserveStatus,
 } from '@/lib/finance/finance-types';
+import {
+  evaluateInvoiceAging,
+  calculateIgvCostCoverage,
+  type EvaluatedInvoice,
+} from '@/lib/finance/finance-aging-engine';
+import { UnifiedTaskQueue } from '@/components/tasks/unified-task-queue';
+import { KpiDictionaryModal } from '@/components/kpi/kpi-dictionary-modal';
 
 export default function DashboardsFinancePage() {
   const { currentRole } = useWorkspace();
   const [payouts, setPayouts] = useState<PayoutRequest[]>(INITIAL_PAYOUT_REQUESTS);
   const [invoices, setInvoices] = useState<B2BInvoice[]>(INITIAL_INVOICES);
   const [afpm, setAfpm] = useState<AFPMReserveStatus>(INITIAL_AFPM_STATUS);
-  const [activeTab, setActiveTab] = useState<'payouts' | 'invoices' | 'scorecards'>('payouts');
+  const [activeTab, setActiveTab] = useState<'payouts' | 'invoices' | 'tasks' | 'kpis' | 'scorecards'>('payouts');
   const [alertMsg, setAlertMsg] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
-  // Compute live KPIs
-  const totalReceivablesMad = invoices
-    .filter((inv) => inv.status === 'ISSUED')
-    .reduce((acc, inv) => acc + inv.amount_mad, 0);
+  // Sync hash routing on client
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes('invoice')) setActiveTab('invoices');
+      else if (hash.includes('task')) setActiveTab('tasks');
+      else if (hash.includes('kpi') || hash.includes('dictionary')) setActiveTab('kpis');
+      else if (hash.includes('scorecard')) setActiveTab('scorecards');
+      else if (hash.includes('payout')) setActiveTab('payouts');
+    }
+  }, []);
 
+  // Compute live KPIs
+  const evaluatedInvoices = invoices.map((inv) => evaluateInvoiceAging(inv));
+
+  const totalReceivablesMad = evaluatedInvoices
+    .filter((inv) => inv.status === 'ISSUED')
+    .reduce((acc, inv) => acc + inv.balanceDueMad, 0);
+
+  const overdue14Count = evaluatedInvoices.filter((inv) => inv.isOverdue14Days).length;
   const pendingPayoutsCount = payouts.filter((p) => p.status === 'SUBMITTED' || p.status === 'APPROVED_VP_FNL').length;
+
+  // iGV Cost Coverage calculation
+  const igvCoverage = calculateIgvCostCoverage({
+    confirmedSponsorshipInflowsMad: 25000, // BMCE Bank Foundation CSR tranche
+    totalDirectDeliveryCostsMad: 22000, // Trainee accommodation, pickup, IPS costs
+  });
 
   const handleAuthorizePayout = (request: PayoutRequest, action: 'APPROVE_VP_FNL' | 'APPROVE_LCP') => {
     const res = transitionPayoutStatus(request, action, currentRole);
@@ -53,102 +87,142 @@ export default function DashboardsFinancePage() {
     setPayouts([...payouts]);
     setAlertMsg({
       type: 'success',
-      text: action === 'APPROVE_LCP'
-        ? `Level-2 LCP authorization complete! Funds released to ${request.beneficiary}.`
-        : `Level-1 VP Finance authorization recorded. Waiting for LCP counter-signature.`,
+      text:
+        action === 'APPROVE_LCP'
+          ? `Level-2 LCP authorization complete! Funds released to ${request.beneficiary}.`
+          : `Level-1 VP Finance authorization recorded. Waiting for LCP counter-signature.`,
     });
     setTimeout(() => setAlertMsg(null), 4000);
   };
 
-  const invoiceColumns: ColumnDef<B2BInvoice>[] = [
+  const handleIssueOverdueNotice = (inv: EvaluatedInvoice) => {
+    setAlertMsg({
+      type: 'success',
+      text: `Formal Overdue Freeze Notice & 5% Statutory Penalty Notice (+${inv.statutoryPenaltyMad} MAD) dispatched to ${inv.partnerName}. Opportunity realizations frozen per APIP 3.2.5.`,
+    });
+    setTimeout(() => setAlertMsg(null), 5000);
+  };
+
+  const invoiceColumns: ColumnDef<EvaluatedInvoice>[] = [
     {
-      id: 'invoice_number',
+      id: 'invoiceNumber',
       header: 'Invoice #',
-      accessorKey: 'invoice_number',
+      accessorKey: 'invoiceNumber',
       sortable: true,
       cell: (inv) => (
         <span className="font-mono font-bold text-xs text-slate-900 dark:text-white">
-          {inv.invoice_number}
+          {inv.invoiceNumber}
         </span>
       ),
     },
     {
-      id: 'partner_organization_name',
+      id: 'partnerName',
       header: 'Partner & Deal Title',
       sortable: true,
       cell: (inv) => (
         <div>
           <span className="font-semibold text-xs text-slate-900 dark:text-white block">
-            {inv.partner_organization_name}
+            {inv.partnerName}
           </span>
           <span className="text-[10px] text-slate-400">
-            {inv.deal_title}
+            {inv.dealTitle}
           </span>
         </div>
       ),
     },
     {
-      id: 'amount_mad',
-      header: 'Amount (MAD)',
-      accessorKey: 'amount_mad',
+      id: 'amountMad',
+      header: 'Total TTC (MAD)',
+      accessorKey: 'amountMad',
       sortable: true,
       cell: (inv) => (
-        <span className="font-mono font-bold text-xs text-slate-900 dark:text-white">
-          {inv.amount_mad.toLocaleString()} MAD
-        </span>
+        <div className="text-right font-mono">
+          <span className="font-bold text-xs text-slate-900 dark:text-white block">
+            {inv.amountMad.toLocaleString()} MAD
+          </span>
+          {inv.balanceDueMad > 0 && inv.balanceDueMad !== inv.amountMad && (
+            <span className="text-[10px] text-amber-600 block">
+              Due: {inv.balanceDueMad.toLocaleString()} MAD
+            </span>
+          )}
+        </div>
       ),
       align: 'right',
     },
     {
-      id: 'aging_bucket',
-      header: 'Aging Status',
-      accessorKey: 'aging_bucket',
+      id: 'agingStatus',
+      header: 'Aging & AFPM Status',
       sortable: true,
-      filterable: true,
-      filterOptions: [
-        { label: 'Current (< 30d)', value: 'CURRENT' },
-        { label: 'Overdue (1-30d)', value: 'OVERDUE_1_30' },
-        { label: 'Overdue (31-60d)', value: 'OVERDUE_31_60' },
-      ],
       cell: (inv) => {
-        const agingPills = {
-          CURRENT: 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300',
-          OVERDUE_1_30: 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300',
-          OVERDUE_31_60: 'bg-orange-50 text-orange-800 border-orange-300 dark:bg-orange-950/40 dark:text-orange-300',
-          OVERDUE_60_PLUS: 'bg-rose-50 text-rose-800 border-rose-300 dark:bg-rose-950/40 dark:text-rose-300',
-        };
+        if (inv.status === 'PAID') {
+          return (
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300">
+              PAID & RECONCILED
+            </span>
+          );
+        }
+
+        if (inv.isOverdue14Days) {
+          return (
+            <div className="space-y-1">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-300 flex items-center gap-1">
+                <AlertOctagon className="h-3 w-3 shrink-0" />
+                <span>OVERDUE &gt;14 DAYS (5% Penalty Warning)</span>
+              </span>
+              <span className="text-[10px] text-rose-600 font-mono font-bold block">
+                Penalty: +{inv.statutoryPenaltyMad} MAD • Realization Freeze (APIP 3.2.5)
+              </span>
+            </div>
+          );
+        }
+
+        if (inv.agingCategory === 'OVERDUE_1_14_GRACE') {
+          return (
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+              OVERDUE {inv.daysOverdue}D (Grace Period)
+            </span>
+          );
+        }
+
         return (
-          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${agingPills[inv.aging_bucket]}`}>
-            {inv.aging_bucket.replace('_', ' ')}
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            CURRENT (Due in {Math.abs(inv.daysOverdue)}d)
           </span>
         );
       },
     },
     {
-      id: 'due_date',
+      id: 'dueDate',
       header: 'Payment Deadline',
-      accessorKey: 'due_date',
+      accessorKey: 'dueDate',
       sortable: true,
       cell: (inv) => (
         <span className="font-mono text-xs text-slate-600 dark:text-slate-400">
-          Due {inv.due_date}
+          Due {inv.dueDate}
         </span>
       ),
     },
     {
-      id: 'status',
-      header: 'Payment Status',
-      accessorKey: 'status',
-      sortable: true,
+      id: 'action',
+      header: 'Statutory Action',
       cell: (inv) => (
-        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${
-          inv.status === 'PAID'
-            ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-            : 'bg-slate-100 text-slate-700 border-slate-300'
-        }`}>
-          {inv.status}
-        </span>
+        <div className="text-right">
+          {inv.isOverdue14Days && (
+            <button
+              onClick={() => handleIssueOverdueNotice(inv)}
+              className="px-2.5 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold shadow-sm"
+            >
+              Issue Freeze Notice
+            </button>
+          )}
+          {inv.status === 'PAID' && (
+            <span className="text-[10px] text-emerald-600 font-mono">
+              ✓ Receipt Signed
+            </span>
+          )}
+        </div>
       ),
+      align: 'right',
     },
   ];
 
@@ -159,13 +233,13 @@ export default function DashboardsFinancePage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-bold text-aiesec-blue mb-1">
             <ShieldCheck className="h-4 w-4" />
-            <span>FIN-01 Dual Approval & AFPM Statutory Governance</span>
+            <span>AFPM Section 6 Governance & Dual Approval Protocol (SM-08)</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Operational Finance Ledger & KPI Dashboards
+            Financial Sustainability, Invoices & Master KPI Hub
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Strict two-key dual approvals (`SM-08`), AFPM reserve solvency monitoring, and 100% reconciled KPI scorecards.
+            Reconciled bank reserve balance, strict invoice aging (&gt;14d realization freeze), unified cross-module task queue, and non-fictional KPI Dictionary.
           </p>
         </div>
       </div>
@@ -188,40 +262,40 @@ export default function DashboardsFinancePage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Liquid Bank Balance</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">AFPM Reserve Balance</span>
             <DollarSign className="h-4 w-4 text-emerald-500" />
           </div>
           <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white font-mono">
             {afpm.current_liquid_balance_mad.toLocaleString()} MAD
           </div>
           <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-            Reconciled bank ledger
+            {afpm.solvency_ratio_percentage}% Solvency Ratio (&gt;50,000 MAD Min)
           </div>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">AFPM Solvency Ratio</span>
-            <ShieldCheck className="h-4 w-4 text-aiesec-blue" />
+            <span className="text-xs font-semibold uppercase tracking-wider">iGV Cost Coverage</span>
+            <Coins className="h-4 w-4 text-aiesec-blue" />
           </div>
           <div className="mt-2 text-2xl font-bold text-aiesec-blue font-mono">
-            {afpm.solvency_ratio_percentage}%
+            {igvCoverage.coverageRatioPercentage}% Covered
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Min requirement: 50,000 MAD (Compliant)
+            Target &ge; 70-100% (+{igvCoverage.netPositionMad.toLocaleString()} MAD Net)
           </div>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Accounts Receivable</span>
-            <Receipt className="h-4 w-4 text-amber-500" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Overdue &gt;14d Invoices</span>
+            <Receipt className="h-4 w-4 text-rose-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white font-mono">
-            {totalReceivablesMad.toLocaleString()} MAD
+          <div className="mt-2 text-2xl font-bold text-rose-600 font-mono">
+            {overdue14Count} Alert
           </div>
-          <div className="mt-1 text-[11px] text-slate-400">
-            Invoiced partner realization grants
+          <div className="mt-1 text-[11px] text-rose-600 font-semibold">
+            5% Penalty & Realization Freeze Warning
           </div>
         </div>
 
@@ -234,12 +308,12 @@ export default function DashboardsFinancePage() {
             {pendingPayoutsCount} Requests
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
-            Require VP Finance / LCP authorization
+            Requires VP FNL & LCP countersignature
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Navigation Tabs */}
       <div className="border-b border-slate-200 dark:border-slate-800 flex items-center gap-4">
         <button
           onClick={() => setActiveTab('payouts')}
@@ -250,7 +324,7 @@ export default function DashboardsFinancePage() {
           }`}
         >
           <ShieldCheck className="h-4 w-4" />
-          <span>Dual-Approval Payout Queue ({payouts.length})</span>
+          <span>Dual-Approval Payouts ({payouts.length})</span>
         </button>
 
         <button
@@ -262,7 +336,31 @@ export default function DashboardsFinancePage() {
           }`}
         >
           <Receipt className="h-4 w-4" />
-          <span>B2B Invoices & Aging ({invoices.length})</span>
+          <span>Invoices & Aging Ledger ({invoices.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('tasks')}
+          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === 'tasks'
+              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          <CheckSquare className="h-4 w-4" />
+          <span>Unified Cross-Module Tasks</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('kpis')}
+          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === 'kpis'
+              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          <BookOpen className="h-4 w-4" />
+          <span>Master KPI Dictionary</span>
         </button>
 
         <button
@@ -274,15 +372,15 @@ export default function DashboardsFinancePage() {
           }`}
         >
           <TrendingUp className="h-4 w-4" />
-          <span>Reconciled Department Scorecards</span>
+          <span>Department Scorecards</span>
         </button>
       </div>
 
-      {/* Tab 1: Dual-Approval Payout Authorization Queue */}
+      {/* Tab 1: Dual-Approval Payouts */}
       {activeTab === 'payouts' && (
         <div className="space-y-4">
           <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-900/60 dark:bg-blue-950/20 text-xs text-blue-800 dark:text-blue-300">
-            <strong>SM-08 Strict Governance:</strong> All expense payouts require Level-1 authorization by VP Finance, followed by Level-2 counter-signature by the Local Committee President (LCP). No single executive can disburse funds unilaterally.
+            <strong>SM-08 Statutory Governance:</strong> In conformity with AFPM controls, all liquid disbursements require Level-1 authorization by VP Finance, followed by Level-2 counter-signature by the Local Committee President (LCP). Mandatory proof receipts must be filed.
           </div>
 
           <div className="space-y-3">
@@ -356,19 +454,25 @@ export default function DashboardsFinancePage() {
         </div>
       )}
 
-      {/* Tab 2: Invoices Ledger Table */}
+      {/* Tab 2: Invoices & Aging Ledger Table */}
       {activeTab === 'invoices' && (
         <DataTable
-          data={invoices}
+          data={evaluatedInvoices}
           columns={invoiceColumns}
           keyExtractor={(inv) => inv.id}
           entityType="INVOICE"
           searchPlaceholder="Search invoices by number, partner, deal title..."
-          exportFileName="aiesec-rabat-b2b-invoices.csv"
+          exportFileName="aiesec-rabat-afpm-invoices.csv"
         />
       )}
 
-      {/* Tab 3: Reconciled Department Scorecards */}
+      {/* Tab 3: Unified Cross-Module Tasks */}
+      {activeTab === 'tasks' && <UnifiedTaskQueue />}
+
+      {/* Tab 4: Master KPI Dictionary */}
+      {activeTab === 'kpis' && <KpiDictionaryModal isInlineView={true} />}
+
+      {/* Tab 5: Reconciled Department Scorecards */}
       {activeTab === 'scorecards' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle space-y-4">
@@ -427,16 +531,16 @@ export default function DashboardsFinancePage() {
                 <span className="font-mono font-bold text-emerald-600">165% Compliant</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Uncollected &gt; 30d Invoices:</span>
-                <span className="font-mono font-bold text-amber-600">36,000 MAD</span>
+                <span className="text-slate-600 dark:text-slate-400">Uncollected &gt;14d Invoices:</span>
+                <span className="font-mono font-bold text-rose-600">36,000 MAD</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600 dark:text-slate-400">Dual Authorization SLA:</span>
-                <span className="font-mono font-bold text-emerald-600">&lt; 24h Average</span>
+                <span className="text-slate-600 dark:text-slate-400">iGV Cost Coverage Ratio:</span>
+                <span className="font-mono font-bold text-emerald-600">{igvCoverage.coverageRatioPercentage}%</span>
               </div>
             </div>
-            <Link href="/dashboards" className="block text-xs font-semibold text-aiesec-blue hover:underline">
-              → Drill down to Finance ledger
+            <Link href="/dashboards#invoices" className="block text-xs font-semibold text-aiesec-blue hover:underline">
+              → Drill down to Aging Invoices
             </Link>
           </div>
         </div>
