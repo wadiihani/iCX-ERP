@@ -2,3 +2,8 @@ export * from './nivo-cohort-funnel';
 export * from './nivo-project-capacity-bar';
 export * from './nivo-sales-velocity-line';
 export * from './nivo-country-yield-bar';
+export * from './nivo-domain-micro-chart';
+export * from './nivo-standards-bar';
+export * from './nivo-finance-bar';
+export * from './nivo-housing-bar';
+export * from './nivo-member-tier-bar';

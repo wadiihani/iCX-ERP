@@ -23,13 +23,16 @@ export const DomainCardsGrid: React.FC<DomainCardsGridProps> = ({
     <section className={clsx('space-y-3', className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <LayoutGrid className="w-4 h-4 text-slate-500" />
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <LayoutGrid className="w-4 h-4 text-indigo-600" />
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
             Level 2 Command Grid (3×3 Domain Executive Cards)
           </h2>
+          <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold border border-indigo-200 uppercase tracking-wider">
+            Nivo Powered
+          </span>
         </div>
         <span className="text-[11px] text-slate-400">
-          Click any card to load its specialized scorecards, graphs &amp; exceptions below
+          Click any card to load its specialized scorecards, Nivo graphs &amp; exceptions below
         </span>
       </div>
 

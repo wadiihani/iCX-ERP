@@ -35,6 +35,72 @@ import {
   AlertList,
   AlertItem,
 } from './graphs';
+import dynamic from 'next/dynamic';
+import { SteppedFunnelStage } from '@/lib/types/dashboard-spec';
+
+const NivoCohortFunnel = dynamic(
+  () => import('./graphs/nivo/nivo-cohort-funnel').then((m) => m.NivoCohortFunnel),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-60 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoProjectCapacityBar = dynamic(
+  () => import('./graphs/nivo/nivo-project-capacity-bar').then((m) => m.NivoProjectCapacityBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-48 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoSalesVelocityLine = dynamic(
+  () => import('./graphs/nivo/nivo-sales-velocity-line').then((m) => m.NivoSalesVelocityLine),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-48 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoCountryYieldBar = dynamic(
+  () => import('./graphs/nivo/nivo-country-yield-bar').then((m) => m.NivoCountryYieldBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-52 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoStandardsBar = dynamic(
+  () => import('./graphs/nivo/nivo-standards-bar').then((m) => m.NivoStandardsBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-52 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoFinanceBar = dynamic(
+  () => import('./graphs/nivo/nivo-finance-bar').then((m) => m.NivoFinanceBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-52 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoHousingBar = dynamic(
+  () => import('./graphs/nivo/nivo-housing-bar').then((m) => m.NivoHousingBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-48 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
+
+const NivoMemberTierBar = dynamic(
+  () => import('./graphs/nivo/nivo-member-tier-bar').then((m) => m.NivoMemberTierBar),
+  {
+    ssr: false,
+    loading: () => <div className="w-full h-48 bg-slate-50 rounded-xl animate-pulse" />,
+  }
+);
 
 interface ExpandedAnalyticsPanelProps {
   card: DomainCardSummary;
@@ -68,7 +134,7 @@ export const ExpandedAnalyticsPanel: React.FC<ExpandedAnalyticsPanelProps> = ({
         content += `"${item.code}","${item.name}","${item.formula}","${item.current}","${item.target}","${item.achievedPct}%","${item.rag}","${item.responsibleRole}"\n`;
       });
     } else {
-      content = `# AIESEC in Rabat — Domain Report: ${card.title}\n\n`;
+      content = `# AIESEC in Rabat â€” Domain Report: ${card.title}\n\n`;
       content += `**Primary MoS**: ${card.primaryMos.value} / ${card.primaryMos.target} (${card.primaryMos.attainmentPct}%)\n`;
       content += `**Status**: ${card.healthLabel} (${card.healthStatus})\n\n`;
       content += `| Code | Metric | Formula | Current | Target | % Achieved | Status | Owner |\n`;
@@ -257,7 +323,7 @@ export const ExpandedAnalyticsPanel: React.FC<ExpandedAnalyticsPanelProps> = ({
                           : 'bg-slate-100 text-slate-600'
                       )}
                     >
-                      {kpi.delta.direction === 'up' ? '▲' : kpi.delta.direction === 'down' ? '▼' : '—'} {kpi.delta.value}
+                      {kpi.delta.direction === 'up' ? 'â–²' : kpi.delta.direction === 'down' ? 'â–¼' : 'â€”'} {kpi.delta.value}
                     </span>
                   )}
                 </div>
@@ -410,10 +476,10 @@ function renderDomainGraphs(
       ];
 
       const bulletSlas = [
-        { id: 'sla_contact', label: 'APP → Contact (SLA: ≤24h)', actual: 18.0, target: 24.0, unit: 'h', higherIsBetter: false },
-        { id: 'sla_acc', label: 'Contact → ACC (SLA: ≤3d)', actual: 2.6, target: 3.0, unit: 'd', higherIsBetter: false },
-        { id: 'sla_apd', label: 'ACC → APD (SLA: ≤2d)', actual: 1.8, target: 2.0, unit: 'd', higherIsBetter: false },
-        { id: 'sla_total', label: 'Total APP → APD (SLA: ≤5d)', actual: 4.2, target: 5.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_contact', label: 'APP â†’ Contact (SLA: â‰¤24h)', actual: 18.0, target: 24.0, unit: 'h', higherIsBetter: false },
+        { id: 'sla_acc', label: 'Contact â†’ ACC (SLA: â‰¤3d)', actual: 2.6, target: 3.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_apd', label: 'ACC â†’ APD (SLA: â‰¤2d)', actual: 1.8, target: 2.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_total', label: 'Total APP â†’ APD (SLA: â‰¤5d)', actual: 4.2, target: 5.0, unit: 'd', higherIsBetter: false },
       ];
 
       const paceData = [
@@ -436,40 +502,57 @@ function renderDomainGraphs(
         { reason: 'Found alternative internship elsewhere', count: 4 },
       ];
 
+      const nivoFunnelStages: SteppedFunnelStage[] = [
+        { stageId: 'APD', stageName: 'Applied (APP)', cohortCount: 138, conversionFromPriorPct: 100, conversionFraction: '138/138', dropOffCount: 0, medianDaysInStage: 1.2 },
+        { stageId: 'ACC', stageName: 'Accepted (ACC)', cohortCount: 48, conversionFromPriorPct: 34.8, conversionFraction: '48/138', dropOffCount: 90, medianDaysInStage: 4.2, primaryDropOffReason: 'Unresponsive to initial contact (>48h)' },
+        { stageId: 'APD_FEE', stageName: 'Approved (APD)', cohortCount: 31, conversionFromPriorPct: 64.6, conversionFraction: '31/48', dropOffCount: 17, medianDaysInStage: 6.8, primaryDropOffReason: 'Financial / flight cost objection' },
+        { stageId: 'REA', stageName: 'Realized (RE)', cohortCount: 24, conversionFromPriorPct: 77.4, conversionFraction: '24/31', dropOffCount: 7, medianDaysInStage: 14.0, primaryDropOffReason: 'Visa timeline / embassy delay' },
+        { stageId: 'COM', stageName: 'Complete (CO)', cohortCount: 21, conversionFromPriorPct: 87.5, conversionFraction: '21/24', dropOffCount: 3, medianDaysInStage: 45.0, primaryDropOffReason: 'Early departure / exam schedule' },
+      ];
+
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 1.1: FU */}
-          <SteppedFunnelChart
-            stages={funnelStages}
-            title="Where do we lose EPs?"
-            subtitle="7-stage funnel with CR% bridges; lowest badge indicates primary leakage"
-          />
-          {/* Graph 1.2: BU */}
-          <BulletBarChart
-            metrics={bulletSlas}
-            title="Are we within SLA?"
-            subtitle="Average days vs SLA threshold tick; bar turning red signals a slow handoff"
-          />
-          {/* Graph 1.3: SC */}
-          <PaceLineChart
-            data={paceData}
-            title="Ahead or behind pace?"
-            subtitle="Cumulative realizations (solid) vs semester plan (dashed); gap labeled at current week"
-            unit="RE"
-          />
-          {/* Graph 1.4: PA */}
-          <ParetoBarChart
-            items={lostReasons}
-            title="Why do EPs leave?"
-            subtitle="Root causes ranked desc; 80% reference line reveals the vital few"
-            onSelectReason={(reason) =>
-              onOpenDrawer({
-                title: `Drop-off Root Cause: ${reason}`,
-                subtitle: 'Filtered EP dossier list',
-                action: 'Refine interview communication and pre-screening scripts.',
-              })
-            }
-          />
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 1.1: Nivo Stepped Funnel */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Where do we lose EPs? (Nivo Cohort Funnel)</h3>
+                  <p className="text-[11px] text-slate-500">Interactive SVG funnel with cohort conversion fractions &amp; drop-offs</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Funnel</span>
+              </div>
+              <NivoCohortFunnel stages={nivoFunnelStages} height={230} />
+            </div>
+            {/* Graph 1.2: BU */}
+            <BulletBarChart
+              metrics={bulletSlas}
+              title="Are we within SLA?"
+              subtitle="Average days vs SLA threshold tick; bar turning red signals a slow handoff"
+            />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 1.3: SC */}
+            <PaceLineChart
+              data={paceData}
+              title="Ahead or behind pace?"
+              subtitle="Cumulative realizations (solid) vs semester plan (dashed); gap labeled at current week"
+              unit="RE"
+            />
+            {/* Graph 1.4: PA */}
+            <ParetoBarChart
+              items={lostReasons}
+              title="Why do EPs leave?"
+              subtitle="Root causes ranked desc; 80% reference line reveals the vital few"
+              onSelectReason={(reason) =>
+                onOpenDrawer({
+                  title: `Drop-off Root Cause: ${reason}`,
+                  subtitle: 'Filtered EP dossier list',
+                  action: 'Refine interview communication and pre-screening scripts.',
+                })
+              }
+            />
+          </div>
         </div>
       );
     }
@@ -508,8 +591,8 @@ function renderDomainGraphs(
       ];
 
       const agingCols = [
-        { id: 'b1', label: '0–7 Days (Active)', shortLabel: '0–7d' },
-        { id: 'b2', label: '8–14 Days (Aging)', shortLabel: '8–14d' },
+        { id: 'b1', label: '0â€“7 Days (Active)', shortLabel: '0â€“7d' },
+        { id: 'b2', label: '8â€“14 Days (Aging)', shortLabel: '8â€“14d' },
         { id: 'b3', label: '>14 Days (Stale)', shortLabel: '>14d' },
       ];
 
@@ -535,40 +618,49 @@ function renderDomainGraphs(
       ];
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 2.1: FU */}
-          <SteppedFunnelChart
-            stages={pipelineFunnel}
-            title="Where do deals die?"
-            subtitle="7 CRM pipeline stages; secondary text highlights weighted MAD at each step"
-          />
-          {/* Graph 2.2: SB */}
-          <StackedHorizontalBar
-            rows={sectorBreakdown}
-            title="Are we over-reliant on one sector?"
-            subtitle="NGOs vs Schools vs Startups vs Corporates; ensures diversification"
-          />
-          {/* Graph 2.3: QD */}
-          <QuadrantScatterPlot
-            points={repPoints}
-            xAxisLabel="Outreach Logged (Calls + Emails + Visits)"
-            yAxisLabel="Discovery Meetings & Contracts Closed"
-            title="Activity or skill problem?"
-            subtitle="Low X = activity problem; High X + Low Y = skill/coaching problem"
-            quadrantLabels={{
-              topRight: '🟢 Role Models (Scale)',
-              topLeft: '🟡 Lone Wolves (Increase Outreach)',
-              bottomRight: '🔵 Coach Skills (High Effort)',
-              bottomLeft: '🔴 Intervene (Low Activity & Results)',
-            }}
-          />
-          {/* Graph 2.4: HM */}
-          <HeatmapMatrix
-            columns={agingCols}
-            rows={agingRows}
-            title="Where are deals stuck?"
-            subtitle="Deal aging across stages; red cells mark stale deals exceeding 14 days"
-          />
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 2.1: Nivo Sales Velocity */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">B2B Deal Sales Velocity (Nivo Trend)</h3>
+                  <p className="text-[11px] text-slate-500">Cumulative pipeline conversion across Meetings, Proposals, and Signed Agreements</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Nivo Line</span>
+              </div>
+              <NivoSalesVelocityLine height={210} />
+            </div>
+            {/* Graph 2.2: SB */}
+            <StackedHorizontalBar
+              rows={sectorBreakdown}
+              title="Are we over-reliant on one sector?"
+              subtitle="NGOs vs Schools vs Startups vs Corporates; ensures diversification"
+            />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 2.3: QD */}
+            <QuadrantScatterPlot
+              points={repPoints}
+              xAxisLabel="Outreach Logged (Calls + Emails + Visits)"
+              yAxisLabel="Discovery Meetings & Contracts Closed"
+              title="Activity or skill problem?"
+              subtitle="Low X = activity problem; High X + Low Y = skill/coaching problem"
+              quadrantLabels={{
+                topRight: '🟢 Role Models (Scale)',
+                topLeft: '🟡 Lone Wolves (Increase Outreach)',
+                bottomRight: '🔵 Coach Skills (High Effort)',
+                bottomLeft: '🔴 Intervene (Low Activity & Results)',
+              }}
+            />
+            {/* Graph 2.4: HM */}
+            <HeatmapMatrix
+              columns={agingCols}
+              rows={agingRows}
+              title="Where are deals stuck?"
+              subtitle="Deal aging across stages; red cells mark stale deals exceeding 14 days"
+            />
+          </div>
         </div>
       );
     }
@@ -578,7 +670,7 @@ function renderDomainGraphs(
       const slotRows = [
         {
           id: 'gc',
-          title: 'Global Classroom — Smart Kids Rabat (SDG 4)',
+          title: 'Global Classroom â€” Smart Kids Rabat (SDG 4)',
           subtitle: 'Starts in 18 days (2026-11-15)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 8, color: 'bg-emerald-600' },
@@ -589,7 +681,7 @@ function renderDomainGraphs(
         },
         {
           id: 'su',
-          title: 'Skill Up! — Youth Center Salé (SDG 8)',
+          title: 'Skill Up! â€” Youth Center SalÃ© (SDG 8)',
           subtitle: 'Starts in 25 days (2026-11-22)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 6, color: 'bg-emerald-600' },
@@ -600,7 +692,7 @@ function renderDomainGraphs(
         },
         {
           id: 'gl',
-          title: 'Green Leaders — Eco Rabat (SDG 13)',
+          title: 'Green Leaders â€” Eco Rabat (SDG 13)',
           subtitle: 'Starts in 32 days (2026-11-29)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 5, color: 'bg-emerald-600' },
@@ -615,18 +707,23 @@ function renderDomainGraphs(
         { reason: 'SDG 4: Quality Education (Global Classroom / Skill Up!)', count: 18 },
         { reason: 'SDG 8: Decent Work & Economic Growth (Scale Up!)', count: 12 },
         { reason: 'SDG 13: Climate Action (Green Leaders)', count: 8 },
-        { reason: 'iGTa Corporate Short (6–12 weeks)', count: 6 },
-        { reason: 'iGTe Teaching Long (6–18 months)', count: 4 },
+        { reason: 'iGTa Corporate Short (6â€“12 weeks)', count: 6 },
+        { reason: 'iGTe Teaching Long (6â€“18 months)', count: 4 },
       ];
 
       return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 3.1: SB */}
-          <StackedHorizontalBar
-            rows={slotRows}
-            title="Which project has empty slots?"
-            subtitle="Rows sorted by start date asc; empty gray segment on a near date needs urgent promotion"
-          />
+          {/* Graph 3.1: Nivo Project Capacity Stack */}
+          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div>
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900">Project Slot Capacity &amp; Fill Rate (Nivo Stacked Bar)</h3>
+                <p className="text-[11px] text-slate-500">Filled vs. Open slots across active SDG opportunity portfolios</p>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Nivo Bar</span>
+            </div>
+            <NivoProjectCapacityBar height={210} />
+          </div>
           {/* Graph 3.2: Sorted horizontal bar / PA */}
           <ParetoBarChart
             items={portfolioItems}
@@ -655,8 +752,27 @@ function renderDomainGraphs(
       ];
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 4.1: QD */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 4.1: Nivo Country Yield */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">IR Country Sourcing &amp; Quotas (Nivo Yield Bar)</h3>
+                  <p className="text-[11px] text-slate-500">Delivered EPs vs Bilateral Quotas across strategic partner entities</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Bar</span>
+              </div>
+              <NivoCountryYieldBar height={220} />
+            </div>
+            {/* Graph 4.2: BU grouped */}
+            <BulletBarChart
+              metrics={partnerQuotaBullets}
+              title="Did partners deliver what they promised?"
+              subtitle="Committed joint APD quota tick vs actual delivered approvals per partner LC"
+            />
+          </div>
+          {/* Graph 4.3: QD */}
           <QuadrantScatterPlot
             points={partnerPoints}
             xAxisLabel="Applications Sent (APP Volume)"
@@ -669,12 +785,6 @@ function renderDomainGraphs(
               bottomRight: '🔵 Tighten Screening (Low Conversion)',
               bottomLeft: '🔴 Review Partnership MOU',
             }}
-          />
-          {/* Graph 4.2: BU grouped */}
-          <BulletBarChart
-            metrics={partnerQuotaBullets}
-            title="Did partners deliver what they promised?"
-            subtitle="Committed joint APD quota tick vs actual delivered approvals per partner LC"
           />
         </div>
       );
@@ -750,7 +860,7 @@ function renderDomainGraphs(
         },
         {
           id: 'v_evisa',
-          title: 'Regime 2: AEVM 24–72h e-Visa (Egypt, India, Jordan)',
+          title: 'Regime 2: AEVM 24â€“72h e-Visa (Egypt, India, Jordan)',
           subtitle: 'Online portal application; 14-day host invitation SLA',
           segments: [
             { id: 'appr', label: 'Issued / Approved', value: 9, color: 'bg-emerald-600' },
@@ -776,7 +886,7 @@ function renderDomainGraphs(
           <PreArrivalCountdownTimeline
             rows={countdownRows}
             title="Who is at risk before arrival?"
-            subtitle="Rows sorted by arrival date; red alert triggered if arrival ≤14d and any lock item missing"
+            subtitle="Rows sorted by arrival date; red alert triggered if arrival â‰¤14d and any lock item missing"
             onSelectEp={(id) =>
               onOpenDrawer({
                 title: `EP Arrival Readiness Dossier: ${id}`,
@@ -833,28 +943,33 @@ function renderDomainGraphs(
 
       const surveyFunnel = [
         { id: 're', label: 'Realized EPs', count: 24, target: 24, color: 'bg-blue-600' },
-        { id: 'mid', label: 'Middle Survey Completed (#1–#10a)', count: 23, target: 24, color: 'bg-blue-600' },
+        { id: 'mid', label: 'Middle Survey Completed (#1â€“#10a)', count: 23, target: 24, color: 'bg-blue-600' },
         { id: 'res', label: 'Middle Issues Resolved', count: 23, target: 23, color: 'bg-blue-600' },
         { id: 'fin', label: 'Finished EPs (FIN)', count: 22, target: 24, color: 'bg-emerald-600' },
-        { id: 'fsurv', label: 'Final Survey Completed (#10b–#18)', count: 22, target: 22, color: 'bg-emerald-600' },
+        { id: 'fsurv', label: 'Final Survey Completed (#10bâ€“#18)', count: 22, target: 22, color: 'bg-emerald-600' },
         { id: 'co', label: 'Qualified Complete (CO)', count: 21, target: 22, color: 'bg-emerald-600' },
       ];
 
       return (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Graph 6.1: HM */}
+            {/* Graph 6.1: Nivo Standards Matrix */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">18 Exchange Standards Fulfillment (Nivo Matrix)</h3>
+                  <p className="text-[11px] text-slate-500">Mandatory vs Elective compliance across Preparation, Experience, and Debrief</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">Nivo Bar</span>
+              </div>
+              <NivoStandardsBar height={210} />
+            </div>
+            {/* Graph 6.2: HM */}
             <HeatmapMatrix
               columns={standardsCols}
               rows={standardsRows}
               title="Which standard is failing?"
               subtitle="18 Exchange Standards (* indicates 13 Mandatory); single failing cell shows exact bottleneck"
-            />
-            {/* Graph 6.2: FU */}
-            <SteppedFunnelChart
-              stages={surveyFunnel}
-              title="Where do EPs fall out of the survey chain?"
-              subtitle="Progression from Realization to Middle Survey, Final Survey, and Qualified Completion"
             />
           </div>
           {/* Graph 6.3: Diverging Bar */}
@@ -877,7 +992,7 @@ function renderDomainGraphs(
       const bedRows = [
         {
           bedId: 'b_1',
-          flat: 'Villa Agdal — Flat A',
+          flat: 'Villa Agdal â€” Flat A',
           room: 'Master Bedroom (Bed 1)',
           neighborhood: 'Agdal',
           weeks: [
@@ -893,7 +1008,7 @@ function renderDomainGraphs(
         },
         {
           bedId: 'b_2',
-          flat: 'Villa Agdal — Flat A',
+          flat: 'Villa Agdal â€” Flat A',
           room: 'Twin Room (Bed 2)',
           neighborhood: 'Agdal',
           weeks: [
@@ -909,7 +1024,7 @@ function renderDomainGraphs(
         },
         {
           bedId: 'b_3',
-          flat: 'Apartment Hassan — Flat B',
+          flat: 'Apartment Hassan â€” Flat B',
           room: 'Room 1 (Bed 1)',
           neighborhood: 'Hassan',
           weeks: [
@@ -928,26 +1043,39 @@ function renderDomainGraphs(
       const propertyScatter = [
         { id: '1', name: 'Villa Agdal Flat A', x: 1150, y: 92, tooltipText: 'Great Value: 1,150 MAD / Bed, 92% EP Satisfaction' },
         { id: '2', name: 'Apartment Hassan B', x: 1050, y: 88, tooltipText: 'Good Value: 1,050 MAD / Bed, 88% EP Satisfaction' },
-        { id: '3', name: 'Residence Salé Marina', x: 1450, y: 64, tooltipText: 'Drop Next Peak: Expensive (1,450 MAD) & Low Rating (64%)' },
+        { id: '3', name: 'Residence SalÃ© Marina', x: 1450, y: 64, tooltipText: 'Drop Next Peak: Expensive (1,450 MAD) & Low Rating (64%)' },
         { id: '4', name: 'Hay Riad Villa C', x: 1200, y: 96, tooltipText: 'Top Performer: 1,200 MAD / Bed, 96% EP Satisfaction' },
       ];
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 7.1: GT */}
-          <BedOccupancyGantt
-            beds={bedRows}
-            title="Where are beds empty or overlapping?"
-            subtitle="Bed occupancy timeline across semester weeks; hatched gaps show unutilized lease cost"
-            onSelectBed={(id) =>
-              onOpenDrawer({
-                title: `Accommodation Flat Lease: ${id}`,
-                subtitle: 'Vetted readiness & lease inventory inspection',
-                action: 'Audit Standard #7 physical 4-point verification before check-in.',
-              })
-            }
-          />
-          {/* Graph 7.2: QD / Scatter */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 7.1: Nivo Housing Bar */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Accommodation Bed Occupancy (Nivo Bar)</h3>
+                  <p className="text-[11px] text-slate-500">Occupied vs Vacant bed allocation &amp; cost-per-bed across flats</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">Nivo Bar</span>
+              </div>
+              <NivoHousingBar height={200} />
+            </div>
+            {/* Graph 7.2: GT */}
+            <BedOccupancyGantt
+              beds={bedRows}
+              title="Where are beds empty or overlapping?"
+              subtitle="Bed occupancy timeline across semester weeks; hatched gaps show unutilized lease cost"
+              onSelectBed={(id) =>
+                onOpenDrawer({
+                  title: `Accommodation Flat Lease: ${id}`,
+                  subtitle: 'Vetted readiness & lease inventory inspection',
+                  action: 'Audit Standard #7 physical 4-point verification before check-in.',
+                })
+              }
+            />
+          </div>
+          {/* Graph 7.3: QD / Scatter */}
           <QuadrantScatterPlot
             points={propertyScatter}
             xAxisLabel="Cost per Bed / Month (MAD)"
@@ -984,24 +1112,37 @@ function renderDomainGraphs(
           title: 'Accounts Receivable Aging Distribution',
           subtitle: 'Collection status across active partner invoices',
           segments: [
-            { id: 'current', label: 'Current (≤ Due Date)', value: 48000, color: 'bg-emerald-600' },
-            { id: 'w1', label: '1–7 Days Overdue', value: 12000, color: 'bg-blue-500' },
-            { id: 'w2', label: '8–14 Days Overdue', value: 6500, color: 'bg-amber-400' },
+            { id: 'current', label: 'Current (â‰¤ Due Date)', value: 48000, color: 'bg-emerald-600' },
+            { id: 'w1', label: '1â€“7 Days Overdue', value: 12000, color: 'bg-blue-500' },
+            { id: 'w2', label: '8â€“14 Days Overdue', value: 6500, color: 'bg-amber-400' },
             { id: 'w3', label: '>14 Days (Penalty & Freeze)', value: 4500, color: 'bg-rose-500' },
           ],
         },
       ];
 
       return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Graph 8.1: WF */}
-          <FinancialWaterfallChart
-            steps={waterfallSteps}
-            sustainabilityRatio={1.32}
-            title="Where does money come in and go out?"
-            subtitle="Direct exchange inflows down through operational costs to net operating surplus (MAD)"
-          />
-          {/* Graph 8.2: SB */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Graph 8.1: Nivo Finance Bar */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Exchange Cashflow &amp; Surplus Breakdown (Nivo Bar)</h3>
+                  <p className="text-[11px] text-slate-500">Inflows vs Operational Outflows in k MAD with AFPM Sustainability margin</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Nivo Bar</span>
+              </div>
+              <NivoFinanceBar height={210} />
+            </div>
+            {/* Graph 8.2: WF */}
+            <FinancialWaterfallChart
+              steps={waterfallSteps}
+              sustainabilityRatio={1.32}
+              title="Where does money come in and go out?"
+              subtitle="Direct exchange inflows down through operational costs to net operating surplus (MAD)"
+            />
+          </div>
+          {/* Graph 8.3: SB */}
           <StackedHorizontalBar
             rows={arAgingRows}
             title="Who owes us money and for how long?"
@@ -1019,9 +1160,9 @@ function renderDomainGraphs(
           title: 'External Rabat Engine (BD, Sales & Partner PRM)',
           subtitle: '9 active team members',
           segments: [
-            { id: 't1', label: 'Tier 1 Core (90–100%)', value: 5, color: 'bg-emerald-600' },
-            { id: 't2', label: 'Tier 2 Strong (70–89%)', value: 2, color: 'bg-blue-600' },
-            { id: 't3', label: 'Tier 3 Moderate (20–69%)', value: 1, color: 'bg-amber-400' },
+            { id: 't1', label: 'Tier 1 Core (90â€“100%)', value: 5, color: 'bg-emerald-600' },
+            { id: 't2', label: 'Tier 2 Strong (70â€“89%)', value: 2, color: 'bg-blue-600' },
+            { id: 't3', label: 'Tier 3 Moderate (20â€“69%)', value: 1, color: 'bg-amber-400' },
             { id: 't4', label: 'Tier 4 Drop-Off (<20%)', value: 1, color: 'bg-rose-500' },
           ],
         },
@@ -1030,9 +1171,9 @@ function renderDomainGraphs(
           title: 'Internal Rabat Engine (Ops, IR, Quality, Visa/Logistics)',
           subtitle: '13 active team members',
           segments: [
-            { id: 't1', label: 'Tier 1 Core (90–100%)', value: 8, color: 'bg-emerald-600' },
-            { id: 't2', label: 'Tier 2 Strong (70–89%)', value: 3, color: 'bg-blue-600' },
-            { id: 't3', label: 'Tier 3 Moderate (20–69%)', value: 2, color: 'bg-amber-400' },
+            { id: 't1', label: 'Tier 1 Core (90â€“100%)', value: 8, color: 'bg-emerald-600' },
+            { id: 't2', label: 'Tier 2 Strong (70â€“89%)', value: 3, color: 'bg-blue-600' },
+            { id: 't3', label: 'Tier 3 Moderate (20â€“69%)', value: 2, color: 'bg-amber-400' },
             { id: 't4', label: 'Tier 4 Drop-Off (<20%)', value: 0, color: 'bg-rose-500' },
           ],
         },
@@ -1073,7 +1214,7 @@ function renderDomainGraphs(
         {
           id: 'kenza',
           label: 'K.A. (At-Risk Drop-off)',
-          sublabel: 'TM Logistics — Tier 4',
+          sublabel: 'TM Logistics â€” Tier 4',
           summaryValue: '18%',
           summaryLabel: 'Critical',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1085,7 +1226,7 @@ function renderDomainGraphs(
         {
           id: 'salma',
           label: 'S.S. (Partial Engagement)',
-          sublabel: 'TM Sales — Tier 3',
+          sublabel: 'TM Sales â€” Tier 3',
           summaryValue: '58%',
           summaryLabel: 'Moderate',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1097,7 +1238,7 @@ function renderDomainGraphs(
         {
           id: 'abdenasser',
           label: 'A.M. (Consistent Contributor)',
-          sublabel: 'TL IR — Tier 2 Strong',
+          sublabel: 'TL IR â€” Tier 2 Strong',
           summaryValue: '88%',
           summaryLabel: 'Strong',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1135,12 +1276,17 @@ function renderDomainGraphs(
       return (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Graph 9.1: SB */}
-            <StackedHorizontalBar
-              rows={tierRows}
-              title="How engaged is each team and why do people drop?"
-              subtitle="4 Engagement Tiers; late joiners (>15m) account for 82% of Tier 4 drop-offs"
-            />
+            {/* Graph 9.1: Nivo Member Tier */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Member Engagement Tier Distribution (Nivo Bar)</h3>
+                  <p className="text-[11px] text-slate-500">4-Tier Engagement breakdown across External and Internal departments</p>
+                </div>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Bar</span>
+              </div>
+              <NivoMemberTierBar height={190} />
+            </div>
             {/* Graph 9.2: QD */}
             <QuadrantScatterPlot
               points={memberPoints}
