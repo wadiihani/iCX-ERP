@@ -4,10 +4,10 @@ status: in_progress
 milestone: 'v3.0'
 progress:
   total_phases: 18
-  completed_phases: 15
+  completed_phases: 16
   total_plans: 48
-  completed_plans: 39
-  percent: 81
+  completed_plans: 42
+  percent: 88
 ---
 
 # Project State: AIESEC iCX ERP
@@ -17,16 +17,16 @@ progress:
 See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (Hub-Based Operating Model aligned 2026-10-29)
 
 **Core value:** One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.  
-**Current focus:** Milestone 3 (v3.0) — Phase 14 Completed, Ready for Phase 15 (IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle)
+**Current focus:** Milestone 3 (v3.0) — Phase 15 Completed, Ready for Phase 16 (Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault)
 
 ## Current Position
 
-Phase: 15 of 18 (Phase 15: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle)  
-Plan: 0 of 3 in Phase 15 (Total: 39/48 Complete)  
+Phase: 16 of 18 (Phase 16: Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault)  
+Plan: 0 of 3 in Phase 16 (Total: 42/48 Complete)  
 Status: In progress  
-Last activity: 2026-10-29 — Executed and verified Phase 14 (Plans 14-01 & 14-02): normalized Contract → Opportunity → Multi-Slot Waves, 16 Official GV projects mapped to UN SDGs with activity & output indicators, iGTa 6 functional fields & Moroccan statutory salary floor (3,500 MAD) with zero EP fee, iGTe curriculum outline & teacher levels, partly-remote ICB audit gate, AEPP 4.2.1.4 benefit lock, and slot wave manager on /opportunities. All 47 Vitest suites (375 tests) and Next.js build (21 routes) passed.  
+Last activity: 2026-10-29 — Executed and verified Phase 15 (Plans 15-01, 15-02, 15-03): atomic typed EP schema with foreign keys, searchable Moroccan visa regime resolver (14d Visa-Free / 21d AEVM / 45d Consular), live date-math SLA countdowns (14d Visa Pack, 3d Pickup Guide, 48h safety heartbeat), AEPP exception & break modal (with OP rejection audit and Annex 2 replacement timers), realization validation gates (APIP 5.3.5.1 ±20d rule and Standards #4–#9 delivery), 18 standards modal with #10a/#10b split and EXPA survey discrepancy flags, Standard #17 touchpoints log, and algorithmic matchmaker score badge. All 48 Vitest suites (386 tests) and Next.js build (21 routes) passed.  
 
-Progress: [████████░░] 81%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 

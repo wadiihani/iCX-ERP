@@ -1,9 +1,11 @@
 /**
  * Deterministic SLA Automations Engine (AUTO-001..035)
  * Baseline: REQ-049, REQ-050, REQ-051, THR-002, THR-010, THR-021, and TEST-044, TEST-046, TEST-047
+ * Extended with AEPP 4.4.3.1, AEPP 4.4.2.1, Standard #6 Pickup Guide, and 14d OP/Bed Lock.
  */
 
 import { addMoroccoBusinessHours, calculateBusinessHoursBetween } from './morocco-calendar';
+import type { EPRecord } from '../ep/ep-data';
 
 export interface SlaTimerResult {
   isBreached: boolean;
@@ -124,5 +126,130 @@ export function evaluateUnreachableEpSafetyProtocol(params: {
     escalationNotice: isCrisisEscalated
       ? `CRITICAL SAFETY ALERT AUTO-022 (TEST-047): EP has been uncontactable for ${hoursUnreachable} hours (>48h statutory threshold). Crisis protocol engaged: LCP, MC VP, and Sending LC alerted immediately.`
       : undefined,
+  };
+}
+
+/**
+ * 14-Day Post-APD Visa & Expectation Pack SLA (AEPP 4.4.3.1)
+ * Host LC must send the official stamped Visa Invitation Letter & Expectation Pack
+ * within 14 calendar days of approval (APD).
+ */
+export function evaluatePostApdVisaPackSla(
+  approvedAt?: string | null,
+  heVisaPackSentAt?: string | null,
+  nowMs: number = Date.now()
+): {
+  isBreached: boolean;
+  daysRemaining: number;
+  status: 'NOT_APPLICABLE' | 'COMPLETED' | 'IN_COUNTDOWN' | 'BREACHED';
+  badgeLabel: string;
+} {
+  if (!approvedAt) {
+    return {
+      isBreached: false,
+      daysRemaining: 14,
+      status: 'NOT_APPLICABLE',
+      badgeLabel: 'Pending Approval',
+    };
+  }
+
+  if (heVisaPackSentAt) {
+    return {
+      isBreached: false,
+      daysRemaining: 0,
+      status: 'COMPLETED',
+      badgeLabel: 'Visa Pack Delivered',
+    };
+  }
+
+  const approvedMs = new Date(approvedAt).getTime();
+  const deadlineMs = approvedMs + 14 * 24 * 60 * 60 * 1000;
+  const diffDays = Math.ceil((deadlineMs - nowMs) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return {
+      isBreached: true,
+      daysRemaining: diffDays,
+      status: 'BREACHED',
+      badgeLabel: `AEPP 4.4.3.1 Overdue (${Math.abs(diffDays)}d)`,
+    };
+  }
+
+  return {
+    isBreached: false,
+    daysRemaining: diffDays,
+    status: 'IN_COUNTDOWN',
+    badgeLabel: `${diffDays}d Visa Pack Due`,
+  };
+}
+
+/**
+ * 3-Day Pre-Arrival Written Pickup Guide SLA (Exchange Standard #6)
+ * Written directions, meeting point, and pickup buddy contact must be transmitted
+ * at least 3 days before scheduled arrivalDate.
+ */
+export function evaluatePickupGuideSla(
+  arrivalDate?: string | null,
+  pickup3dGuideSentAt?: string | null,
+  nowMs: number = Date.now()
+): {
+  isBreached: boolean;
+  daysRemaining: number;
+  status: 'PENDING_ARRIVAL_DATE' | 'COMPLETED' | 'IN_COUNTDOWN' | 'BREACHED';
+  badgeLabel: string;
+} {
+  if (!arrivalDate) {
+    return {
+      isBreached: false,
+      daysRemaining: 99,
+      status: 'PENDING_ARRIVAL_DATE',
+      badgeLabel: 'No Flight Date',
+    };
+  }
+
+  if (pickup3dGuideSentAt) {
+    return {
+      isBreached: false,
+      daysRemaining: 0,
+      status: 'COMPLETED',
+      badgeLabel: 'Standard #6 Cleared',
+    };
+  }
+
+  const arrivalMs = new Date(arrivalDate).getTime();
+  const deadlineMs = arrivalMs - 3 * 24 * 60 * 60 * 1000;
+  const diffDays = Math.ceil((deadlineMs - nowMs) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return {
+      isBreached: true,
+      daysRemaining: diffDays,
+      status: 'BREACHED',
+      badgeLabel: `Standard #6 Overdue (${Math.abs(diffDays)}d)`,
+    };
+  }
+
+  return {
+    isBreached: false,
+    daysRemaining: diffDays,
+    status: 'IN_COUNTDOWN',
+    badgeLabel: `T-${diffDays}d Pickup Guide Due`,
+  };
+}
+
+/**
+ * Full EP SLA Rollup
+ */
+export function evaluateEpAllSla(ep: EPRecord, nowMs: number = Date.now()) {
+  const visaPackSla = evaluatePostApdVisaPackSla(ep.approvedAt, ep.heVisaPackSentAt, nowMs);
+  const pickupSla = evaluatePickupGuideSla(ep.arrivalDate || ep.start_date, ep.pickup3dGuideSentAt, nowMs);
+  const safetySla = ep.lastContactAt
+    ? evaluateUnreachableEpSafetyProtocol({ lastContactTimestamp: ep.lastContactAt, currentTimestampMs: nowMs })
+    : { isCrisisEscalated: false, hoursUnreachable: 0 };
+
+  return {
+    visaPackSla,
+    pickupSla,
+    safetySla,
   };
 }

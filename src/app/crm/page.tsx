@@ -11,13 +11,27 @@ import {
   AlertTriangle,
   Download,
   Filter,
+  Sparkles,
+  HeartHandshake,
+  FileCheck,
+  AlertCircle,
+  CheckCircle2,
 } from 'lucide-react';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
-import { INITIAL_EPS, type EPRecord } from '@/lib/ep/ep-data';
+import { INITIAL_EPS, type EPRecord, type EpStandardDeliveryState, type EpTouchpointEntry } from '@/lib/ep/ep-data';
+import { EpEditDrawer } from '@/components/funnel/ep-edit-drawer';
+import { StandardsModal } from '@/components/delivery/standards-modal';
+import { EpExceptionModal, type ExceptionSubmissionPayload } from '@/components/ep/ep-exception-modal';
+import { calculateMatchmakerScore } from '@/lib/funnel/ep-funnel-machine';
+import { evaluateEpAllSla } from '@/lib/sla/sla-engine';
 
 export default function EPMasterTrackerPage() {
   const router = useRouter();
   const [eps, setEps] = useState<EPRecord[]>(INITIAL_EPS);
+  const [selectedEpForEdit, setSelectedEpForEdit] = useState<EPRecord | null>(null);
+  const [selectedEpForStandards, setSelectedEpForStandards] = useState<EPRecord | null>(null);
+  const [selectedEpForException, setSelectedEpForException] = useState<EPRecord | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
 
   // Computed KPIs
   const totalApproved = eps.filter((e) => e.status === 'APPROVED').length;
@@ -25,22 +39,96 @@ export default function EPMasterTrackerPage() {
   const totalFinished = eps.filter((e) => e.status === 'FINISHED' || e.status === 'COMPLETED').length;
   const pendingVisas = eps.filter((e) => e.visa_status === 'SUBMITTED').length;
 
+  const handleSaveEp = (updatedEp: EPRecord) => {
+    setEps((prev) => prev.map((e) => (e.id === updatedEp.id ? updatedEp : e)));
+    setNotification(`EP Dossier for "${updatedEp.full_name}" updated successfully.`);
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleSaveStandards = (
+    epId: string,
+    standards: Record<string, EpStandardDeliveryState>,
+    touchpoints: EpTouchpointEntry[]
+  ) => {
+    setEps((prev) =>
+      prev.map((e) =>
+        e.id === epId
+          ? {
+              ...e,
+              standardsDelivery: standards,
+              touchpoints,
+              updated_at: new Date().toISOString(),
+            }
+          : e
+      )
+    );
+    setNotification(`Exchange Standards and Checkpoints updated for EP.`);
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleSubmitException = (payload: ExceptionSubmissionPayload) => {
+    setEps((prev) =>
+      prev.map((e) => {
+        if (e.id === payload.epId) {
+          return {
+            ...e,
+            status: payload.exceptionType as any,
+            unjustifiedRejection: payload.unjustifiedOpRejection,
+            rejectionReason: payload.detailedReason,
+            breakReason: payload.exceptionType.includes('BROKEN') ? payload.detailedReason : undefined,
+            withdrawalReason: payload.exceptionType === 'WITHDRAWN' ? payload.detailedReason : undefined,
+            updated_at: new Date().toISOString(),
+          };
+        }
+        return e;
+      })
+    );
+    setNotification(`AEPP Exception logged: Stage changed to ${payload.exceptionType}.`);
+    setTimeout(() => setNotification(null), 5000);
+  };
+
   const tableColumns: ColumnDef<EPRecord>[] = [
     {
       id: 'full_name',
       header: 'Exchange Participant',
       accessorKey: 'full_name',
       sortable: true,
-      cell: (ep) => (
-        <div>
-          <span className="font-semibold text-slate-900 dark:text-white block hover:text-aiesec-blue">
-            {ep.full_name}
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono">
-            {ep.expa_ep_id} • {ep.nationality}
-          </span>
-        </div>
-      ),
+      cell: (ep) => {
+        const match = calculateMatchmakerScore({
+          nationalityCountry: ep.nationality,
+          residenceCountry: ep.residenceCountry,
+          hasSchengenPermit: ep.hasSchengenOrUkOrUsPermit,
+          slotStartDate: ep.start_date,
+        });
+
+        return (
+          <div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSelectedEpForEdit(ep)}
+                className="font-bold text-slate-900 dark:text-white block hover:text-aiesec-blue text-left"
+              >
+                {ep.full_name}
+              </button>
+              <span
+                className={`rounded px-1.5 py-0.2 text-[9px] font-bold border ${
+                  match.tier === 'HIGH'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300'
+                    : match.tier === 'MEDIUM'
+                    ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300'
+                    : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
+                }`}
+                title={`Matchmaker Score: ${match.matchScore}%`}
+              >
+                Match: {match.matchScore}%
+              </span>
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono">
+              {ep.expa_ep_id} • {ep.nationality} {ep.passportNumber ? `(${ep.passportNumber})` : ''}
+            </span>
+          </div>
+        );
+      },
     },
     {
       id: 'product',
@@ -115,11 +203,57 @@ export default function EPMasterTrackerPage() {
           FINISHED: 'bg-purple-50 text-purple-800 border-purple-300 dark:bg-purple-950/40 dark:text-purple-300',
           COMPLETED: 'bg-teal-50 text-teal-800 border-teal-300 dark:bg-teal-950/40 dark:text-teal-300',
           APPLIED: 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-300',
+          REJECTED: 'bg-rose-50 text-rose-800 border-rose-300 dark:bg-rose-950/40 dark:text-rose-300',
+          WITHDRAWN: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400',
+          APPROVAL_BROKEN: 'bg-rose-100 text-rose-900 border-rose-400 dark:bg-rose-950 dark:text-rose-200',
+          REALIZATION_BROKEN: 'bg-rose-100 text-rose-900 border-rose-400 dark:bg-rose-950 dark:text-rose-200',
         };
         return (
-          <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold border ${styles[ep.status]}`}>
-            {ep.status}
+          <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold border ${styles[ep.status] || 'bg-slate-100'}`}>
+            {ep.status.replace(/_/g, ' ')}
           </span>
+        );
+      },
+    },
+    {
+      id: 'sla_timers',
+      header: 'Statutory SLA Timers',
+      cell: (ep) => {
+        const sla = evaluateEpAllSla(ep);
+        return (
+          <div className="space-y-1 text-[10px] font-mono">
+            {ep.status === 'APPROVED' && (
+              <span
+                className={`inline-block px-1.5 py-0.5 rounded font-bold border ${
+                  sla.visaPackSla.isBreached
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : sla.visaPackSla.status === 'COMPLETED'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                }`}
+              >
+                {sla.visaPackSla.badgeLabel}
+              </span>
+            )}
+            {ep.arrivalDate && ep.status !== 'REALIZED' && (
+              <span
+                className={`inline-block ml-1 px-1.5 py-0.5 rounded font-bold border ${
+                  sla.pickupSla.isBreached
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : sla.pickupSla.status === 'COMPLETED'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}
+              >
+                {sla.pickupSla.badgeLabel}
+              </span>
+            )}
+            {sla.safetySla.isCrisisEscalated && (
+              <span className="block px-1.5 py-0.5 rounded font-bold bg-rose-600 text-white animate-pulse">
+                48h Safety Alert!
+              </span>
+            )}
+          </div>
         );
       },
     },
@@ -162,25 +296,29 @@ export default function EPMasterTrackerPage() {
       ),
     },
     {
-      id: 'dates',
-      header: 'Realization Window',
-      sortable: true,
+      id: 'actions',
+      header: 'Actions',
       cell: (ep) => (
-        <div className="text-xs font-mono text-slate-600 dark:text-slate-400">
-          <div>{ep.start_date}</div>
-          <div className="text-[10px] text-slate-400">to {ep.end_date}</div>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setSelectedEpForEdit(ep)}
+            className="rounded border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+          >
+            Dossier & Visas
+          </button>
+          <button
+            onClick={() => setSelectedEpForStandards(ep)}
+            className="rounded bg-aiesec-blue px-2 py-1 text-[10px] font-semibold text-white hover:bg-blue-600"
+          >
+            18 Standards
+          </button>
+          <button
+            onClick={() => setSelectedEpForException(ep)}
+            className="rounded border border-rose-200 bg-rose-50 px-2 py-1 text-[10px] font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300"
+          >
+            Exception
+          </button>
         </div>
-      ),
-    },
-    {
-      id: 'host_manager_name',
-      header: 'Host Manager',
-      accessorKey: 'host_manager_name',
-      sortable: true,
-      cell: (ep) => (
-        <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-          {ep.host_manager_name}
-        </span>
       ),
     },
   ];
@@ -190,11 +328,14 @@ export default function EPMasterTrackerPage() {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Exchange Participant (EP) Master Tracker
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <span>Exchange Participant (EP) Master Tracker</span>
+            <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-aiesec-blue border border-blue-200 dark:bg-blue-950/40 dark:text-blue-300">
+              AEPP & EXPA Aligned
+            </span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Real-time operational dossier tracking from application approval to in-country realization and standard fulfillment.
+            Real-time operational dossier tracking from application approval to in-country realization, 18 standards, and SLA countdowns.
           </p>
         </div>
       </div>
@@ -254,6 +395,14 @@ export default function EPMasterTrackerPage() {
         </div>
       </div>
 
+      {/* Notification Banner */}
+      {notification && (
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900 flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          <span>{notification}</span>
+        </div>
+      )}
+
       {/* Main EP DataTable */}
       <DataTable
         data={eps}
@@ -262,7 +411,30 @@ export default function EPMasterTrackerPage() {
         entityType="EP"
         searchPlaceholder="Search EPs by name, EXPA ID, home LC, opportunity, host manager..."
         exportFileName="aiesec-rabat-ep-master-tracker.csv"
-        onRowClick={(ep) => router.push(`/crm/${ep.id}`)}
+      />
+
+      {/* EP EDIT DRAWER */}
+      <EpEditDrawer
+        isOpen={Boolean(selectedEpForEdit)}
+        onClose={() => setSelectedEpForEdit(null)}
+        ep={selectedEpForEdit}
+        onSaveEp={handleSaveEp}
+      />
+
+      {/* 18 STANDARDS MODAL */}
+      <StandardsModal
+        isOpen={Boolean(selectedEpForStandards)}
+        onClose={() => setSelectedEpForStandards(null)}
+        ep={selectedEpForStandards}
+        onSaveStandards={handleSaveStandards}
+      />
+
+      {/* AEPP EXCEPTION MODAL */}
+      <EpExceptionModal
+        isOpen={Boolean(selectedEpForException)}
+        onClose={() => setSelectedEpForException(null)}
+        ep={selectedEpForException}
+        onSubmitException={handleSubmitException}
       />
     </div>
   );

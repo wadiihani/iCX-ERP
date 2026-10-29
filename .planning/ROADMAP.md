@@ -137,9 +137,9 @@ Governed by:
   6. Transition to `REALIZED` validates ±20d slot start rule for iGV and Standards #4–#9 delivery.
 **Exit Gate**: An EP can be traced from application through matching and exception/completion states with external and local statuses fully reconcilable.
 **Plans**: 3 plans
-- [ ] 15-01: IR Partner numeric supply quotas, live performance rollups, and EXPA status mapping with discrepancy reporting.
-- [ ] 15-02: Atomic typed EP fields, relational foreign keys, and live date-math SLA countdowns.
-- [ ] 15-03: AEPP exception/break/rejection modal, realization validation gates (±20d rule), and touchpoint log.
+- [x] 15-01: IR Partner numeric supply quotas, live performance rollups, and EXPA status mapping with discrepancy reporting. (Completed 2026-10-29)
+- [x] 15-02: Atomic typed EP fields, relational foreign keys, and live date-math SLA countdowns. (Completed 2026-10-29)
+- [x] 15-03: AEPP exception/break/rejection modal, realization validation gates (±20d rule), and touchpoint log. (Completed 2026-10-29)
 
 ---
 
