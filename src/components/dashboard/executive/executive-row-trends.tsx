@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import clsx from 'clsx';
 import {
   SteppedFunnelStage,
@@ -10,11 +11,46 @@ import {
   Filter,
   ArrowRight,
   Clock,
-  AlertCircle,
   Briefcase,
   Layers,
-  CheckCircle2,
 } from 'lucide-react';
+
+// Dynamic client-side Nivo imports for SSR safety and instant compilation
+const NivoCohortFunnel = dynamic(
+  () => import('../graphs/nivo/nivo-cohort-funnel').then((m) => m.NivoCohortFunnel),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-64 bg-slate-50 rounded-xl flex items-center justify-center animate-pulse">
+        <span className="text-xs text-slate-400 font-medium">Loading Nivo Cohort Funnel...</span>
+      </div>
+    ),
+  }
+);
+
+const NivoProjectCapacityBar = dynamic(
+  () => import('../graphs/nivo/nivo-project-capacity-bar').then((m) => m.NivoProjectCapacityBar),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-40 bg-slate-50 rounded-xl flex items-center justify-center animate-pulse">
+        <span className="text-xs text-slate-400 font-medium">Loading Nivo Capacity Chart...</span>
+      </div>
+    ),
+  }
+);
+
+const NivoSalesVelocityLine = dynamic(
+  () => import('../graphs/nivo/nivo-sales-velocity-line').then((m) => m.NivoSalesVelocityLine),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-36 bg-slate-50 rounded-xl flex items-center justify-center animate-pulse">
+        <span className="text-xs text-slate-400 font-medium">Loading Nivo Sales Curve...</span>
+      </div>
+    ),
+  }
+);
 
 interface ExecutiveRowTrendsProps {
   funnelStages: SteppedFunnelStage[];
@@ -27,13 +63,15 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
   projectCapacities,
   onInspectKpi,
 }) => {
+  const [funnelViewMode, setFunnelViewMode] = useState<'NIVO' | 'TABLE'>('NIVO');
+
   return (
     <section className="space-y-2.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
           <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Row 3 — Conversion Trends &amp; Project Capacity
+            Row 3 — Conversion Trends &amp; Project Capacity (Nivo Powered)
           </h2>
         </div>
         <span className="text-[11px] text-slate-500 font-medium">
@@ -42,7 +80,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left Column (7 cols): Stepped Cohort Funnel */}
+        {/* Left Column (7 cols): Nivo Stepped Cohort Funnel */}
         <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -52,77 +90,106 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
                   Cohort Conversion Funnel (APD &rarr; REA &rarr; COM)
                 </h3>
               </div>
-              <span className="text-[11px] font-mono text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-                Application Cohort 2026-Q2
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md hidden sm:inline">
+                  Cohort 2026-Q2
+                </span>
+                {/* View Switcher Toggle */}
+                <div className="flex items-center bg-slate-100 p-0.5 rounded-lg text-[10px] font-bold">
+                  <button
+                    onClick={() => setFunnelViewMode('NIVO')}
+                    className={clsx(
+                      'px-2 py-0.5 rounded-md transition-colors cursor-pointer',
+                      funnelViewMode === 'NIVO'
+                        ? 'bg-white text-blue-700 shadow-2xs'
+                        : 'text-slate-500 hover:text-slate-800'
+                    )}
+                  >
+                    Nivo Visual
+                  </button>
+                  <button
+                    onClick={() => setFunnelViewMode('TABLE')}
+                    className={clsx(
+                      'px-2 py-0.5 rounded-md transition-colors cursor-pointer',
+                      funnelViewMode === 'TABLE'
+                        ? 'bg-white text-blue-700 shadow-2xs'
+                        : 'text-slate-500 hover:text-slate-800'
+                    )}
+                  >
+                    Stage Rows
+                  </button>
+                </div>
+              </div>
             </div>
+
             <p className="text-xs text-slate-500 mt-2">
-              Tracks sequential progression through canonical EXPA stages with stage drop-off and median duration.
+              Sequential EXPA cohort progression with animated D3 geometry, drop-off curves, and duration metrics.
             </p>
 
-            {/* Stepped Funnel Horizontal Bars */}
-            <div className="space-y-3 mt-4">
-              {funnelStages.map((stage, idx) => {
-                const maxCount = funnelStages[0].cohortCount || 1;
-                const widthPct = Math.max(12, Math.round((stage.cohortCount / maxCount) * 100));
+            {/* NIVO FUNNEL VISUAL */}
+            {funnelViewMode === 'NIVO' && (
+              <div className="mt-3">
+                <NivoCohortFunnel
+                  stages={funnelStages}
+                  height={260}
+                  onStageClick={() => onInspectKpi('KPI-FUNNEL-02')}
+                />
+              </div>
+            )}
 
-                return (
-                  <div key={stage.stageId} className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-md bg-blue-50 text-blue-700 font-bold text-[11px] flex items-center justify-center">
-                          {idx + 1}
-                        </span>
-                        <span className="font-semibold text-slate-800">{stage.stageName}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold text-slate-900 text-sm">
-                          {stage.cohortCount} EPs
-                        </span>
-                        {idx > 0 && (
-                          <span className="text-[11px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-sm">
-                            {stage.conversionFromPriorPct}% ({stage.conversionFraction})
+            {/* STAGE ROWS TABLE VIEW */}
+            {funnelViewMode === 'TABLE' && (
+              <div className="space-y-3 mt-4">
+                {funnelStages.map((stage, idx) => {
+                  const maxCount = funnelStages[0].cohortCount || 1;
+                  const widthPct = Math.max(12, Math.round((stage.cohortCount / maxCount) * 100));
+
+                  return (
+                    <div key={stage.stageId} className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-md bg-blue-50 text-blue-700 font-bold text-[11px] flex items-center justify-center">
+                            {idx + 1}
                           </span>
-                        )}
-                        <span className="text-[11px] text-slate-600 flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-400" />
-                          {stage.medianDaysInStage}d
-                        </span>
+                          <span className="font-semibold text-slate-800">{stage.stageName}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono font-bold text-slate-900 text-sm">
+                            {stage.cohortCount} EPs
+                          </span>
+                          {idx > 0 && (
+                            <span className="text-[11px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-sm">
+                              {stage.conversionFromPriorPct}% ({stage.conversionFraction})
+                            </span>
+                          )}
+                          <span className="text-[11px] text-slate-600 flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-slate-400" />
+                            {stage.medianDaysInStage}d
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Progress Fill Bar */}
-                    <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden flex">
-                      <div
-                        className={clsx(
-                          'h-full transition-all duration-500 rounded-full',
-                          idx === 0
-                            ? 'bg-blue-600'
-                            : idx === 1
-                            ? 'bg-blue-500'
-                            : idx === 2
-                            ? 'bg-indigo-500'
-                            : idx === 3
-                            ? 'bg-emerald-500'
-                            : 'bg-emerald-600'
-                        )}
-                        style={{ width: `${widthPct}%` }}
-                      />
-                    </div>
-
-                    {/* Drop-off Note if any */}
-                    {stage.dropOffCount > 0 && (
-                      <div className="flex items-center justify-between text-[10px] text-slate-600 px-1">
-                        <span>Drop-off: &minus;{stage.dropOffCount} EPs</span>
-                        <span className="italic truncate max-w-[280px]">
-                          Primary reason: {stage.primaryDropOffReason}
-                        </span>
+                      <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex">
+                        <div
+                          className="h-full rounded-full bg-blue-600 transition-all duration-500"
+                          style={{ width: `${widthPct}%` }}
+                        />
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+
+                      {stage.dropOffCount > 0 && (
+                        <div className="flex items-center justify-between text-[10px] text-slate-600 px-1">
+                          <span>Drop-off: &minus;{stage.dropOffCount} EPs</span>
+                          <span className="italic truncate max-w-[280px]">
+                            {stage.primaryDropOffReason}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
@@ -138,15 +205,15 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
           </div>
         </div>
 
-        {/* Right Column (5 cols): Sales Velocity & Capacity By Project */}
+        {/* Right Column (5 cols): Nivo Sales Velocity & Capacity By Project */}
         <div className="lg:col-span-5 space-y-4">
-          {/* Top Card: Weekly Sales Activity */}
+          {/* Top Card: Nivo Sales Velocity Line */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-1.5">
                 <Briefcase className="w-4 h-4 text-emerald-600" />
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  B2B Sales Velocity &amp; Closing Cycle
+                  B2B Sales Velocity &amp; Closing Curve
                 </h3>
               </div>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
@@ -154,32 +221,38 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 mt-3 text-center">
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 block uppercase font-bold">Meetings</span>
-                <span className="text-base font-bold text-slate-900">14 held</span>
-                <span className="text-[10px] text-emerald-600 block">+3 this week</span>
+            <div className="mt-2">
+              <NivoSalesVelocityLine height={150} />
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] text-slate-500">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-blue-500" /> Meetings
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-purple-500" /> Proposals
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" /> Signed
+                </span>
               </div>
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 block uppercase font-bold">Proposals</span>
-                <span className="text-base font-bold text-slate-900">8 sent</span>
-                <span className="text-[10px] text-blue-600 block">57% conv</span>
-              </div>
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-100">
-                <span className="text-[10px] text-slate-500 block uppercase font-bold">SLA Followup</span>
-                <span className="text-base font-bold text-slate-900">96.2%</span>
-                <span className="text-[10px] text-emerald-600 block">&lt; 48h SLA</span>
-              </div>
+              <button
+                onClick={() => onInspectKpi('KPI-SALES-03')}
+                className="text-blue-600 font-semibold hover:underline cursor-pointer"
+              >
+                Inspect CRM &rarr;
+              </button>
             </div>
           </div>
 
-          {/* Bottom Card: Project Capacity Stacked Bars (16 GV Projects) */}
+          {/* Bottom Card: Nivo Project Capacity Stacked Bars */}
           <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-1.5">
                 <Layers className="w-4 h-4 text-purple-600" />
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Capacity Utilization by Project / SDG
+                  Capacity Stack by Project / SDG
                 </h3>
               </div>
               <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
@@ -187,42 +260,21 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
               </span>
             </div>
 
-            <div className="space-y-2.5 mt-3">
-              {projectCapacities.map((proj) => (
-                <div key={proj.projectCode} className="space-y-1">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-semibold text-slate-800 truncate max-w-[190px]">
-                      SDG {proj.sdgNumber} · {proj.projectName}
-                    </span>
-                    <span className="font-mono text-slate-600">
-                      {proj.filledSlots}/{proj.totalValidSlots} ({proj.fillRatePct.toFixed(0)}%)
-                    </span>
-                  </div>
-                  {/* Bullet capacity bar */}
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden flex">
-                    <div
-                      className={clsx(
-                        'h-full rounded-full transition-all duration-300',
-                        proj.status === 'OPTIMAL'
-                          ? 'bg-emerald-500'
-                          : proj.status === 'AT_RISK'
-                          ? 'bg-amber-500'
-                          : 'bg-rose-500'
-                      )}
-                      style={{ width: `${proj.fillRatePct}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="mt-2">
+              <NivoProjectCapacityBar
+                capacities={projectCapacities}
+                height={160}
+                onProjectClick={() => onInspectKpi('KPI-CONT-03')}
+              />
             </div>
 
-            <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
-              <span className="text-slate-500">Target fill rate: &gt;= 85%</span>
+            <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+              <span className="text-slate-500">Green = Filled · Gray = Open</span>
               <button
                 onClick={() => onInspectKpi('KPI-CONT-03')}
                 className="text-purple-600 hover:text-purple-700 font-semibold cursor-pointer"
               >
-                Inspect slot allocations &rarr;
+                Inspect allocations &rarr;
               </button>
             </div>
           </div>

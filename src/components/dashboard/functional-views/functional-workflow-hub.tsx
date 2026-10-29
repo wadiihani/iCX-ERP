@@ -20,6 +20,19 @@ import {
   FileText,
 } from 'lucide-react';
 import { KpiCardMetric } from '../executive/kpi-card-metric';
+import dynamic from 'next/dynamic';
+
+const NivoCountryYieldBar = dynamic(
+  () => import('../graphs/nivo/nivo-country-yield-bar').then((m) => m.NivoCountryYieldBar),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-52 bg-slate-50 rounded-xl flex items-center justify-center animate-pulse">
+        <span className="text-xs text-slate-400 font-medium">Loading Nivo Country Yields...</span>
+      </div>
+    ),
+  }
+);
 
 export type FunctionalTabId =
   | 'SALES'
@@ -280,30 +293,15 @@ export const FunctionalWorkflowHub: React.FC<FunctionalWorkflowHubProps> = ({
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">
-              IR Partner Yield by Country (Ranked Horizontal Bars)
-            </h3>
-            <div className="space-y-3 text-xs">
-              {[
-                { country: 'AIESEC in France', quota: 16, delivered: 14, pct: 87.5 },
-                { country: 'AIESEC in Italy', quota: 14, delivered: 12, pct: 85.7 },
-                { country: 'AIESEC in Germany', quota: 12, delivered: 9, pct: 75.0 },
-                { country: 'AIESEC in Brazil', quota: 10, delivered: 8, pct: 80.0 },
-                { country: 'AIESEC in Japan', quota: 8, delivered: 5, pct: 62.5 },
-              ].map((c) => (
-                <div key={c.country} className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="font-semibold text-slate-800">{c.country}</span>
-                    <span className="font-mono text-slate-600">
-                      {c.delivered}/{c.quota} ({c.pct.toFixed(1)}%)
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${c.pct}%` }} />
-                  </div>
-                </div>
-              ))}
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 mb-3">
+              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                IR Partner Sourcing Yield (Nivo Grouped Bars: Delivered vs Quota)
+              </h3>
+              <span className="text-[10px] text-slate-500 font-mono">
+                Green = Delivered · Indigo = Bilateral Quota
+              </span>
             </div>
+            <NivoCountryYieldBar height={220} />
           </div>
         </div>
       )}
