@@ -1,12 +1,12 @@
 ---
 gsd_state_version: '1.0'
 status: in_progress
-milestone: 'v2.0'
+milestone: 'v3.0'
 progress:
-  total_phases: 17
-  completed_phases: 12
-  total_plans: 45
-  completed_plans: 32
+  total_phases: 18
+  completed_phases: 13
+  total_plans: 48
+  completed_plans: 34
   percent: 71
 ---
 
@@ -14,26 +14,26 @@ progress:
 
 ## Project Reference
 
-See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (initialized 2026-10-27, Milestone 2 added 2026-10-29)
+See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (Hub-Based Operating Model aligned 2026-10-29)
 
-**Core value:** A reliable, table-first operational data workspace where every number reconciles to live underlying records, every stakeholder transition is bound by an explicit handoff contract, and no exchange participant or delivery deadline is lost.  
-**Current focus:** Milestone 2 (v2.0) — Phase 11 Completed, Ready for Phase 12 (Dedicated Member Engagement & Team Standards)
+**Core value:** One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.  
+**Current focus:** Milestone 3 (v3.0) — Phase 12 Completed, Ready for Phase 13 (Data Integrity, B2B Partner CRM & Partner Standards Register)
 
 ## Current Position
 
-Phase: 12 of 17 (Phase 12: Dedicated Member Engagement, Attendance Tiers & Team Standards TeSt)  
-Plan: 0 of 2 in Phase 12 (Total: 32/45 Complete)  
+Phase: 13 of 18 (Phase 13: Data Integrity, B2B Partner CRM & Partner Standards Register)  
+Plan: 0 of 3 in Phase 13 (Total: 34/48 Complete)  
 Status: In progress  
-Last activity: 2026-10-29 — Executed and verified Phase 11: 4-group Left Sidebar, Quick Add 8-intake dropdown, Data Settings modal, Zero-CTA 9-card interactive Dashboard, and clean Next.js build.  
+Last activity: 2026-10-29 — Executed and verified Phase 12 (Plans 12-01 & 12-02): dedicated `/members` module with Rabat roster, Composite MES (0-100%), 4 tiers, Rabat 6 routines heatmap, O2O coaching logger, TeSt scorecard, and Mandate Handover Pack generator. Next.js production build compiled cleanly across all 21 routes.  
 
 Progress: [███████░░░] 71%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 32
 - Average duration: 8.0 min
-- Total execution time: 3.8 hours
+- Total execution time: 4.2 hours
 
 **By Phase:**
 
@@ -50,10 +50,7 @@ Progress: [███████░░░] 71%
 | Phase 8: End-to-End Verification & Pilot Readiness | 2/2 | 15m | 7.5m |
 | Phase 9: Multi-LC Tenancy & National Release | 1/1 | 12m | 12m |
 | Phase 10: Module 1 Interactive Command Dashboard & Graph Analytics | 4/4 | 31m | 7.8m |
-
-**Recent Trend:**
-- Last 5 plans: None yet
-- Trend: Ready to begin
+| Phase 11: Global Layout, Sidebar Navigation & Zero-CTA Dashboard | 3/3 | 26m | 8.7m |
 
 ## Accumulated Context
 
@@ -63,18 +60,20 @@ Progress: [███████░░░] 71%
 - [Initialization]: Enforced Table-First operational UI (`DEC-002`) over blogs or card-only views.
 - [Initialization]: Adopted Human-in-the-Loop Action Outbox (`DEC-003`) for EXPA status synchronization.
 - [Initialization]: Required explicit, atomic Stakeholder Handoff protocol (`DEC-004`) to prevent orphaned tasks.
-- [Initialization]: Mapped specialized agent skills to every phase and plan without blocking interactive questioning.
+- [Hub-Based Realignment]: Grounded entire lifecycle in official AIESEC Hub architecture (`hub.aiesec.org`).
+- [Policy Engine]: Enforced versioned Rules & References registry with confidence labels (`VERIFIED_OFFICIAL`, `CONFIRMED_LOCAL`, `PROPOSED`, `NEEDS_VERIFICATION`, `RETIRED`). Unverified rules never trigger automated rejections.
+- [Data Integrity]: Enforced database exclusion constraints for bed double-booking prevention and atomic slot allocations.
 
 ### Pending Todos
 
-None yet.
+- Execute Phase 12 Plans (`12-01-PLAN.md`, `12-02-PLAN.md`).
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
-Last session: 2026-10-27 23:22  
-Stopped at: GSD Core artifacts initialized in `.planning/`. Skill assignments mapped and confirmed. Ready to execute Phase 0 Plan 01.  
+Last session: 2026-10-29 01:17  
+Stopped at: Phase 11 committed and published to GitHub. Hub-Based Improvement Roadmap ingested and synthesized. Ready to execute Phase 12.  
 Resume file: None  
