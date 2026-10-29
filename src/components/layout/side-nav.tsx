@@ -180,7 +180,7 @@ export function SideNav() {
       {/* Brand Header */}
       <div className="flex h-14 items-center justify-between border-b border-slate-200 px-3.5 dark:border-slate-800 shrink-0">
         <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-aiesec-blue text-white shadow-sm font-bold text-xs tracking-tight">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-aiesec-darkblue via-aiesec-blue to-sky-400 text-white shadow-md shadow-blue-500/25 font-extrabold text-xs tracking-tight ring-1 ring-white/20">
             AI
           </div>
           {isSidebarOpen && (

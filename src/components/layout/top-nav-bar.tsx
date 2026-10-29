@@ -196,7 +196,7 @@ export function TopNavBar() {
           <button
             onClick={() => setQuickAddOpen((prev) => !prev)}
             aria-expanded={isQuickAddOpen}
-            className="flex items-center gap-1.5 rounded-md bg-aiesec-blue px-2.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-600 transition"
+            className="flex items-center gap-1.5 rounded-md bg-gradient-to-r from-aiesec-blue to-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:from-blue-600 hover:to-aiesec-darkblue transition-all"
           >
             <Plus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Quick Add</span>
@@ -254,6 +254,10 @@ export function TopNavBar() {
 
         {/* Tenant Pill */}
         <div className="hidden lg:flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
           <Building className="h-3.5 w-3.5 text-aiesec-blue" />
           <span>{currentLc}</span>
         </div>
