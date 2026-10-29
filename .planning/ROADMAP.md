@@ -99,9 +99,9 @@ Governed by:
   6. Top switcher toggles Kanban Board, Master CRM Table, and Detailed Cards.
 **Exit Gate**: A lead progresses to qualified partner, signed agreement, and approved opportunity with zero duplicate records and intact loss histories.
 **Plans**: 3 plans
-- [ ] 13-01: Organization, Contact & Deal relational separation with slide-over edit drawer.
-- [ ] 13-02: 8-stage sales stepper, BANT discovery gate, and contract attachment gate.
-- [ ] 13-03: Kanban board/table switcher and versioned Partner Standards Register.
+- [x] 13-01: Organization, Contact & Deal relational separation with slide-over edit drawer. (Completed 2026-10-29)
+- [x] 13-02: 8-stage sales stepper, BANT discovery gate, and contract attachment gate. (Completed 2026-10-29)
+- [x] 13-03: Kanban board/table switcher and versioned Partner Standards Register. (Completed 2026-10-29)
 
 ---
 

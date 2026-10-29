@@ -14,9 +14,20 @@ import {
   ExternalLink,
   CheckCircle,
   Clock,
+  Columns3,
+  Table as TableIcon,
+  LayoutGrid,
+  ShieldCheck,
+  AlertTriangle,
+  FileText,
+  Calendar,
+  Layers,
 } from 'lucide-react';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import { TouchpointModal } from '@/components/crm/touchpoint-modal';
+import { PartnerEditDrawer } from '@/components/crm/partner-edit-drawer';
+import { PartnerStandardsModal } from '@/components/crm/partner-standards-modal';
+import { DealStageStepper } from '@/components/sales/deal-stage-stepper';
 import {
   INITIAL_B2B_ORGANIZATIONS,
   INITIAL_B2B_CONTACTS,
@@ -24,21 +35,39 @@ import {
   type B2BOrganization,
   type B2BContact,
   type B2BTouchpoint,
+  type PartnerStandardCheckpoint,
 } from '@/lib/crm/organizations-data';
+import {
+  INITIAL_B2B_DEALS,
+  B2bDealRecord,
+  PipelineStage,
+  PIPELINE_STAGE_CONFIG,
+} from '@/lib/sales/deals-data';
 
 export default function SalesCRMPage() {
   const router = useRouter();
   const [organizations, setOrganizations] = useState<B2BOrganization[]>(INITIAL_B2B_ORGANIZATIONS);
   const [contacts, setContacts] = useState<B2BContact[]>(INITIAL_B2B_CONTACTS);
   const [touchpoints, setTouchpoints] = useState<B2BTouchpoint[]>(INITIAL_B2B_TOUCHPOINTS);
-  const [activeTab, setActiveTab] = useState<'organizations' | 'contacts' | 'touchpoints'>('organizations');
+  const [deals, setDeals] = useState<B2bDealRecord[]>(INITIAL_B2B_DEALS);
+
+  // 3-way View Switcher on /sales (Plan 13-03)
+  const [viewMode, setViewMode] = useState<'KANBAN' | 'TABLE' | 'CARDS'>('TABLE');
+  const [activeTab, setActiveTab] = useState<'organizations' | 'contacts' | 'touchpoints' | 'deals'>('organizations');
+
+  // Modals & Drawers state
   const [isTouchpointModalOpen, setIsTouchpointModalOpen] = useState(false);
+  const [selectedPartnerForEdit, setSelectedPartnerForEdit] = useState<B2BOrganization | null>(null);
+  const [selectedPartnerForStandards, setSelectedPartnerForStandards] = useState<B2BOrganization | null>(null);
+  const [selectedDealForStepper, setSelectedDealForStepper] = useState<B2bDealRecord | null>(null);
 
   // Compute live KPIs
-  const totalValueMad = organizations.reduce((acc, org) => acc + org.total_deal_value_mad, 0);
-  const totalDeals = organizations.reduce((acc, org) => acc + org.active_deals_count, 0);
-  const activePartnersCount = organizations.filter((o) => o.status === 'ACTIVE_PARTNER').length;
+  const totalValueMad = deals.reduce((acc, d) => acc + d.revenueMad, 0);
+  const totalDeals = deals.length;
+  const activePartnersCount = organizations.filter((o) => o.status === 'ACTIVE_PARTNER' && !o.isArchived).length;
+  const wonDealsCount = deals.filter((d) => d.stage === 'ACTIVE_DELIVERY' || d.stage === 'AGREEMENT_SIGNED').length;
 
+  // Handlers
   const handleSaveTouchpoint = (newTp: Omit<B2BTouchpoint, 'id' | 'created_at'>) => {
     const created: B2BTouchpoint = {
       ...newTp,
@@ -48,20 +77,97 @@ export default function SalesCRMPage() {
     setTouchpoints([created, ...touchpoints]);
   };
 
+  const handleSavePartner = (updated: B2BOrganization) => {
+    setOrganizations((prev) => prev.map((org) => (org.id === updated.id ? updated : org)));
+  };
+
+  const handleCreateDeal = (newDeal: B2bDealRecord) => {
+    setDeals((prev) => [newDeal, ...prev]);
+    // update partner active_deals_count
+    setOrganizations((prev) =>
+      prev.map((org) =>
+        org.id === newDeal.orgId
+          ? {
+              ...org,
+              active_deals_count: org.active_deals_count + 1,
+              total_deal_value_mad: org.total_deal_value_mad + newDeal.revenueMad,
+            }
+          : org
+      )
+    );
+  };
+
+  const handleAddContact = (newContact: B2BContact) => {
+    setContacts((prev) => [newContact, ...prev]);
+  };
+
+  const handleTransitionDealStage = (targetStage: PipelineStage, reason?: string) => {
+    if (!selectedDealForStepper) return;
+
+    setDeals((prev) =>
+      prev.map((d) => {
+        if (d.id === selectedDealForStepper.id) {
+          const updated: B2bDealRecord = {
+            ...d,
+            stage: targetStage,
+            lossReason: reason || d.lossReason,
+            history: [
+              ...d.history,
+              {
+                fromStage: d.stage,
+                toStage: targetStage,
+                timestamp: new Date().toISOString().split('T')[0],
+                actorName: 'Current User',
+                reason,
+              },
+            ],
+            updatedAt: new Date().toISOString(),
+          };
+          setSelectedDealForStepper(updated);
+          return updated;
+        }
+        return d;
+      })
+    );
+  };
+
+  // OP Candidate Rejection Counter badge (AEPP 4.2.2.1.7)
+  const getRejectionBadge = (count: number) => {
+    if (count <= 1) {
+      return {
+        label: `${count}/3 Rejections`,
+        className: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300',
+      };
+    }
+    if (count === 2) {
+      return {
+        label: '2/3 Rejections (Warning)',
+        className: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 animate-pulse',
+      };
+    }
+    return {
+      label: `${count}/3 Suspended (LCVP Review)`,
+      className: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 font-bold',
+    };
+  };
+
   // Organization table columns
   const orgColumns: ColumnDef<B2BOrganization>[] = [
     {
       id: 'name',
-      header: 'Organization Name',
+      header: 'Organization & Legal Profile',
       accessorKey: 'name',
       sortable: true,
       cell: (row) => (
         <div>
-          <span className="font-semibold text-slate-900 dark:text-white block hover:text-aiesec-blue">
+          <button
+            onClick={() => setSelectedPartnerForEdit(row)}
+            className="font-bold text-slate-900 dark:text-white block hover:text-aiesec-blue text-left"
+          >
             {row.name}
-          </span>
+          </button>
           <span className="text-[10px] text-slate-400 font-mono">
-            {row.city} • {row.tax_id || 'No Tax ID'}
+            {row.city} • ICE: {row.ice || row.tax_id || 'No ICE'}
           </span>
         </div>
       ),
@@ -72,11 +178,6 @@ export default function SalesCRMPage() {
       accessorKey: 'tier',
       sortable: true,
       filterable: true,
-      filterOptions: [
-        { label: 'Tier 1 (Strategic)', value: 'TIER_1' },
-        { label: 'Tier 2 (Core)', value: 'TIER_2' },
-        { label: 'Tier 3 (Local)', value: 'TIER_3' },
-      ],
       cell: (row) => {
         const colors = {
           TIER_1: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300',
@@ -95,58 +196,38 @@ export default function SalesCRMPage() {
       header: 'Sector',
       accessorKey: 'sector',
       sortable: true,
-      filterable: true,
-      filterOptions: [
-        { label: 'Technology', value: 'TECHNOLOGY' },
-        { label: 'Education', value: 'EDUCATION' },
-        { label: 'Finance', value: 'FINANCE' },
-        { label: 'NGO', value: 'NGO' },
-        { label: 'Consulting', value: 'CONSULTING' },
-      ],
-      cell: (row) => (
-        <span className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-          {row.sector}
-        </span>
-      ),
+      cell: (row) => <span className="text-slate-600 dark:text-slate-300">{row.sector}</span>,
     },
     {
       id: 'status',
-      header: 'Relationship Status',
+      header: 'Status & Rejections',
       accessorKey: 'status',
       sortable: true,
-      filterable: true,
-      filterOptions: [
-        { label: 'Active Partner', value: 'ACTIVE_PARTNER' },
-        { label: 'Qualified', value: 'QUALIFIED' },
-        { label: 'Prospect', value: 'PROSPECT' },
-      ],
       cell: (row) => {
-        const styles = {
-          ACTIVE_PARTNER: 'bg-emerald-50 text-emerald-800 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300',
-          QUALIFIED: 'bg-sky-50 text-sky-800 border-sky-300 dark:bg-sky-950/40 dark:text-sky-300',
-          PROSPECT: 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300',
-          CHURNED: 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-300',
-          BLOCKED: 'bg-rose-50 text-rose-800 border-rose-300 dark:bg-rose-950/40 dark:text-rose-300',
-        };
+        const rejBadge = getRejectionBadge(row.unjustifiedRejectionsCount);
         return (
-          <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${styles[row.status]}`}>
-            {row.status.replace('_', ' ')}
-          </span>
+          <div className="flex flex-col gap-1 items-start">
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              {row.status.replace('_', ' ')}
+            </span>
+            <span className={`px-1.5 py-0.2 rounded border text-[9px] font-bold ${rejBadge.className}`}>
+              {rejBadge.label}
+            </span>
+          </div>
         );
       },
     },
     {
-      id: 'primary_contact',
-      header: 'Key Contact',
+      id: 'standards',
+      header: 'Partner Standards',
       cell: (row) => (
-        <div>
-          <span className="text-xs font-semibold text-slate-900 dark:text-white block">
-            {row.primary_contact_name}
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono">
-            {row.primary_contact_email}
-          </span>
-        </div>
+        <button
+          onClick={() => setSelectedPartnerForStandards(row)}
+          className="flex items-center gap-1.5 rounded-md border border-teal-200 bg-teal-50 px-2 py-1 text-[10px] font-semibold text-teal-700 hover:bg-teal-100 dark:border-teal-800 dark:bg-teal-950 dark:text-teal-300"
+        >
+          <ShieldCheck className="h-3 w-3" />
+          <span>{row.partnerStandardsScore || 90}% Verified</span>
+        </button>
       ),
     },
     {
@@ -155,312 +236,353 @@ export default function SalesCRMPage() {
       accessorKey: 'total_deal_value_mad',
       sortable: true,
       cell: (row) => (
-        <div className="text-right">
-          <span className="text-xs font-bold text-slate-900 dark:text-white block font-mono">
+        <div>
+          <span className="font-bold text-slate-900 dark:text-white">
             {row.total_deal_value_mad.toLocaleString()} MAD
           </span>
-          <span className="text-[10px] text-slate-400">
-            {row.active_deals_count} active deal{row.active_deals_count !== 1 ? 's' : ''}
+          <span className="block text-[10px] text-slate-400">
+            {row.active_deals_count} deal{row.active_deals_count !== 1 ? 's' : ''}
           </span>
         </div>
       ),
-      align: 'right',
     },
     {
-      id: 'account_owner_name',
-      header: 'Owner',
-      accessorKey: 'account_owner_name',
-      sortable: true,
+      id: 'actions',
+      header: 'Actions',
       cell: (row) => (
-        <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-          {row.account_owner_name}
-        </span>
-      ),
-    },
-  ];
-
-  // Contacts table columns
-  const contactColumns: ColumnDef<B2BContact>[] = [
-    {
-      id: 'name',
-      header: 'Contact Name',
-      accessorKey: 'name',
-      sortable: true,
-      cell: (row) => (
-        <div className="flex items-center gap-2">
-          {row.is_primary && (
-            <span className="text-amber-500 font-bold" title="Primary Organization Contact">
-              ★
-            </span>
-          )}
-          <div>
-            <span className="font-semibold text-slate-900 dark:text-white block">
-              {row.name}
-            </span>
-            <span className="text-[10px] text-slate-400">
-              {row.job_title}
-            </span>
-          </div>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setSelectedPartnerForEdit(row)}
+            className="rounded border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+          >
+            Edit Drawer
+          </button>
+          <button
+            onClick={() => {
+              setSelectedPartnerForEdit(row);
+            }}
+            className="rounded bg-aiesec-blue px-2 py-1 text-[10px] font-semibold text-white hover:bg-blue-600"
+          >
+            + Deal
+          </button>
         </div>
-      ),
-    },
-    {
-      id: 'organization_name',
-      header: 'Organization',
-      accessorKey: 'organization_name',
-      sortable: true,
-      cell: (row) => (
-        <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
-          {row.organization_name}
-        </span>
-      ),
-    },
-    {
-      id: 'email',
-      header: 'Email Address',
-      accessorKey: 'email',
-      cell: (row) => (
-        <a
-          href={`mailto:${row.email}`}
-          className="text-xs font-mono text-aiesec-blue hover:underline flex items-center gap-1"
-        >
-          <Mail className="h-3 w-3" />
-          <span>{row.email}</span>
-        </a>
-      ),
-    },
-    {
-      id: 'phone',
-      header: 'Phone',
-      accessorKey: 'phone',
-      cell: (row) => (
-        <a
-          href={`tel:${row.phone}`}
-          className="text-xs font-mono text-slate-600 dark:text-slate-300 hover:text-slate-900 flex items-center gap-1"
-        >
-          <Phone className="h-3 w-3" />
-          <span>{row.phone}</span>
-        </a>
-      ),
-    },
-    {
-      id: 'notes',
-      header: 'Operational Notes',
-      accessorKey: 'notes',
-      cell: (row) => (
-        <span className="text-xs text-slate-500 line-clamp-1 italic">
-          {row.notes || '—'}
-        </span>
       ),
     },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner & KPI Stat Cards */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            B2B Partner CRM & Accounts
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Reconciled organizational accounts, contact rosters, and meeting action logs for LC Rabat.
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-aiesec-blue/10 text-aiesec-blue">
+              <Building2 className="h-4 w-4" />
+            </span>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              B2B Partner CRM, Deals & Pipeline Architecture
+            </h1>
+          </div>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            AIESEC in Rabat · External Engine · Relational Organizations, Multi-Deals, 8-Stage Stepper & Partner Standards.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push('/sales/pipeline')}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-subtle hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-          >
-            <Briefcase className="h-3.5 w-3.5 text-aiesec-blue" />
-            <span>View Deal Pipeline Board</span>
-          </button>
+        {/* 3-Way View Switcher (Plan 13-03) & Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-800 dark:bg-slate-800">
+            <button
+              onClick={() => setViewMode('KANBAN')}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                viewMode === 'KANBAN'
+                  ? 'bg-white text-aiesec-blue shadow-2xs dark:bg-slate-900 dark:text-white'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+              }`}
+            >
+              <Columns3 className="h-3.5 w-3.5" />
+              <span>Kanban</span>
+            </button>
+            <button
+              onClick={() => setViewMode('TABLE')}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                viewMode === 'TABLE'
+                  ? 'bg-white text-aiesec-blue shadow-2xs dark:bg-slate-900 dark:text-white'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+              }`}
+            >
+              <TableIcon className="h-3.5 w-3.5" />
+              <span>Master Table</span>
+            </button>
+            <button
+              onClick={() => setViewMode('CARDS')}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                viewMode === 'CARDS'
+                  ? 'bg-white text-aiesec-blue shadow-2xs dark:bg-slate-900 dark:text-white'
+                  : 'text-slate-500 hover:text-slate-900 dark:text-slate-400'
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
+              <span>Cards</span>
+            </button>
+          </div>
+
           <button
             onClick={() => setIsTouchpointModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg bg-aiesec-blue px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-aiesec-blue/90 transition"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
-            <Plus className="h-3.5 w-3.5" />
-            <span>Log Interaction</span>
+            <MessageSquare className="h-3.5 w-3.5" />
+            <span>Log Touchpoint</span>
           </button>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Active Partner Orgs</span>
-            <Building2 className="h-4 w-4 text-aiesec-blue" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
-            {activePartnersCount} / {organizations.length}
-          </div>
-          <div className="mt-1 text-[11px] text-slate-400">
-            {((activePartnersCount / organizations.length) * 100).toFixed(0)}% account retention rate
-          </div>
-        </div>
-
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Active Deals</span>
-            <Briefcase className="h-4 w-4 text-indigo-500" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
-            {totalDeals} In-Flight
-          </div>
-          <div className="mt-1 text-[11px] text-slate-400">
-            Across iGV, iGTa, and iGTe products
-          </div>
-        </div>
-
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Value (MAD)</span>
-            <DollarSign className="h-4 w-4 text-emerald-500" />
-          </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white font-mono">
+      {/* Headline KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Pipeline Value</div>
+          <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
             {totalValueMad.toLocaleString()} MAD
           </div>
-          <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-            Reconciled pipeline volume
-          </div>
+          <div className="mt-0.5 text-[10px] text-slate-500">{totalDeals} active B2B deals</div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-subtle">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-semibold uppercase tracking-wider">Pending SLA Actions</span>
-            <Clock className="h-4 w-4 text-amber-500" />
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Partners</div>
+          <div className="mt-1 text-2xl font-extrabold text-aiesec-blue dark:text-blue-400">
+            {activePartnersCount}
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
-            {touchpoints.length} Enqueued
+          <div className="mt-0.5 text-[10px] text-slate-500">Verified Organizations</div>
+        </div>
+
+        <div className="rounded-xl border border-emerald-200/80 bg-emerald-50/30 p-3.5 shadow-xs dark:border-emerald-900/40 dark:bg-emerald-950/20">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+            Signed & Active Deals
           </div>
-          <div className="mt-1 text-[11px] text-slate-400">
-            Generated from logged meetings
+          <div className="mt-1 text-2xl font-extrabold text-emerald-700 dark:text-emerald-300">
+            {wonDealsCount}
           </div>
+          <div className="mt-0.5 text-[10px] text-emerald-600/80">Contracts or delivery</div>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Directory Contacts</div>
+          <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+            {contacts.length}
+          </div>
+          <div className="mt-0.5 text-[10px] text-slate-500">{touchpoints.length} logged interactions</div>
         </div>
       </div>
 
-      {/* Workspace Tabs Navigation */}
-      <div className="border-b border-slate-200 dark:border-slate-800 flex items-center gap-4">
-        <button
-          onClick={() => setActiveTab('organizations')}
-          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'organizations'
-              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
-        >
-          <Building2 className="h-4 w-4" />
-          <span>Organizations Directory ({organizations.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('contacts')}
-          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'contacts'
-              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
-        >
-          <Users className="h-4 w-4" />
-          <span>Contacts Roster ({contacts.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('touchpoints')}
-          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
-            activeTab === 'touchpoints'
-              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
-              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-          }`}
-        >
-          <MessageSquare className="h-4 w-4" />
-          <span>Interaction Feed ({touchpoints.length})</span>
-        </button>
-      </div>
-
-      {/* Tab 1: Organizations Table */}
-      {activeTab === 'organizations' && (
-        <DataTable
-          data={organizations}
-          columns={orgColumns}
-          keyExtractor={(org) => org.id}
-          entityType="ORGANIZATION"
-          searchPlaceholder="Search by organization name, city, tax ID, or owner..."
-          exportFileName="aiesec-rabat-b2b-organizations.csv"
-          onRowClick={(org) => router.push(`/sales/${org.id}`)}
-        />
-      )}
-
-      {/* Tab 2: Contacts Table */}
-      {activeTab === 'contacts' && (
-        <DataTable
-          data={contacts}
-          columns={contactColumns}
-          keyExtractor={(contact) => contact.id}
-          searchPlaceholder="Search contacts by name, organization, job title, email..."
-          exportFileName="aiesec-rabat-b2b-contacts.csv"
-        />
-      )}
-
-      {/* Tab 3: Touchpoint Feed */}
-      {activeTab === 'touchpoints' && (
-        <div className="space-y-4">
-          {touchpoints.map((tp) => (
-            <div
-              key={tp.id}
-              className="rounded-xl border border-slate-200 bg-white p-5 shadow-subtle dark:border-slate-800 dark:bg-slate-900 space-y-3"
+      {/* Selected Deal Stepper (If opened) */}
+      {selectedDealForStepper && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+            <span>Inspecting Deal: {selectedDealForStepper.title} ({selectedDealForStepper.orgName})</span>
+            <button
+              onClick={() => setSelectedDealForStepper(null)}
+              className="text-slate-400 hover:text-slate-600"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <span className="rounded bg-aiesec-soft px-2 py-0.5 text-[10px] font-bold text-aiesec-blue dark:bg-blue-950/40 dark:text-blue-300">
-                    {tp.touchpoint_type}
-                  </span>
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">
-                    {tp.organization_name}
-                  </span>
-                  {tp.contact_name && (
-                    <span className="text-xs text-slate-400">with {tp.contact_name}</span>
-                  )}
-                </div>
-                <time className="text-[11px] font-mono text-slate-400">
-                  {new Date(tp.meeting_date).toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </time>
-              </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {tp.minutes}
-              </p>
-
-              <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="space-y-0.5">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Mandatory Next Action Deliverable
-                  </div>
-                  <div className="text-xs font-semibold text-slate-900 dark:text-white">
-                    {tp.next_action}
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 text-xs">
-                  <span className="font-medium text-slate-500">
-                    Assigned: <span className="text-slate-800 dark:text-slate-200 font-semibold">{tp.next_action_owner}</span>
-                  </span>
-                  <span className="rounded bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300">
-                    Due {new Date(tp.next_action_due_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+              Close Stepper ✕
+            </button>
+          </div>
+          <DealStageStepper
+            deal={selectedDealForStepper}
+            onTransitionStage={handleTransitionDealStage}
+          />
         </div>
       )}
 
-      {/* Touchpoint Modal */}
+      {/* VIEW 1: KANBAN BOARD */}
+      {viewMode === 'KANBAN' && (
+        <div className="space-y-4">
+          <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+            Sales Pipeline Kanban Board · 8 Verified Stages
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-8 gap-3 overflow-x-auto pb-4">
+            {(
+              [
+                'PROSPECT',
+                'QUALIFIED',
+                'DISCOVERY',
+                'PROPOSAL',
+                'NEGOTIATION',
+                'AGREEMENT_SIGNED',
+                'OPP_SETUP',
+                'ACTIVE_DELIVERY',
+              ] as PipelineStage[]
+            ).map((stage) => {
+              const stageDeals = deals.filter((d) => d.stage === stage);
+              const stageValue = stageDeals.reduce((acc, d) => acc + d.revenueMad, 0);
+              const config = PIPELINE_STAGE_CONFIG[stage];
+
+              return (
+                <div
+                  key={stage}
+                  className="flex flex-col rounded-xl border border-slate-200 bg-slate-50/70 p-2.5 dark:border-slate-800 dark:bg-slate-900/60 min-w-[200px]"
+                >
+                  <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 dark:border-slate-800">
+                    <div>
+                      <div className="font-bold text-xs text-slate-900 dark:text-white">
+                        {config.label.split('. ')[1] || config.label}
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-mono">
+                        {stageValue.toLocaleString()} MAD
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-slate-200 px-1.5 py-0.2 text-[10px] font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      {stageDeals.length}
+                    </span>
+                  </div>
+
+                  {/* Deals in stage */}
+                  <div className="mt-2.5 space-y-2 flex-1">
+                    {stageDeals.map((deal) => {
+                      const isStale =
+                        new Date().getTime() - new Date(deal.lastActivityDate).getTime() >
+                        7 * 86400000;
+                      return (
+                        <div
+                          key={deal.id}
+                          onClick={() => setSelectedDealForStepper(deal)}
+                          className={`cursor-pointer rounded-lg border bg-white p-2.5 shadow-2xs hover:shadow-xs transition dark:bg-slate-800 ${
+                            isStale
+                              ? 'border-amber-300 dark:border-amber-700'
+                              : 'border-slate-200 dark:border-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="rounded px-1 py-0.2 text-[9px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                              {deal.product}
+                            </span>
+                            {isStale && (
+                              <span className="text-[9px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-0.5" title="No activity for >7 days">
+                                <Clock className="h-2.5 w-2.5" /> Stale
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-1 font-bold text-xs text-slate-900 dark:text-white line-clamp-2">
+                            {deal.title}
+                          </div>
+                          <div className="text-[10px] text-slate-400 truncate">{deal.orgName}</div>
+                          <div className="mt-2 flex items-center justify-between text-[10px] border-t border-slate-100 pt-1.5 dark:border-slate-700/60">
+                            <span className="font-extrabold text-slate-800 dark:text-slate-200">
+                              {deal.revenueMad.toLocaleString()} MAD
+                            </span>
+                            <span className="text-slate-400">{deal.assignedOwnerName.split(' ')[0]}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 2: MASTER TABLE */}
+      {viewMode === 'TABLE' && (
+        <div className="space-y-4">
+          <DataTable<B2BOrganization>
+            data={organizations}
+            columns={orgColumns}
+            keyExtractor={(org) => org.id}
+            searchPlaceholder="Search partner organizations by name, city, tax ID..."
+            exportFileName="aiesec-rabat-b2b-partners.csv"
+          />
+        </div>
+      )}
+
+      {/* VIEW 3: CARDS */}
+      {viewMode === 'CARDS' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {organizations.map((org) => {
+            const orgDeals = deals.filter((d) => d.orgId === org.id);
+            const rejBadge = getRejectionBadge(org.unjustifiedRejectionsCount);
+
+            return (
+              <div
+                key={org.id}
+                className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 transition flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">{org.name}</h3>
+                      <p className="text-[11px] text-slate-400">
+                        {org.sector} · {org.city}
+                      </p>
+                    </div>
+                    <span className={`rounded border px-1.5 py-0.5 text-[9px] font-bold ${rejBadge.className}`}>
+                      {rejBadge.label}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-lg dark:bg-slate-800/50">
+                    <div>
+                      <span className="text-slate-400 text-[10px]">Total Value:</span>
+                      <div className="font-bold text-slate-800 dark:text-slate-200">
+                        {org.total_deal_value_mad.toLocaleString()} MAD
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[10px]">Deals:</span>
+                      <div className="font-bold text-slate-800 dark:text-slate-200">
+                        {orgDeals.length} active
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-2.5 space-y-1 text-xs">
+                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-[11px]">
+                      <Mail className="h-3 w-3 text-slate-400" />
+                      <span>{org.primary_contact_name} ({org.primary_contact_email})</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
+                  <button
+                    onClick={() => setSelectedPartnerForStandards(org)}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-teal-600 hover:text-teal-700"
+                  >
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    <span>Standards</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedPartnerForEdit(org)}
+                    className="rounded-lg bg-aiesec-blue px-3 py-1 text-xs font-semibold text-white hover:bg-blue-600"
+                  >
+                    Manage Partner
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* PARTNER EDIT DRAWER */}
+      <PartnerEditDrawer
+        isOpen={Boolean(selectedPartnerForEdit)}
+        onClose={() => setSelectedPartnerForEdit(null)}
+        partner={selectedPartnerForEdit}
+        deals={deals}
+        contacts={contacts}
+        onSavePartner={handleSavePartner}
+        onCreateDeal={handleCreateDeal}
+        onAddContact={handleAddContact}
+      />
+
+      {/* PARTNER STANDARDS MODAL */}
+      <PartnerStandardsModal
+        isOpen={Boolean(selectedPartnerForStandards)}
+        onClose={() => setSelectedPartnerForStandards(null)}
+        partner={selectedPartnerForStandards}
+      />
+
+      {/* TOUCHPOINT MODAL */}
       <TouchpointModal
         isOpen={isTouchpointModalOpen}
         onClose={() => setIsTouchpointModalOpen(false)}

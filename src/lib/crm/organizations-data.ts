@@ -2,13 +2,21 @@ export interface B2BOrganization {
   id: string;
   lc_id: string;
   name: string;
+  legalName?: string;
+  brandName?: string;
   website?: string;
   tier: 'TIER_1' | 'TIER_2' | 'TIER_3';
   sector: 'TECHNOLOGY' | 'EDUCATION' | 'FINANCE' | 'HEALTHCARE' | 'CONSULTING' | 'MANUFACTURING' | 'NGO';
   city: string;
   address?: string;
   tax_id?: string;
+  ice?: string; // Moroccan 15-digit Identifiant Commun de l'Entreprise
   status: 'PROSPECT' | 'QUALIFIED' | 'ACTIVE_PARTNER' | 'CHURNED' | 'BLOCKED';
+  healthScore?: number; // 0 - 100
+  unjustifiedRejectionsCount: number; // AEPP 4.2.2.1.7 candidate rejection counter (0..3)
+  isArchived: boolean;
+  archivedReason?: string;
+  partnerStandardsScore?: number; // 0 - 100
   active_deals_count: number;
   total_deal_value_mad: number;
   primary_contact_name: string;
@@ -51,18 +59,39 @@ export interface B2BTouchpoint {
   created_at: string;
 }
 
+export interface PartnerStandardCheckpoint {
+  id: string;
+  partnerId: string;
+  standardId: string;
+  title: string;
+  requirement: string;
+  applicability: string;
+  evidenceUrl?: string;
+  status: 'FULFILLED' | 'PENDING' | 'NOT_APPLICABLE';
+  reviewerName: string;
+  reviewedAt?: string;
+  notes?: string;
+}
+
 export const INITIAL_B2B_ORGANIZATIONS: B2BOrganization[] = [
   {
     id: 'org_rabat_001',
     lc_id: 'lc_rabat',
     name: 'BMCE Bank Foundation',
+    legalName: 'Fondation BMCE Bank pour l\'Education et l\'Environnement',
+    brandName: 'BMCE Foundation',
     website: 'https://bmcebankfoundation.ma',
     tier: 'TIER_1',
     sector: 'FINANCE',
     city: 'Casablanca',
     address: 'Boulevard Moulay Youssef, Casablanca',
     tax_id: 'MA-09283711',
+    ice: '001524389000082',
     status: 'ACTIVE_PARTNER',
+    healthScore: 94,
+    unjustifiedRejectionsCount: 0,
+    isArchived: false,
+    partnerStandardsScore: 100,
     active_deals_count: 2,
     total_deal_value_mad: 45000,
     primary_contact_name: 'Dr. Leila Benhayoun',
@@ -77,13 +106,20 @@ export const INITIAL_B2B_ORGANIZATIONS: B2BOrganization[] = [
     id: 'org_rabat_002',
     lc_id: 'lc_rabat',
     name: 'Rabat American School',
+    legalName: 'Rabat American School Association',
+    brandName: 'RAS',
     website: 'https://ras.ma',
     tier: 'TIER_1',
     sector: 'EDUCATION',
     city: 'Rabat',
     address: 'Avenue Mehdi Ben Barka, Souissi, Rabat',
     tax_id: 'MA-11234988',
+    ice: '002341908000045',
     status: 'ACTIVE_PARTNER',
+    healthScore: 88,
+    unjustifiedRejectionsCount: 1,
+    isArchived: false,
+    partnerStandardsScore: 92,
     active_deals_count: 3,
     total_deal_value_mad: 72000,
     primary_contact_name: 'Sarah Williams',
@@ -98,13 +134,20 @@ export const INITIAL_B2B_ORGANIZATIONS: B2BOrganization[] = [
     id: 'org_rabat_003',
     lc_id: 'lc_rabat',
     name: 'Casatech Innovation Labs',
+    legalName: 'Casatech Innovation SARL',
+    brandName: 'Casatech Labs',
     website: 'https://casatech-labs.com',
     tier: 'TIER_2',
     sector: 'TECHNOLOGY',
     city: 'Casablanca',
     address: 'Casaneartoffshore Park, Shore 3',
     tax_id: 'MA-99214450',
+    ice: '001890234000019',
     status: 'QUALIFIED',
+    healthScore: 78,
+    unjustifiedRejectionsCount: 2,
+    isArchived: false,
+    partnerStandardsScore: 75,
     active_deals_count: 1,
     total_deal_value_mad: 28000,
     primary_contact_name: 'Omar Chraibi',
@@ -119,13 +162,20 @@ export const INITIAL_B2B_ORGANIZATIONS: B2BOrganization[] = [
     id: 'org_rabat_004',
     lc_id: 'lc_rabat',
     name: 'Medina Green Initiative (NGO)',
+    legalName: 'Association Medina Green pour le Développement Durable',
+    brandName: 'Medina Green',
     website: 'https://medinagreen.org',
     tier: 'TIER_3',
     sector: 'NGO',
     city: 'Rabat',
     address: 'Rue de Tanger, Hassan, Rabat',
     tax_id: 'MA-44210982',
+    ice: '003112098000071',
     status: 'ACTIVE_PARTNER',
+    healthScore: 82,
+    unjustifiedRejectionsCount: 0,
+    isArchived: false,
+    partnerStandardsScore: 85,
     active_deals_count: 1,
     total_deal_value_mad: 12000,
     primary_contact_name: 'Fatima-Zahra Tahiri',
@@ -140,12 +190,19 @@ export const INITIAL_B2B_ORGANIZATIONS: B2BOrganization[] = [
     id: 'org_rabat_005',
     lc_id: 'lc_rabat',
     name: 'Atlas Hospitality Group',
+    legalName: 'Atlas Hospitality SARL',
+    brandName: 'Atlas Resorts',
     website: 'https://atlashospitality.ma',
     tier: 'TIER_2',
     sector: 'CONSULTING',
     city: 'Marrakech',
     tax_id: 'MA-77334901',
+    ice: '002991004000063',
     status: 'PROSPECT',
+    healthScore: 65,
+    unjustifiedRejectionsCount: 3, // Suspended threshold
+    isArchived: false,
+    partnerStandardsScore: 60,
     active_deals_count: 1,
     total_deal_value_mad: 35000,
     primary_contact_name: 'Karim Bennani',
@@ -239,5 +296,79 @@ export const INITIAL_B2B_TOUCHPOINTS: B2BTouchpoint[] = [
     next_action_owner: 'Sara Kabbaj',
     created_by: 'Sara Kabbaj',
     created_at: '2026-10-24T08:45:00Z',
+  },
+];
+
+// Standard Partner Standards Checklist per AIESEC Hub Exchange SnD Architecture
+export const MASTER_PARTNER_STANDARDS: PartnerStandardCheckpoint[] = [
+  {
+    id: 'PS-01',
+    partnerId: 'org_rabat_001',
+    standardId: 'LEGAL_REGISTRATION',
+    title: '1. Legal Entity & Registration Verification',
+    requirement: 'Partner possesses valid Moroccan registration (IF / ICE / Association receipt) confirming legal existence.',
+    applicability: 'All Partners',
+    evidenceUrl: 'https://drive.google.com/drive/folders/bmce-legal-rc',
+    status: 'FULFILLED',
+    reviewerName: 'Wadii Hani',
+    reviewedAt: '2026-08-20',
+  },
+  {
+    id: 'PS-02',
+    partnerId: 'org_rabat_001',
+    standardId: 'VALUES_ETHICS_FIT',
+    title: '2. AIESEC Values, Ethics & Safeguarding Alignment',
+    requirement: 'Partner operations align with AIESEC ethical principles, anti-harassment policy, and UN SDG goals.',
+    applicability: 'All Partners',
+    evidenceUrl: 'https://drive.google.com/drive/folders/bmce-values-fit',
+    status: 'FULFILLED',
+    reviewerName: 'Wadii Hani',
+    reviewedAt: '2026-08-22',
+  },
+  {
+    id: 'PS-03',
+    partnerId: 'org_rabat_001',
+    standardId: 'SUPERVISION_MENTORSHIP',
+    title: '3. Full-Time Workplace Supervision & Mentorship',
+    requirement: 'Dedicated host supervisor assigned to onboard, oversee weekly deliverables, and sign evaluation reports.',
+    applicability: 'iGTa, iGTe & iGV Hosts',
+    evidenceUrl: 'https://drive.google.com/drive/folders/bmce-supervisor-jd',
+    status: 'FULFILLED',
+    reviewerName: 'Omar Joukhane',
+    reviewedAt: '2026-08-25',
+  },
+  {
+    id: 'PS-04',
+    partnerId: 'org_rabat_001',
+    standardId: 'WORKPLACE_SAFETY',
+    title: '4. Safe Working Environment & Non-Discrimination',
+    requirement: 'Safe physical or remote workspace, free from harassment, with adequate emergency and health provisions.',
+    applicability: 'All Partners',
+    status: 'FULFILLED',
+    reviewerName: 'Wadii Hani',
+    reviewedAt: '2026-08-26',
+  },
+  {
+    id: 'PS-05',
+    partnerId: 'org_rabat_001',
+    standardId: 'CONTRACT_FINANCE_AGREEMENT',
+    title: '5. Signed Agreement & Financial Terms Clarity',
+    requirement: 'Official MoU/Contract signed with clear stipend, fee, and refund clauses before opportunity publication.',
+    applicability: 'All Partners',
+    evidenceUrl: 'https://drive.google.com/drive/folders/bmce-mou-signed-2026',
+    status: 'FULFILLED',
+    reviewerName: 'Nourdine Ettaoumi',
+    reviewedAt: '2026-08-28',
+  },
+  {
+    id: 'PS-06',
+    partnerId: 'org_rabat_001',
+    standardId: 'PERIODIC_REVIEW_RENEWAL',
+    title: '6. Periodic Performance & Satisfaction Review',
+    requirement: 'Quarterly review conducted with partner covering intern performance, NPS, and mandate renewal expectations.',
+    applicability: 'Active Partners',
+    status: 'PENDING',
+    reviewerName: 'Omar Joukhane',
+    notes: 'Scheduled for December calibration meeting.',
   },
 ];

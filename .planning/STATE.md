@@ -4,10 +4,10 @@ status: in_progress
 milestone: 'v3.0'
 progress:
   total_phases: 18
-  completed_phases: 13
+  completed_phases: 14
   total_plans: 48
-  completed_plans: 34
-  percent: 71
+  completed_plans: 37
+  percent: 77
 ---
 
 # Project State: AIESEC iCX ERP
@@ -17,16 +17,16 @@ progress:
 See: [.planning/PROJECT.md](file:///c:/Users/HP/Desktop/ERP/.planning/PROJECT.md) (Hub-Based Operating Model aligned 2026-10-29)
 
 **Core value:** One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.  
-**Current focus:** Milestone 3 (v3.0) — Phase 12 Completed, Ready for Phase 13 (Data Integrity, B2B Partner CRM & Partner Standards Register)
+**Current focus:** Milestone 3 (v3.0) — Phase 13 Completed, Ready for Phase 14 (Project Portfolio iGV/iGTa/iGTe, Opportunities & Capacity Waves)
 
 ## Current Position
 
-Phase: 13 of 18 (Phase 13: Data Integrity, B2B Partner CRM & Partner Standards Register)  
-Plan: 0 of 3 in Phase 13 (Total: 34/48 Complete)  
+Phase: 14 of 18 (Phase 14: Project Portfolio iGV/iGTa/iGTe, Opportunities & Capacity Waves)  
+Plan: 0 of 2 in Phase 14 (Total: 37/48 Complete)  
 Status: In progress  
-Last activity: 2026-10-29 — Executed and verified Phase 12 (Plans 12-01 & 12-02): dedicated `/members` module with Rabat roster, Composite MES (0-100%), 4 tiers, Rabat 6 routines heatmap, O2O coaching logger, TeSt scorecard, and Mandate Handover Pack generator. Next.js production build compiled cleanly across all 21 routes.  
+Last activity: 2026-10-29 — Executed and verified Phase 13 (Plans 13-01, 13-02, 13-03): relational B2B organizations and multi-deals separation, slide-over partner edit drawer, 8-stage visual sales stepper with mandatory loss reasons, BANT discovery gate, contract gate, 6-checkpoint Partner Standards Register, and 3-way view switcher on /sales. All 46 Vitest suites (358 tests) and Next.js build (21 routes) passed.  
 
-Progress: [███████░░░] 71%
+Progress: [████████░░] 77%
 
 ## Performance Metrics
 
