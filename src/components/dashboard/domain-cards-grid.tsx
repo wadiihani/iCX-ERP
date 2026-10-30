@@ -25,14 +25,14 @@ export const DomainCardsGrid: React.FC<DomainCardsGridProps> = ({
         <div className="flex items-center gap-2">
           <LayoutGrid className="w-4 h-4 text-indigo-600" />
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-            Level 2 Command Grid (3×3 Domain Executive Cards)
+            3×3 Domain Overview
           </h2>
-          <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold border border-indigo-200 uppercase tracking-wider">
-            Nivo Powered
+          <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-200 uppercase tracking-wider">
+            Nivo Visuals
           </span>
         </div>
-        <span className="text-[11px] text-slate-400">
-          Click any card to load its specialized scorecards, Nivo graphs &amp; exceptions below
+        <span className="text-[11px] text-slate-500">
+          Select a domain to inspect charts and actions below.
         </span>
       </div>
 

@@ -71,11 +71,11 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
           <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Row 3 — Conversion Trends &amp; Project Capacity (Nivo Powered)
+            Trends &amp; Capacity
           </h2>
         </div>
         <span className="text-[11px] text-slate-500 font-medium">
-          Core Question: &quot;Where exactly are we losing people, partners, or time?&quot;
+          Cohort conversion, slot allocation, and sales speed.
         </span>
       </div>
 
@@ -87,7 +87,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-blue-600" />
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Cohort Conversion Funnel (APD &rarr; REA &rarr; COM)
+                  EP Conversion Funnel
                 </h3>
               </div>
 
@@ -100,7 +100,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
                   <button
                     onClick={() => setFunnelViewMode('NIVO')}
                     className={clsx(
-                      'px-2 py-0.5 rounded-md transition-colors cursor-pointer',
+                      'px-2.5 py-1 rounded-md transition-colors cursor-pointer',
                       funnelViewMode === 'NIVO'
                         ? 'bg-white text-blue-700 shadow-2xs'
                         : 'text-slate-500 hover:text-slate-800'
@@ -111,7 +111,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
                   <button
                     onClick={() => setFunnelViewMode('TABLE')}
                     className={clsx(
-                      'px-2 py-0.5 rounded-md transition-colors cursor-pointer',
+                      'px-2.5 py-1 rounded-md transition-colors cursor-pointer',
                       funnelViewMode === 'TABLE'
                         ? 'bg-white text-blue-700 shadow-2xs'
                         : 'text-slate-500 hover:text-slate-800'
@@ -124,7 +124,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
             </div>
 
             <p className="text-xs text-slate-500 mt-2">
-              Sequential EXPA cohort progression with animated D3 geometry, drop-off curves, and duration metrics.
+              Track where applicants drop off between Application and Completion.
             </p>
 
             {/* NIVO FUNNEL VISUAL */}
@@ -194,13 +194,13 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
             <span className="text-slate-500">
-              End-to-End Cohort Conversion: <strong className="text-slate-800">21.4% (24/112)</strong>
+              Overall Cohort Conversion: <strong className="text-slate-800">21.4% (24/112 EPs)</strong>
             </span>
             <button
               onClick={() => onInspectKpi('KPI-FUNNEL-02')}
               className="text-blue-600 hover:text-blue-700 font-semibold inline-flex items-center gap-1 cursor-pointer"
             >
-              Inspect stage transition records &rarr;
+              View transitions &rarr;
             </button>
           </div>
         </div>
@@ -213,7 +213,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
               <div className="flex items-center gap-1.5">
                 <Briefcase className="w-4 h-4 text-emerald-600" />
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  B2B Sales Velocity &amp; Closing Curve
+                  B2B Sales Velocity
                 </h3>
               </div>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
@@ -252,7 +252,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
               <div className="flex items-center gap-1.5">
                 <Layers className="w-4 h-4 text-purple-600" />
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Capacity Stack by Project / SDG
+                  Project Slot Capacity
                 </h3>
               </div>
               <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
@@ -274,7 +274,7 @@ export const ExecutiveRowTrends: React.FC<ExecutiveRowTrendsProps> = ({
                 onClick={() => onInspectKpi('KPI-CONT-03')}
                 className="text-purple-600 hover:text-purple-700 font-semibold cursor-pointer"
               >
-                Inspect allocations &rarr;
+                Inspect slots &rarr;
               </button>
             </div>
           </div>

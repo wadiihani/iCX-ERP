@@ -133,7 +133,7 @@ export default function CommandDashboardPage() {
               </h1>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Cohort-Aware Analytics · 18 Refreshed Standards · AFPM Compliant · Mandate {filters.term} · Cohort {filters.cohort}
+              Real-time exchange metrics, pipeline velocity, and standards tracking · Term {filters.term}
             </p>
           </div>
 

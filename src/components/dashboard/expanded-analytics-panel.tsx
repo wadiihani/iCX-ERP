@@ -134,7 +134,7 @@ export const ExpandedAnalyticsPanel: React.FC<ExpandedAnalyticsPanelProps> = ({
         content += `"${item.code}","${item.name}","${item.formula}","${item.current}","${item.target}","${item.achievedPct}%","${item.rag}","${item.responsibleRole}"\n`;
       });
     } else {
-      content = `# AIESEC in Rabat â€” Domain Report: ${card.title}\n\n`;
+      content = `# AIESEC in Rabat — Domain Report: ${card.title}\n\n`;
       content += `**Primary MoS**: ${card.primaryMos.value} / ${card.primaryMos.target} (${card.primaryMos.attainmentPct}%)\n`;
       content += `**Status**: ${card.healthLabel} (${card.healthStatus})\n\n`;
       content += `| Code | Metric | Formula | Current | Target | % Achieved | Status | Owner |\n`;
@@ -323,7 +323,7 @@ export const ExpandedAnalyticsPanel: React.FC<ExpandedAnalyticsPanelProps> = ({
                           : 'bg-slate-100 text-slate-600'
                       )}
                     >
-                      {kpi.delta.direction === 'up' ? 'â–²' : kpi.delta.direction === 'down' ? 'â–¼' : 'â€”'} {kpi.delta.value}
+                      {kpi.delta.direction === 'up' ? '▲' : kpi.delta.direction === 'down' ? '▼' : '—'} {kpi.delta.value}
                     </span>
                   )}
                 </div>
@@ -476,10 +476,10 @@ function renderDomainGraphs(
       ];
 
       const bulletSlas = [
-        { id: 'sla_contact', label: 'APP â†’ Contact (SLA: â‰¤24h)', actual: 18.0, target: 24.0, unit: 'h', higherIsBetter: false },
-        { id: 'sla_acc', label: 'Contact â†’ ACC (SLA: â‰¤3d)', actual: 2.6, target: 3.0, unit: 'd', higherIsBetter: false },
-        { id: 'sla_apd', label: 'ACC â†’ APD (SLA: â‰¤2d)', actual: 1.8, target: 2.0, unit: 'd', higherIsBetter: false },
-        { id: 'sla_total', label: 'Total APP â†’ APD (SLA: â‰¤5d)', actual: 4.2, target: 5.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_contact', label: 'APP → Contact (SLA: ≤24h)', actual: 18.0, target: 24.0, unit: 'h', higherIsBetter: false },
+        { id: 'sla_acc', label: 'Contact → ACC (SLA: ≤3d)', actual: 2.6, target: 3.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_apd', label: 'ACC → APD (SLA: ≤2d)', actual: 1.8, target: 2.0, unit: 'd', higherIsBetter: false },
+        { id: 'sla_total', label: 'Total APP → APD (SLA: ≤5d)', actual: 4.2, target: 5.0, unit: 'd', higherIsBetter: false },
       ];
 
       const paceData = [
@@ -517,33 +517,33 @@ function renderDomainGraphs(
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Where do we lose EPs? (Nivo Cohort Funnel)</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Funnel Conversion & Drop-Off</h3>
                   <p className="text-[11px] text-slate-500">Interactive SVG funnel with cohort conversion fractions &amp; drop-offs</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Funnel</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Cohort Funnel</span>
               </div>
               <NivoCohortFunnel stages={nivoFunnelStages} height={230} />
             </div>
             {/* Graph 1.2: BU */}
             <BulletBarChart
               metrics={bulletSlas}
-              title="Are we within SLA?"
-              subtitle="Average days vs SLA threshold tick; bar turning red signals a slow handoff"
+              title="SLA Response Times"
+              subtitle="Average duration vs target SLA. Bars turn red when exceeding threshold."
             />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Graph 1.3: SC */}
             <PaceLineChart
               data={paceData}
-              title="Ahead or behind pace?"
-              subtitle="Cumulative realizations (solid) vs semester plan (dashed); gap labeled at current week"
+              title="Realization Pace"
+              subtitle="Actual cumulative realizations vs semester plan."
               unit="RE"
             />
             {/* Graph 1.4: PA */}
             <ParetoBarChart
               items={lostReasons}
-              title="Why do EPs leave?"
-              subtitle="Root causes ranked desc; 80% reference line reveals the vital few"
+              title="Drop-Off Root Causes"
+              subtitle="Ranked drop-off reasons. The 80% line marks primary drivers."
               onSelectReason={(reason) =>
                 onOpenDrawer({
                   title: `Drop-off Root Cause: ${reason}`,
@@ -591,8 +591,8 @@ function renderDomainGraphs(
       ];
 
       const agingCols = [
-        { id: 'b1', label: '0â€“7 Days (Active)', shortLabel: '0â€“7d' },
-        { id: 'b2', label: '8â€“14 Days (Aging)', shortLabel: '8â€“14d' },
+        { id: 'b1', label: '0–7 Days (Active)', shortLabel: '0–7d' },
+        { id: 'b2', label: '8–14 Days (Aging)', shortLabel: '8–14d' },
         { id: 'b3', label: '>14 Days (Stale)', shortLabel: '>14d' },
       ];
 
@@ -624,18 +624,18 @@ function renderDomainGraphs(
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">B2B Deal Sales Velocity (Nivo Trend)</h3>
-                  <p className="text-[11px] text-slate-500">Cumulative pipeline conversion across Meetings, Proposals, and Signed Agreements</p>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">B2B Sales Velocity</h3>
+                  <p className="text-[11px] text-slate-500">Weekly pipeline progress across meetings, proposals, and signed deals.</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Nivo Line</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Pipeline Velocity</span>
               </div>
               <NivoSalesVelocityLine height={210} />
             </div>
             {/* Graph 2.2: SB */}
             <StackedHorizontalBar
               rows={sectorBreakdown}
-              title="Are we over-reliant on one sector?"
-              subtitle="NGOs vs Schools vs Startups vs Corporates; ensures diversification"
+              title="Partner Sector Concentration"
+              subtitle="Signed partner distribution by industry sector."
             />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -644,8 +644,8 @@ function renderDomainGraphs(
               points={repPoints}
               xAxisLabel="Outreach Logged (Calls + Emails + Visits)"
               yAxisLabel="Discovery Meetings & Contracts Closed"
-              title="Activity or skill problem?"
-              subtitle="Low X = activity problem; High X + Low Y = skill/coaching problem"
+              title="Sales Rep Performance Matrix"
+              subtitle="Outreach activity vs contracts closed per account executive."
               quadrantLabels={{
                 topRight: '🟢 Role Models (Scale)',
                 topLeft: '🟡 Lone Wolves (Increase Outreach)',
@@ -657,8 +657,8 @@ function renderDomainGraphs(
             <HeatmapMatrix
               columns={agingCols}
               rows={agingRows}
-              title="Where are deals stuck?"
-              subtitle="Deal aging across stages; red cells mark stale deals exceeding 14 days"
+              title="Deal Aging by Pipeline Stage"
+              subtitle="Active deal count by aging bucket. Red highlights stale deals (>14 days)."
             />
           </div>
         </div>
@@ -670,7 +670,7 @@ function renderDomainGraphs(
       const slotRows = [
         {
           id: 'gc',
-          title: 'Global Classroom â€” Smart Kids Rabat (SDG 4)',
+          title: 'Global Classroom — Smart Kids Rabat (SDG 4)',
           subtitle: 'Starts in 18 days (2026-11-15)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 8, color: 'bg-emerald-600' },
@@ -681,7 +681,7 @@ function renderDomainGraphs(
         },
         {
           id: 'su',
-          title: 'Skill Up! â€” Youth Center SalÃ© (SDG 8)',
+          title: 'Skill Up! — Youth Center Salé (SDG 8)',
           subtitle: 'Starts in 25 days (2026-11-22)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 6, color: 'bg-emerald-600' },
@@ -692,7 +692,7 @@ function renderDomainGraphs(
         },
         {
           id: 'gl',
-          title: 'Green Leaders â€” Eco Rabat (SDG 13)',
+          title: 'Green Leaders — Eco Rabat (SDG 13)',
           subtitle: 'Starts in 32 days (2026-11-29)',
           segments: [
             { id: 'filled', label: 'Approved (APD/RE)', value: 5, color: 'bg-emerald-600' },
@@ -707,8 +707,8 @@ function renderDomainGraphs(
         { reason: 'SDG 4: Quality Education (Global Classroom / Skill Up!)', count: 18 },
         { reason: 'SDG 8: Decent Work & Economic Growth (Scale Up!)', count: 12 },
         { reason: 'SDG 13: Climate Action (Green Leaders)', count: 8 },
-        { reason: 'iGTa Corporate Short (6â€“12 weeks)', count: 6 },
-        { reason: 'iGTe Teaching Long (6â€“18 months)', count: 4 },
+        { reason: 'iGTa Corporate Short (6–12 weeks)', count: 6 },
+        { reason: 'iGTe Teaching Long (6–18 months)', count: 4 },
       ];
 
       return (
@@ -718,17 +718,17 @@ function renderDomainGraphs(
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <div>
                 <h3 className="text-xs sm:text-sm font-bold text-slate-900">Project Slot Capacity &amp; Fill Rate (Nivo Stacked Bar)</h3>
-                <p className="text-[11px] text-slate-500">Filled vs. Open slots across active SDG opportunity portfolios</p>
+                <p className="text-[11px] text-slate-500">Filled vs open slots across active SDG project portfolios.</p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Nivo Bar</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Slot Capacity</span>
             </div>
             <NivoProjectCapacityBar height={210} />
           </div>
           {/* Graph 3.2: Sorted horizontal bar / PA */}
           <ParetoBarChart
             items={portfolioItems}
-            title="Is the portfolio balanced?"
-            subtitle="Slot volume across official SDG projects and talent exchange durations"
+            title="SDG Portfolio Distribution"
+            subtitle="Slot allocation across SDG projects and internship tracks."
           />
         </div>
       );
@@ -759,17 +759,17 @@ function renderDomainGraphs(
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900">IR Country Sourcing &amp; Quotas (Nivo Yield Bar)</h3>
-                  <p className="text-[11px] text-slate-500">Delivered EPs vs Bilateral Quotas across strategic partner entities</p>
+                  <p className="text-[11px] text-slate-500">Delivered approvals vs agreed bilateral quotas by partner entity.</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Bar</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Quota Delivery</span>
               </div>
               <NivoCountryYieldBar height={220} />
             </div>
             {/* Graph 4.2: BU grouped */}
             <BulletBarChart
               metrics={partnerQuotaBullets}
-              title="Did partners deliver what they promised?"
-              subtitle="Committed joint APD quota tick vs actual delivered approvals per partner LC"
+              title="Bilateral Quota Attainment"
+              subtitle="Agreed quota vs approved EPs for key international partners."
             />
           </div>
           {/* Graph 4.3: QD */}
@@ -777,8 +777,8 @@ function renderDomainGraphs(
             points={partnerPoints}
             xAxisLabel="Applications Sent (APP Volume)"
             yAxisLabel="APP → APD Conversion Rate (%)"
-            title="Which partners do we scale or filter?"
-            subtitle="Top-right = Scale slots; Bottom-right = Tighten pre-screening; Top-left = Run info-sessions"
+            title="Partner Volume vs Conversion"
+            subtitle="Application volume vs approval conversion rate."
             quadrantLabels={{
               topRight: '🟢 Stars / Tier 1 (Scale Slots)',
               topLeft: '🟡 Hidden Gems (Run Info-Sessions)',
@@ -860,7 +860,7 @@ function renderDomainGraphs(
         },
         {
           id: 'v_evisa',
-          title: 'Regime 2: AEVM 24â€“72h e-Visa (Egypt, India, Jordan)',
+          title: 'Regime 2: AEVM 24–72h e-Visa (Egypt, India, Jordan)',
           subtitle: 'Online portal application; 14-day host invitation SLA',
           segments: [
             { id: 'appr', label: 'Issued / Approved', value: 9, color: 'bg-emerald-600' },
@@ -885,8 +885,8 @@ function renderDomainGraphs(
           {/* Graph 5.1: GT countdown */}
           <PreArrivalCountdownTimeline
             rows={countdownRows}
-            title="Who is at risk before arrival?"
-            subtitle="Rows sorted by arrival date; red alert triggered if arrival â‰¤14d and any lock item missing"
+            title="14-Day Arrival Readiness Lock"
+            subtitle="Incoming EPs sorted by arrival. Flags items missing within 14 days of start."
             onSelectEp={(id) =>
               onOpenDrawer({
                 title: `EP Arrival Readiness Dossier: ${id}`,
@@ -898,8 +898,8 @@ function renderDomainGraphs(
           {/* Graph 5.2: SB */}
           <StackedHorizontalBar
             rows={visaRegimes}
-            title="Where is each visa stuck?"
-            subtitle="Distribution of approved EPs across Morocco's 3 visa regimes"
+            title="Visa Regime Progress"
+            subtitle="Status of approved EPs across visa-free, e-visa, and consular tracks."
           />
         </div>
       );
@@ -943,10 +943,10 @@ function renderDomainGraphs(
 
       const surveyFunnel = [
         { id: 're', label: 'Realized EPs', count: 24, target: 24, color: 'bg-blue-600' },
-        { id: 'mid', label: 'Middle Survey Completed (#1â€“#10a)', count: 23, target: 24, color: 'bg-blue-600' },
+        { id: 'mid', label: 'Middle Survey Completed (#1–#10a)', count: 23, target: 24, color: 'bg-blue-600' },
         { id: 'res', label: 'Middle Issues Resolved', count: 23, target: 23, color: 'bg-blue-600' },
         { id: 'fin', label: 'Finished EPs (FIN)', count: 22, target: 24, color: 'bg-emerald-600' },
-        { id: 'fsurv', label: 'Final Survey Completed (#10bâ€“#18)', count: 22, target: 22, color: 'bg-emerald-600' },
+        { id: 'fsurv', label: 'Final Survey Completed (#10b–#18)', count: 22, target: 22, color: 'bg-emerald-600' },
         { id: 'co', label: 'Qualified Complete (CO)', count: 21, target: 22, color: 'bg-emerald-600' },
       ];
 
@@ -957,10 +957,10 @@ function renderDomainGraphs(
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">18 Exchange Standards Fulfillment (Nivo Matrix)</h3>
-                  <p className="text-[11px] text-slate-500">Mandatory vs Elective compliance across Preparation, Experience, and Debrief</p>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">18 Exchange Standards Delivery</h3>
+                  <p className="text-[11px] text-slate-500">Mandatory and elective standards fulfilled across experience phases.</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">Nivo Bar</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">Standards Delivery</span>
               </div>
               <NivoStandardsBar height={210} />
             </div>
@@ -968,14 +968,14 @@ function renderDomainGraphs(
             <HeatmapMatrix
               columns={standardsCols}
               rows={standardsRows}
-              title="Which standard is failing?"
-              subtitle="18 Exchange Standards (* indicates 13 Mandatory); single failing cell shows exact bottleneck"
+              title="Standards Compliance Heatmap"
+              subtitle="Compliance per standard by programme. Asterisks mark 13 mandatory standards."
             />
           </div>
           {/* Graph 6.3: Diverging Bar */}
           <DivergingNpsBar
-            title="How satisfied are participants? (EP NPS)"
-            subtitle="EP Net Promoter Score calculated directly from EXPA survey responses"
+            title="EP Net Promoter Score"
+            subtitle="Net Promoter Score from official EXPA participant responses."
             npsScore={62}
             target={50}
             promotersPct={74}
@@ -992,7 +992,7 @@ function renderDomainGraphs(
       const bedRows = [
         {
           bedId: 'b_1',
-          flat: 'Villa Agdal â€” Flat A',
+          flat: 'Villa Agdal — Flat A',
           room: 'Master Bedroom (Bed 1)',
           neighborhood: 'Agdal',
           weeks: [
@@ -1008,7 +1008,7 @@ function renderDomainGraphs(
         },
         {
           bedId: 'b_2',
-          flat: 'Villa Agdal â€” Flat A',
+          flat: 'Villa Agdal — Flat A',
           room: 'Twin Room (Bed 2)',
           neighborhood: 'Agdal',
           weeks: [
@@ -1024,7 +1024,7 @@ function renderDomainGraphs(
         },
         {
           bedId: 'b_3',
-          flat: 'Apartment Hassan â€” Flat B',
+          flat: 'Apartment Hassan — Flat B',
           room: 'Room 1 (Bed 1)',
           neighborhood: 'Hassan',
           weeks: [
@@ -1043,7 +1043,7 @@ function renderDomainGraphs(
       const propertyScatter = [
         { id: '1', name: 'Villa Agdal Flat A', x: 1150, y: 92, tooltipText: 'Great Value: 1,150 MAD / Bed, 92% EP Satisfaction' },
         { id: '2', name: 'Apartment Hassan B', x: 1050, y: 88, tooltipText: 'Good Value: 1,050 MAD / Bed, 88% EP Satisfaction' },
-        { id: '3', name: 'Residence SalÃ© Marina', x: 1450, y: 64, tooltipText: 'Drop Next Peak: Expensive (1,450 MAD) & Low Rating (64%)' },
+        { id: '3', name: 'Residence Salé Marina', x: 1450, y: 64, tooltipText: 'Drop Next Peak: Expensive (1,450 MAD) & Low Rating (64%)' },
         { id: '4', name: 'Hay Riad Villa C', x: 1200, y: 96, tooltipText: 'Top Performer: 1,200 MAD / Bed, 96% EP Satisfaction' },
       ];
 
@@ -1054,18 +1054,18 @@ function renderDomainGraphs(
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Accommodation Bed Occupancy (Nivo Bar)</h3>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Bed Occupancy & Rates</h3>
                   <p className="text-[11px] text-slate-500">Occupied vs Vacant bed allocation &amp; cost-per-bed across flats</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">Nivo Bar</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">Bed Occupancy</span>
               </div>
               <NivoHousingBar height={200} />
             </div>
             {/* Graph 7.2: GT */}
             <BedOccupancyGantt
               beds={bedRows}
-              title="Where are beds empty or overlapping?"
-              subtitle="Bed occupancy timeline across semester weeks; hatched gaps show unutilized lease cost"
+              title="Weekly Bed Allocation Timeline"
+              subtitle="Bed occupancy across weeks. Gaps indicate unutilized lease capacity."
               onSelectBed={(id) =>
                 onOpenDrawer({
                   title: `Accommodation Flat Lease: ${id}`,
@@ -1080,8 +1080,8 @@ function renderDomainGraphs(
             points={propertyScatter}
             xAxisLabel="Cost per Bed / Month (MAD)"
             yAxisLabel="EP Accommodation Satisfaction Score (%)"
-            title="Which property costs too much for its rating?"
-            subtitle="Top-left expensive & low-rated properties should be renegotiated or terminated"
+            title="Housing Cost vs EP Satisfaction"
+            subtitle="Monthly cost per bed vs participant satisfaction rating."
             quadrantLabels={{
               topRight: '🟢 High Quality (Fair Price)',
               topLeft: '🔴 Expensive & Low Rating (Drop Landlord)',
@@ -1112,9 +1112,9 @@ function renderDomainGraphs(
           title: 'Accounts Receivable Aging Distribution',
           subtitle: 'Collection status across active partner invoices',
           segments: [
-            { id: 'current', label: 'Current (â‰¤ Due Date)', value: 48000, color: 'bg-emerald-600' },
-            { id: 'w1', label: '1â€“7 Days Overdue', value: 12000, color: 'bg-blue-500' },
-            { id: 'w2', label: '8â€“14 Days Overdue', value: 6500, color: 'bg-amber-400' },
+            { id: 'current', label: 'Current (≤ Due Date)', value: 48000, color: 'bg-emerald-600' },
+            { id: 'w1', label: '1–7 Days Overdue', value: 12000, color: 'bg-blue-500' },
+            { id: 'w2', label: '8–14 Days Overdue', value: 6500, color: 'bg-amber-400' },
             { id: 'w3', label: '>14 Days (Penalty & Freeze)', value: 4500, color: 'bg-rose-500' },
           ],
         },
@@ -1128,9 +1128,9 @@ function renderDomainGraphs(
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900">Exchange Cashflow &amp; Surplus Breakdown (Nivo Bar)</h3>
-                  <p className="text-[11px] text-slate-500">Inflows vs Operational Outflows in k MAD with AFPM Sustainability margin</p>
+                  <p className="text-[11px] text-slate-500">Operating revenue, expenses, and net surplus in MAD.</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Nivo Bar</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Cashflow & Surplus</span>
               </div>
               <NivoFinanceBar height={210} />
             </div>
@@ -1138,15 +1138,15 @@ function renderDomainGraphs(
             <FinancialWaterfallChart
               steps={waterfallSteps}
               sustainabilityRatio={1.32}
-              title="Where does money come in and go out?"
-              subtitle="Direct exchange inflows down through operational costs to net operating surplus (MAD)"
+              title="Financial Inflow & Outflow Waterfall"
+              subtitle="Stepwise revenue minus operating costs yielding net retained surplus."
             />
           </div>
           {/* Graph 8.3: SB */}
           <StackedHorizontalBar
             rows={arAgingRows}
-            title="Who owes us money and for how long?"
-            subtitle="AR aging buckets in MAD; red segment (>14d) triggers delivery freeze"
+            title="Accounts Receivable Aging"
+            subtitle="Outstanding partner receivables grouped by days overdue."
           />
         </div>
       );
@@ -1160,9 +1160,9 @@ function renderDomainGraphs(
           title: 'External Rabat Engine (BD, Sales & Partner PRM)',
           subtitle: '9 active team members',
           segments: [
-            { id: 't1', label: 'Tier 1 Core (90â€“100%)', value: 5, color: 'bg-emerald-600' },
-            { id: 't2', label: 'Tier 2 Strong (70â€“89%)', value: 2, color: 'bg-blue-600' },
-            { id: 't3', label: 'Tier 3 Moderate (20â€“69%)', value: 1, color: 'bg-amber-400' },
+            { id: 't1', label: 'Tier 1 Core (90–100%)', value: 5, color: 'bg-emerald-600' },
+            { id: 't2', label: 'Tier 2 Strong (70–89%)', value: 2, color: 'bg-blue-600' },
+            { id: 't3', label: 'Tier 3 Moderate (20–69%)', value: 1, color: 'bg-amber-400' },
             { id: 't4', label: 'Tier 4 Drop-Off (<20%)', value: 1, color: 'bg-rose-500' },
           ],
         },
@@ -1171,9 +1171,9 @@ function renderDomainGraphs(
           title: 'Internal Rabat Engine (Ops, IR, Quality, Visa/Logistics)',
           subtitle: '13 active team members',
           segments: [
-            { id: 't1', label: 'Tier 1 Core (90â€“100%)', value: 8, color: 'bg-emerald-600' },
-            { id: 't2', label: 'Tier 2 Strong (70â€“89%)', value: 3, color: 'bg-blue-600' },
-            { id: 't3', label: 'Tier 3 Moderate (20â€“69%)', value: 2, color: 'bg-amber-400' },
+            { id: 't1', label: 'Tier 1 Core (90–100%)', value: 8, color: 'bg-emerald-600' },
+            { id: 't2', label: 'Tier 2 Strong (70–89%)', value: 3, color: 'bg-blue-600' },
+            { id: 't3', label: 'Tier 3 Moderate (20–69%)', value: 2, color: 'bg-amber-400' },
             { id: 't4', label: 'Tier 4 Drop-Off (<20%)', value: 0, color: 'bg-rose-500' },
           ],
         },
@@ -1214,7 +1214,7 @@ function renderDomainGraphs(
         {
           id: 'kenza',
           label: 'K.A. (At-Risk Drop-off)',
-          sublabel: 'TM Logistics â€” Tier 4',
+          sublabel: 'TM Logistics — Tier 4',
           summaryValue: '18%',
           summaryLabel: 'Critical',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1226,7 +1226,7 @@ function renderDomainGraphs(
         {
           id: 'salma',
           label: 'S.S. (Partial Engagement)',
-          sublabel: 'TM Sales â€” Tier 3',
+          sublabel: 'TM Sales — Tier 3',
           summaryValue: '58%',
           summaryLabel: 'Moderate',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1238,7 +1238,7 @@ function renderDomainGraphs(
         {
           id: 'abdenasser',
           label: 'A.M. (Consistent Contributor)',
-          sublabel: 'TL IR â€” Tier 2 Strong',
+          sublabel: 'TL IR — Tier 2 Strong',
           summaryValue: '88%',
           summaryLabel: 'Strong',
           cells: Array.from({ length: 16 }).map((_, i) => ({
@@ -1280,10 +1280,10 @@ function renderDomainGraphs(
             <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-2xs space-y-2">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Member Engagement Tier Distribution (Nivo Bar)</h3>
-                  <p className="text-[11px] text-slate-500">4-Tier Engagement breakdown across External and Internal departments</p>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">Member Engagement Tiers</h3>
+                  <p className="text-[11px] text-slate-500">Team distribution across Tier 1 (Core) to Tier 4 (Drop-Off).</p>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Nivo Bar</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">Engagement Tiers</span>
               </div>
               <NivoMemberTierBar height={190} />
             </div>
@@ -1292,8 +1292,8 @@ function renderDomainGraphs(
               points={memberPoints}
               xAxisLabel="Attendance & Routine Engagement Rate (%)"
               yAxisLabel="Personal KPI Attainment (%)"
-              title="Who do we coach, recognize, or re-engage?"
-              subtitle="Bottom-left needs O2O this week; Bottom-right needs skills training; Top-right recognize"
+              title="Member Attendance vs Performance"
+              subtitle="Routine attendance rate vs personal KPI achievement."
               quadrantLabels={{
                 topRight: '🟢 Role Models (Recognize & Stretch)',
                 topLeft: '🟡 Lone Wolves (Re-engage Culture)',
@@ -1307,15 +1307,15 @@ function renderDomainGraphs(
             {/* Graph 9.3: Dot matrix (replaces radar!) */}
             <TeamStandardsDotMatrix
               elements={dotMatrixElements}
-              title="Which team skips which standard?"
-              subtitle="Dot matrix replaces radar polygons; exact numeric compliance per team leader"
+              title="Team Minimums Execution Matrix"
+              subtitle="Numeric compliance with Team Minimums across member lifecycles."
             />
             {/* Graph 9.4: HM */}
             <HeatmapMatrix
               columns={weekCols}
               rows={attendanceGridRows}
-              title="Who is attending, who is fading?"
-              subtitle="Sorted lowest engagement first; red streaks trigger proactive retention outreach"
+              title="Weekly Routine Attendance"
+              subtitle="Weekly meeting attendance. Red highlights consecutive missed routines."
             />
           </div>
         </div>

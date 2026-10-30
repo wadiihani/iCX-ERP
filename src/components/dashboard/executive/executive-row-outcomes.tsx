@@ -19,11 +19,11 @@ export const ExecutiveRowOutcomes: React.FC<ExecutiveRowOutcomesProps> = ({
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
           <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Row 1 — Exchange Outcomes &amp; Quality
+            Exchange Outcomes &amp; Quality
           </h2>
         </div>
         <span className="text-[11px] text-slate-500 font-medium">
-          Core Question: &quot;Are we achieving intended exchange outcomes?&quot;
+          Key results: arrivals, completions, conversion, and standards.
         </span>
       </div>
 
@@ -65,10 +65,10 @@ export const ExecutiveRowOutcomes: React.FC<ExecutiveRowOutcomesProps> = ({
         {/* Card 3: Cohort App-to-Realized Rate */}
         <KpiCardMetric
           kpiKey="KPI-FUNNEL-02"
-          title="Cohort App-to-Realized Rate"
+          title="Cohort Conversion Rate"
           value={outcomes.cohortAppToRealized.formattedRate}
           fractionText={outcomes.cohortAppToRealized.fractionText}
-          targetText={`Benchmark: ${outcomes.cohortAppToRealized.targetFormatted}`}
+          targetText={`Target: ${outcomes.cohortAppToRealized.targetFormatted}`}
           attainmentPct={Math.round(
             (outcomes.cohortAppToRealized.value / (outcomes.cohortAppToRealized.target || 20)) * 100
           )}
@@ -76,7 +76,7 @@ export const ExecutiveRowOutcomes: React.FC<ExecutiveRowOutcomesProps> = ({
           trend={outcomes.cohortAppToRealized.trendDirection}
           isGood={outcomes.cohortAppToRealized.isGood}
           confidence="VERIFIED_OFFICIAL"
-          authorityName="IM Hub / GV Dashboard"
+          authorityName="IM Hub"
           onClick={() => onInspectKpi('KPI-FUNNEL-02')}
           drillDownUrl="/crm"
         />
@@ -84,10 +84,10 @@ export const ExecutiveRowOutcomes: React.FC<ExecutiveRowOutcomesProps> = ({
         {/* Card 4: Standards Compliance */}
         <KpiCardMetric
           kpiKey="KPI-STD-01"
-          title="18 Standards Fulfillment Rate"
+          title="18 Standards Met"
           value={outcomes.standardsCompliance.formattedRate}
           fractionText={outcomes.standardsCompliance.fractionText}
-          targetText={`Statutory Floor: ${outcomes.standardsCompliance.targetFormatted} (16/18)`}
+          targetText={`Floor: ${outcomes.standardsCompliance.targetFormatted} (16/18)`}
           attainmentPct={Math.round(
             (outcomes.standardsCompliance.value / (outcomes.standardsCompliance.target || 88.8)) * 100
           )}

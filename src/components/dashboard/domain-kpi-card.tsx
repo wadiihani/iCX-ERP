@@ -170,8 +170,8 @@ export const DomainKpiCard: React.FC<DomainKpiCardProps> = ({
 
       {/* Expanded status hint */}
       <div className="mt-3 flex items-center justify-between text-[11px] font-semibold text-slate-600 pt-1 border-t border-slate-100/80">
-        <span className={clsx(isSelected ? 'text-blue-600 font-bold' : 'group-hover:text-slate-700')}>
-          {isSelected ? 'Analytics Workspace Active' : 'Click to inspect domain'}
+        <span className={clsx(isSelected ? 'text-blue-600 font-bold' : 'group-hover:text-slate-800')}>
+          {isSelected ? 'Workspace Active' : 'Inspect details'}
         </span>
         <ChevronDown
           className={clsx(

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import clsx from 'clsx';
-import { DomainCardSummary, DomainId } from '@/lib/dashboard/dashboard-types';
+import { DomainCardSummary } from '@/lib/dashboard/dashboard-types';
 
 interface NivoDomainMicroChartProps {
   card: DomainCardSummary;
@@ -46,9 +46,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
-              Nivo Funnel Flow
+              EP Funnel
             </span>
-            <span className="font-bold text-emerald-600">CR: 17.4% (24/138)</span>
+            <span className="font-mono font-bold text-emerald-600 tabular-nums">24/138 EPs (17.4%)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -80,7 +80,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value} EPs</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value} EPs</strong>
                 </div>
               )}
             />
@@ -104,9 +104,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
-              Nivo Deal Velocity
+              Sales Pipeline
             </span>
-            <span className="font-bold text-slate-800">14 Signed / 84k MAD</span>
+            <span className="font-mono font-bold text-slate-800 tabular-nums">14 Signed · 84k MAD</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -138,7 +138,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value} Deals</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value} Deals</strong>
                 </div>
               )}
             />
@@ -160,9 +160,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 inline-block" />
-              Nivo Slot Fill Rate
+              Slot Capacity
             </span>
-            <span className="font-bold text-slate-800">78.0% (32/41 Filled)</span>
+            <span className="font-mono font-bold text-slate-800 tabular-nums">32/41 filled (78.0%)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -194,7 +194,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value} Slots</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value} Slots</strong>
                 </div>
               )}
             />
@@ -219,9 +219,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
-              Nivo IR Sourcing Share
+              IR Sourcing
             </span>
-            <span className="font-bold text-blue-600">74% Direct IR Pipeline</span>
+            <span className="font-mono font-bold text-blue-600 tabular-nums">74% direct IR pipeline</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -253,7 +253,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value}% of EPs</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}% EPs</strong>
                 </div>
               )}
             />
@@ -275,9 +275,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
-              Nivo 14-Day Lock Gate
+              14-Day Lock
             </span>
-            <span className="font-bold text-emerald-600">92% Ready (1 Breach)</span>
+            <span className="font-mono font-bold text-emerald-600 tabular-nums">92% ready (1 alert)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -309,7 +309,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value}% EPs Compliant</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}% Compliant</strong>
                 </div>
               )}
             />
@@ -331,9 +331,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-purple-600 inline-block" />
-              Nivo 18 Standards
+              18 Standards
             </span>
-            <span className="font-bold text-emerald-600">17/18 Met (94.4%)</span>
+            <span className="font-mono font-bold text-emerald-600 tabular-nums">17/18 fulfilled (94.4%)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -365,7 +365,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value} of 18 Standards</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}/18 Standards</strong>
                 </div>
               )}
             />
@@ -387,9 +387,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-600 inline-block" />
-              Nivo Bed Occupancy
+              Bed Occupancy
             </span>
-            <span className="font-bold text-slate-800">88.0% (Target 85%)</span>
+            <span className="font-mono font-bold text-slate-800 tabular-nums">88% occupied (Target 85%)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -421,7 +421,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value}% of Bed Capacity</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}% Beds</strong>
                 </div>
               )}
             />
@@ -443,9 +443,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 inline-block" />
-              Nivo AFPM Sustainability
+              Sustainability
             </span>
-            <span className="font-bold text-emerald-600">1.32x (Healthy &gt;1.0)</span>
+            <span className="font-mono font-bold text-emerald-600 tabular-nums">1.32x ratio (+29.2k MAD)</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -477,7 +477,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value}% AFPM Coverage</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}% Coverage</strong>
                 </div>
               )}
             />
@@ -501,9 +501,9 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium mb-1">
             <span className="flex items-center gap-1 font-semibold text-slate-700">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
-              Nivo 4-Tier Engagement
+              Team Engagement
             </span>
-            <span className="font-bold text-emerald-600">83% Active (T1+T2)</span>
+            <span className="font-mono font-bold text-emerald-600 tabular-nums">83% active members</span>
           </div>
           <div style={{ height }}>
             <ResponsiveBar
@@ -535,7 +535,7 @@ export const NivoDomainMicroChart: React.FC<NivoDomainMicroChartProps> = ({
               tooltip={({ id, value, color }) => (
                 <div className="bg-slate-900 text-white text-[10px] rounded px-2 py-1 shadow-md">
                   <span style={{ color }} className="font-bold mr-1">●</span>
-                  {id}: <strong>{value}% of LCP/LCVP/Members</strong>
+                  {id}: <strong className="tabular-nums font-mono">{value}% Members</strong>
                 </div>
               )}
             />

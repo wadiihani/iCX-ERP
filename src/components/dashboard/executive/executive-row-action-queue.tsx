@@ -47,12 +47,12 @@ export const ExecutiveRowActionQueue: React.FC<ExecutiveRowActionQueueProps> = (
     });
 
     return [
-      { id: 'ALL', label: 'All Action Items', count: counts.ALL },
+      { id: 'ALL', label: 'All Items', count: counts.ALL },
       { id: 'OVERDUE_STANDARDS', label: 'Standards Overdue', count: counts.OVERDUE_STANDARDS },
-      { id: 'UNMATCHED_EPS', label: 'Unmatched EPs >7d', count: counts.UNMATCHED_EPS },
-      { id: 'STALE_DEALS', label: 'Stale B2B Deals', count: counts.STALE_DEALS },
-      { id: 'ARRIVALS_READINESS', label: 'Arrival Gaps', count: counts.ARRIVALS_READINESS },
-      { id: 'HIGH_SEVERITY_CASES', label: 'Escalations / Mood', count: counts.HIGH_SEVERITY_CASES },
+      { id: 'UNMATCHED_EPS', label: 'Unmatched EPs', count: counts.UNMATCHED_EPS },
+      { id: 'STALE_DEALS', label: 'Stale Deals', count: counts.STALE_DEALS },
+      { id: 'ARRIVALS_READINESS', label: 'Arrival Readiness', count: counts.ARRIVALS_READINESS },
+      { id: 'HIGH_SEVERITY_CASES', label: 'Escalations', count: counts.HIGH_SEVERITY_CASES },
       { id: 'OVERDUE_INVOICES', label: 'Overdue Invoices', count: counts.OVERDUE_INVOICES },
     ];
   }, [queueItems]);
@@ -68,14 +68,14 @@ export const ExecutiveRowActionQueue: React.FC<ExecutiveRowActionQueueProps> = (
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse" />
           <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
-            Row 4 — Real-Time Risk &amp; Action Queue
+            Urgent Action Queue
           </h2>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
-            {queueItems.length} Immediate Actionable Signals
+            {queueItems.length} items needing attention
           </span>
         </div>
         <span className="text-[11px] text-slate-500 font-medium">
-          Core Question: &quot;Who needs to do what, by when?&quot;
+          Issues, responsible owners, and next actions.
         </span>
       </div>
 
@@ -113,12 +113,12 @@ export const ExecutiveRowActionQueue: React.FC<ExecutiveRowActionQueueProps> = (
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
-                <th className="py-3 px-4">Severity &amp; Risk Domain</th>
-                <th className="py-3 px-4">Action Item &amp; Root Cause Signal</th>
-                <th className="py-3 px-4">Affected Entity</th>
-                <th className="py-3 px-4">Accountable Owner</th>
-                <th className="py-3 px-4 text-center">Idle / Overdue</th>
-                <th className="py-3 px-4 text-right">Prescribed Action</th>
+                <th className="py-3 px-4">Severity &amp; Domain</th>
+                <th className="py-3 px-4">Issue &amp; Signal</th>
+                <th className="py-3 px-4">Entity</th>
+                <th className="py-3 px-4">Owner</th>
+                <th className="py-3 px-4 text-center">Overdue</th>
+                <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
