@@ -20,6 +20,7 @@ import {
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import { INITIAL_EPS, type EPRecord, type EpStandardDeliveryState, type EpTouchpointEntry } from '@/lib/ep/ep-data';
 import { EpEditDrawer } from '@/components/funnel/ep-edit-drawer';
+import { EpWorkflowStepper } from '@/components/funnel/ep-workflow-stepper';
 import { StandardsModal } from '@/components/delivery/standards-modal';
 import { EpExceptionModal, type ExceptionSubmissionPayload } from '@/components/ep/ep-exception-modal';
 import { calculateMatchmakerScore } from '@/lib/funnel/ep-funnel-machine';
@@ -29,6 +30,7 @@ export default function EPMasterTrackerPage() {
   const router = useRouter();
   const [eps, setEps] = useState<EPRecord[]>(INITIAL_EPS);
   const [selectedEpForEdit, setSelectedEpForEdit] = useState<EPRecord | null>(null);
+  const [selectedEpForStepper, setSelectedEpForStepper] = useState<EPRecord | null>(INITIAL_EPS[0] || null);
   const [selectedEpForStandards, setSelectedEpForStandards] = useState<EPRecord | null>(null);
   const [selectedEpForException, setSelectedEpForException] = useState<EPRecord | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
@@ -301,8 +303,15 @@ export default function EPMasterTrackerPage() {
       cell: (ep) => (
         <div className="flex items-center gap-1.5">
           <button
+            onClick={() => setSelectedEpForStepper(ep)}
+            className="rounded border border-blue-200 bg-blue-50 px-2 py-1 text-[10px] font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300 cursor-pointer"
+            title="Inspect & advance 6-stage lifecycle progression"
+          >
+            Lifecycle
+          </button>
+          <button
             onClick={() => setSelectedEpForEdit(ep)}
-            className="rounded border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            className="rounded border border-slate-200 bg-white px-2 py-1 text-[10px] font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
           >
             Dossier & Visas
           </button>
@@ -400,6 +409,41 @@ export default function EPMasterTrackerPage() {
         <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900 flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           <span>{notification}</span>
+        </div>
+      )}
+
+      {/* EP Lifecycle Workflow Stepper (6-Stage Progression) */}
+      {selectedEpForStepper && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-600" />
+              <span>Active EP Lifecycle: {selectedEpForStepper.full_name} ({selectedEpForStepper.nationality})</span>
+            </span>
+            <button
+              onClick={() => setSelectedEpForStepper(null)}
+              className="text-xs font-medium text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
+            >
+              Hide Stepper ✕
+            </button>
+          </div>
+          <EpWorkflowStepper
+            ep={selectedEpForStepper}
+            onTransitionStage={(targetStage) => {
+              setEps((prev) =>
+                prev.map((e) =>
+                  e.id === selectedEpForStepper.id
+                    ? { ...e, status: targetStage, updated_at: new Date().toISOString() }
+                    : e
+                )
+              );
+              setSelectedEpForStepper((prev) =>
+                prev ? { ...prev, status: targetStage, updated_at: new Date().toISOString() } : null
+              );
+              setNotification(`EP "${selectedEpForStepper.full_name}" advanced to stage "${targetStage}".`);
+              setTimeout(() => setNotification(null), 4000);
+            }}
+          />
         </div>
       )}
 

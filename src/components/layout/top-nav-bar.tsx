@@ -67,13 +67,17 @@ export function TopNavBar() {
     const titles: Record<string, string> = {
       crm: 'EP Master Tracker',
       sales: 'B2B Partner CRM',
-      opportunities: 'Opportunities & Slots',
+      pipeline: 'Sales Pipeline Board',
+      opportunities: 'Contracts, Opps & Slots',
       irm: 'IR Partners & Quotas',
       accommodation: 'Exchange Delivery & Standards',
       dashboards: 'Operational Finance',
       admin: 'Workload & Handoffs',
+      'roles-and-access': 'Access Permissions (RBAC)',
       members: 'Member Engagement & TeSt',
       outbox: 'Action Outbox & Sync',
+      organizations: 'Partner Accounts Directory',
+      'role-view': 'Functional Workflow Hubs',
     };
     return titles[seg] || seg.charAt(0).toUpperCase() + seg.slice(1);
   };

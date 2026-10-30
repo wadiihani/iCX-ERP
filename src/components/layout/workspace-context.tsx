@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 
 export type UserRole =
   | 'LC_PRESIDENT'
@@ -98,9 +98,47 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [isDataSettingsOpen, setDataSettingsOpen] = useState<boolean>(false);
   const [activeIntakeType, setActiveIntakeType] = useState<string | null>(null);
 
+  // Restore sidebar state from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('icx_sidebar_state');
+        if (saved !== null) {
+          setSidebarOpen(saved === 'true');
+        }
+      } catch {
+        // Ignore localStorage access errors
+      }
+    }
+  }, []);
+
   const roleConfig = useMemo(() => AVAILABLE_ROLES[currentRole], [currentRole]);
 
-  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => {
+    setSidebarOpen((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('icx_sidebar_state', String(next));
+        } catch {
+          // Ignore localStorage write errors
+        }
+      }
+      return next;
+    });
+  };
+
+  const handleSetSidebarOpen = (open: boolean) => {
+    setSidebarOpen(open);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('icx_sidebar_state', String(open));
+      } catch {
+        // Ignore localStorage write errors
+      }
+    }
+  };
+
   const openQuickIntake = (type: string) => setActiveIntakeType(type);
   const closeQuickIntake = () => setActiveIntakeType(null);
 
@@ -112,7 +150,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
       currentLc,
       isSidebarOpen,
       toggleSidebar,
-      setSidebarOpen,
+      setSidebarOpen: handleSetSidebarOpen,
       isCommandPaletteOpen,
       setCommandPaletteOpen,
       isDataSettingsOpen,

@@ -20,6 +20,7 @@ import {
   ExecutiveFilterBar,
   ExecutiveFilterState,
 } from '@/components/dashboard/executive/executive-filter-bar';
+import { ExecutivePriorityKpiBar } from '@/components/dashboard/executive/executive-priority-kpi-bar';
 import { ExecutiveRowOutcomes } from '@/components/dashboard/executive/executive-row-outcomes';
 import { ExecutiveRowSupply } from '@/components/dashboard/executive/executive-row-supply';
 import { ExecutiveRowTrends } from '@/components/dashboard/executive/executive-row-trends';
@@ -156,6 +157,13 @@ export default function CommandDashboardPage() {
         {/* VIEW MODE 1: EXECUTIVE 4-ROW ARCHITECTURE (SPEC SECTION 9) */}
         {filters.viewMode === 'EXECUTIVE_4ROW' && (
           <div className="space-y-6">
+            {/* Priority Executive Overview Bar (6 Prioritized Signals) */}
+            <ExecutivePriorityKpiBar
+              outcomes={outcomeCards}
+              supply={supplyCards}
+              onInspectKpi={(key) => setInspectKpiKey(key)}
+            />
+
             {/* Row 1: Exchange Outcomes & Quality */}
             <ExecutiveRowOutcomes
               outcomes={outcomeCards}
