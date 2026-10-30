@@ -15,6 +15,7 @@ import {
   HelpCircle,
   FileCheck,
   Plus,
+  MapPin,
 } from 'lucide-react';
 import {
   BedAllocationBoard,
@@ -26,6 +27,7 @@ import {
   PickupLogisticsTracker,
   INITIAL_ENHANCED_PICKUPS,
 } from '@/components/accommodation/pickup-logistics-tracker';
+import { MobileFieldTools } from '@/components/accommodation/mobile-field-tools';
 import {
   CaseSolvingVault,
   INITIAL_EXTENDED_CASES,
@@ -142,7 +144,7 @@ const INITIAL_EP_STANDARDS_RECORDS: MockParticipantStandards[] = [
 ];
 
 export default function AccommodationAndDeliveryHubPage() {
-  const [activeTab, setActiveTab] = useState<'housing' | 'pickups' | 'standards' | 'cases'>('housing');
+  const [activeTab, setActiveTab] = useState<'housing' | 'pickups' | 'standards' | 'cases' | 'field-tools'>('housing');
   const [allocations, setAllocations] = useState<AccommodationAllocation[]>(INITIAL_ALLOCATIONS_CATALOG);
   const [participantStandards, setParticipantStandards] = useState<MockParticipantStandards[]>(INITIAL_EP_STANDARDS_RECORDS);
   const [selectedAuditParticipant, setSelectedAuditParticipant] = useState<MockParticipantStandards | null>(null);
@@ -328,6 +330,18 @@ export default function AccommodationAndDeliveryHubPage() {
           <AlertOctagon className="h-4 w-4" />
           <span>Case Solving Vault & Visas</span>
         </button>
+
+        <button
+          onClick={() => setActiveTab('field-tools')}
+          className={`pb-3 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === 'field-tools'
+              ? 'border-aiesec-blue text-aiesec-blue dark:text-blue-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          <MapPin className="h-4 w-4" />
+          <span>Mobile Field Tools (#6 & #7)</span>
+        </button>
       </div>
 
       {/* Tab 1: Housing & Bed Inventory */}
@@ -469,6 +483,9 @@ export default function AccommodationAndDeliveryHubPage() {
 
       {/* Tab 4: Case Vault & Legal Readiness */}
       {activeTab === 'cases' && <CaseSolvingVault />}
+
+      {/* Tab 5: Mobile Field Tools */}
+      {activeTab === 'field-tools' && <MobileFieldTools />}
 
       {/* Audit Matrix Modal */}
       {selectedAuditParticipant && (

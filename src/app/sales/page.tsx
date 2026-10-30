@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Building2,
@@ -43,6 +43,7 @@ import {
   PipelineStage,
   PIPELINE_STAGE_CONFIG,
 } from '@/lib/sales/deals-data';
+import { ErpRepository } from '@/lib/storage/erp-repository';
 
 export default function SalesCRMPage() {
   const router = useRouter();
@@ -50,6 +51,22 @@ export default function SalesCRMPage() {
   const [contacts, setContacts] = useState<B2BContact[]>(INITIAL_B2B_CONTACTS);
   const [touchpoints, setTouchpoints] = useState<B2BTouchpoint[]>(INITIAL_B2B_TOUCHPOINTS);
   const [deals, setDeals] = useState<B2bDealRecord[]>(INITIAL_B2B_DEALS);
+
+  // Synchronize with ErpRepository on client mount
+  useEffect(() => {
+    const loadedOrgs = ErpRepository.getOrganizations();
+    if (loadedOrgs && loadedOrgs.length > 0) setOrganizations(loadedOrgs);
+    const loadedDeals = ErpRepository.getDeals();
+    if (loadedDeals && loadedDeals.length > 0) setDeals(loadedDeals);
+
+    const handleRepoUpdate = () => {
+      setOrganizations(ErpRepository.getOrganizations());
+      setDeals(ErpRepository.getDeals());
+    };
+
+    window.addEventListener('icx_repo_update', handleRepoUpdate);
+    return () => window.removeEventListener('icx_repo_update', handleRepoUpdate);
+  }, []);
 
   // 3-way View Switcher on /sales (Plan 13-03)
   const [viewMode, setViewMode] = useState<'KANBAN' | 'TABLE' | 'CARDS'>('TABLE');
@@ -78,14 +95,22 @@ export default function SalesCRMPage() {
   };
 
   const handleSavePartner = (updated: B2BOrganization) => {
-    setOrganizations((prev) => prev.map((org) => (org.id === updated.id ? updated : org)));
+    setOrganizations((prev) => {
+      const next = prev.map((org) => (org.id === updated.id ? updated : org));
+      ErpRepository.saveOrganizations(next);
+      return next;
+    });
   };
 
   const handleCreateDeal = (newDeal: B2bDealRecord) => {
-    setDeals((prev) => [newDeal, ...prev]);
+    setDeals((prev) => {
+      const next = [newDeal, ...prev];
+      ErpRepository.saveDeals(next);
+      return next;
+    });
     // update partner active_deals_count
-    setOrganizations((prev) =>
-      prev.map((org) =>
+    setOrganizations((prev) => {
+      const next = prev.map((org) =>
         org.id === newDeal.orgId
           ? {
               ...org,
@@ -93,8 +118,10 @@ export default function SalesCRMPage() {
               total_deal_value_mad: org.total_deal_value_mad + newDeal.revenueMad,
             }
           : org
-      )
-    );
+      );
+      ErpRepository.saveOrganizations(next);
+      return next;
+    });
   };
 
   const handleAddContact = (newContact: B2BContact) => {
@@ -104,8 +131,8 @@ export default function SalesCRMPage() {
   const handleTransitionDealStage = (targetStage: PipelineStage, reason?: string) => {
     if (!selectedDealForStepper) return;
 
-    setDeals((prev) =>
-      prev.map((d) => {
+    setDeals((prev) => {
+      const next = prev.map((d) => {
         if (d.id === selectedDealForStepper.id) {
           const updated: B2bDealRecord = {
             ...d,
@@ -127,8 +154,10 @@ export default function SalesCRMPage() {
           return updated;
         }
         return d;
-      })
-    );
+      });
+      ErpRepository.saveDeals(next);
+      return next;
+    });
   };
 
   // OP Candidate Rejection Counter badge (AEPP 4.2.2.1.7)

@@ -13,6 +13,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { useWorkspace } from './workspace-context';
+import { ErpRepository } from '@/lib/storage/erp-repository';
 
 export function DataSettingsModal() {
   const { isDataSettingsOpen, setDataSettingsOpen, currentLc } = useWorkspace();
@@ -107,6 +108,7 @@ export function DataSettingsModal() {
       });
       return;
     }
+    ErpRepository.resetToStatutoryDefaults();
     setFeedbackMessage({
       type: 'success',
       text: 'System state successfully reset to authoritative statutory Rabat 26.2 seed data.',

@@ -36,6 +36,7 @@ import {
   INITIAL_OPPORTUNITIES,
   type ExtendedOpportunity,
 } from '@/lib/opportunity/opportunity-data';
+import { ErpRepository } from '@/lib/storage/erp-repository';
 
 export default function OpportunitiesPage() {
   const [opportunities, setOpportunities] = useState<ExtendedOpportunity[]>(INITIAL_OPPORTUNITIES);
@@ -43,6 +44,19 @@ export default function OpportunitiesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOppForDetail, setSelectedOppForDetail] = useState<ExtendedOpportunity | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
+
+  // Synchronize with ErpRepository on client mount
+  React.useEffect(() => {
+    const loaded = ErpRepository.getOpportunities();
+    if (loaded && loaded.length > 0) setOpportunities(loaded);
+
+    const handleRepoUpdate = () => {
+      setOpportunities(ErpRepository.getOpportunities());
+    };
+
+    window.addEventListener('icx_repo_update', handleRepoUpdate);
+    return () => window.removeEventListener('icx_repo_update', handleRepoUpdate);
+  }, []);
 
   // Computed counters
   const totalOpenings = opportunities.reduce((acc, o) => acc + o.totalOpenings, 0);
@@ -113,14 +127,16 @@ export default function OpportunitiesPage() {
       slotWaves: [initialWave],
     };
 
-    setOpportunities([newOpp, ...opportunities]);
+    const updated = [newOpp, ...opportunities];
+    setOpportunities(updated);
+    ErpRepository.saveOpportunities(updated);
     setNotification(`Opportunity "${newOpp.title}" created with verified statutory portfolio parameters.`);
     setTimeout(() => setNotification(null), 5000);
   };
 
   const handleAddWave = (opportunityId: string, newWave: OpportunitySlotWave) => {
-    setOpportunities((prev) =>
-      prev.map((opp) => {
+    setOpportunities((prev) => {
+      const next = prev.map((opp) => {
         if (opp.id === opportunityId) {
           const currentSlotsCount = opp.slots.length;
           const newSlots: OpportunitySlot[] = Array.from({ length: newWave.capacity }, (_, i) => ({
@@ -141,8 +157,10 @@ export default function OpportunitiesPage() {
           };
         }
         return opp;
-      })
-    );
+      });
+      ErpRepository.saveOpportunities(next);
+      return next;
+    });
     setNotification(`New slot wave "${newWave.waveLabel}" added with ${newWave.capacity} open slots.`);
     setTimeout(() => setNotification(null), 4000);
   };

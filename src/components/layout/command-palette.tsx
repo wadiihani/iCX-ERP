@@ -12,12 +12,33 @@ import {
   CheckSquare,
   ArrowRight,
   X,
+  PlusCircle,
+  Database,
+  RotateCcw,
+  UserCheck,
+  Sparkles,
 } from 'lucide-react';
-import { useWorkspace } from './workspace-context';
+import { useWorkspace, type UserRole } from './workspace-context';
+import { ErpRepository } from '@/lib/storage/erp-repository';
+
+interface CommandItem {
+  title: string;
+  category: 'Module' | 'EP Record' | 'Partner Account' | 'Quick Action' | 'System' | 'Role Switch';
+  href?: string;
+  action?: () => void;
+  icon: React.ComponentType<{ className?: string }>;
+  code: string;
+}
 
 export function CommandPalette() {
   const router = useRouter();
-  const { isCommandPaletteOpen, setCommandPaletteOpen } = useWorkspace();
+  const {
+    isCommandPaletteOpen,
+    setCommandPaletteOpen,
+    setDataSettingsOpen,
+    setRole,
+    currentRole,
+  } = useWorkspace();
   const [query, setQuery] = useState('');
 
   // Keyboard shortcut listener
@@ -35,37 +56,116 @@ export function CommandPalette() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isCommandPaletteOpen, setCommandPaletteOpen]);
 
-  const quickNav = [
-    { title: 'EP Master Tracker', category: 'Module', href: '/crm', icon: Users, code: 'TRK-01' },
-    { title: 'B2B Partner CRM & Deals', category: 'Module', href: '/sales', icon: Building2, code: 'TRK-02' },
-    { title: 'Opportunities & Slots', category: 'Module', href: '/opportunities', icon: Briefcase, code: 'TRK-03' },
-    { title: 'Delivery & 18 Standards', category: 'Module', href: '/accommodation', icon: ShieldCheck, code: 'TRK-04' },
-    { title: 'Operational Finance Ledger', category: 'Module', href: '/dashboards', icon: DollarSign, code: 'TRK-05' },
-    { title: 'Workload & Handoffs Queue', category: 'Module', href: '/admin', icon: CheckSquare, code: 'TRK-06' },
-    { title: 'Action Outbox & EXPA Sync', category: 'Module', href: '/outbox', icon: Briefcase, code: 'TRK-07' },
-    { title: 'Sofia Martinez (EP-2026-081)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGV' },
-    { title: 'Lukas Schneider (EP-2026-077)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGTe' },
-    { title: 'BMCE Bank Foundation', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-019' },
-    { title: 'Rabat American School', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-022' },
-  ];
+  const commandItems: CommandItem[] = useMemo(
+    () => [
+      // Quick Actions
+      {
+        title: '+ New B2B Lead / Organization',
+        category: 'Quick Action',
+        href: '/sales',
+        icon: PlusCircle,
+        code: 'ACT-01',
+      },
+      {
+        title: '+ New EP Application Dossier',
+        category: 'Quick Action',
+        href: '/crm',
+        icon: PlusCircle,
+        code: 'ACT-02',
+      },
+      {
+        title: '+ New Opportunity & Slot Wave',
+        category: 'Quick Action',
+        href: '/opportunities',
+        icon: PlusCircle,
+        code: 'ACT-03',
+      },
+
+      // Modules
+      { title: 'EP Master Tracker', category: 'Module', href: '/crm', icon: Users, code: 'TRK-01' },
+      { title: 'B2B Partner CRM & Deals', category: 'Module', href: '/sales', icon: Building2, code: 'TRK-02' },
+      { title: 'Opportunities & Slots', category: 'Module', href: '/opportunities', icon: Briefcase, code: 'TRK-03' },
+      { title: 'Delivery & 18 Standards', category: 'Module', href: '/accommodation', icon: ShieldCheck, code: 'TRK-04' },
+      { title: 'Operational Finance Ledger', category: 'Module', href: '/dashboards', icon: DollarSign, code: 'TRK-05' },
+      { title: 'Workload & Handoffs Queue', category: 'Module', href: '/admin', icon: CheckSquare, code: 'TRK-06' },
+      { title: 'Action Outbox & EXPA Sync', category: 'Module', href: '/outbox', icon: Briefcase, code: 'TRK-07' },
+
+      // Stakeholder Records
+      { title: 'Sofia Martinez (EP-2026-081)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGV' },
+      { title: 'Lukas Schneider (EP-2026-077)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGTe' },
+      { title: 'BMCE Bank Foundation', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-019' },
+      { title: 'Rabat American School', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-022' },
+
+      // System Controls
+      {
+        title: 'Open Data Management & Settings',
+        category: 'System',
+        action: () => setDataSettingsOpen(true),
+        icon: Database,
+        code: 'SYS-01',
+      },
+      {
+        title: 'Reset Local Database to Statutory Seed',
+        category: 'System',
+        action: () => ErpRepository.resetToStatutoryDefaults(),
+        icon: RotateCcw,
+        code: 'SYS-02',
+      },
+
+      // Role Switcher
+      {
+        title: 'Switch Role to VP CXP (Operations)',
+        category: 'Role Switch',
+        action: () => setRole('VP_CXP'),
+        icon: UserCheck,
+        code: 'ROLE-CXP',
+      },
+      {
+        title: 'Switch Role to VP BD (Sales & CRM)',
+        category: 'Role Switch',
+        action: () => setRole('VP_BD'),
+        icon: UserCheck,
+        code: 'ROLE-BD',
+      },
+      {
+        title: 'Switch Role to VP FNL (Finance & Legal)',
+        category: 'Role Switch',
+        action: () => setRole('VP_FNL'),
+        icon: UserCheck,
+        code: 'ROLE-FNL',
+      },
+      {
+        title: 'Switch Role to LC President (Governance)',
+        category: 'Role Switch',
+        action: () => setRole('LC_PRESIDENT'),
+        icon: UserCheck,
+        code: 'ROLE-LCP',
+      },
+    ],
+    [setDataSettingsOpen, setRole]
+  );
 
   const filteredItems = useMemo(() => {
-    if (!query.trim()) return quickNav;
+    if (!query.trim()) return commandItems;
     const lower = query.toLowerCase();
-    return quickNav.filter(
+    return commandItems.filter(
       (item) =>
         item.title.toLowerCase().includes(lower) ||
         item.category.toLowerCase().includes(lower) ||
         item.code.toLowerCase().includes(lower)
     );
-  }, [query]);
+  }, [commandItems, query]);
 
   if (!isCommandPaletteOpen) return null;
 
-  const handleSelect = (href: string) => {
+  const handleExecute = (item: CommandItem) => {
     setCommandPaletteOpen(false);
     setQuery('');
-    router.push(href);
+    if (item.action) {
+      item.action();
+    } else if (item.href) {
+      router.push(item.href);
+    }
   };
 
   return (
@@ -82,7 +182,7 @@ export function CommandPalette() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search records, EPs, partners, or jump to tracker..."
+            placeholder="Search records, execute commands, switch roles (e.g. 'EP', 'Reset', 'VP')..."
             autoFocus
             className="w-full bg-transparent px-3 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white"
           />
@@ -99,7 +199,7 @@ export function CommandPalette() {
         <div className="max-h-80 overflow-y-auto p-2 space-y-1">
           {filteredItems.length === 0 ? (
             <div className="p-6 text-center text-xs text-slate-500">
-              No records found matching &ldquo;{query}&rdquo;
+              No operational actions found matching &ldquo;{query}&rdquo;
             </div>
           ) : (
             filteredItems.map((item) => {
@@ -107,7 +207,7 @@ export function CommandPalette() {
               return (
                 <button
                   key={item.title}
-                  onClick={() => handleSelect(item.href)}
+                  onClick={() => handleExecute(item)}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition-colors hover:bg-slate-100 dark:hover:bg-slate-800 group"
                 >
                   <div className="flex items-center gap-2.5">
@@ -140,7 +240,7 @@ export function CommandPalette() {
         <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-3.5 py-2 text-[10px] text-slate-400 dark:border-slate-800 dark:bg-slate-850">
           <div className="flex items-center gap-2">
             <span>Navigation: <kbd className="rounded bg-white px-1 border dark:bg-slate-800">↑</kbd> <kbd className="rounded bg-white px-1 border dark:bg-slate-800">↓</kbd></span>
-            <span>Select: <kbd className="rounded bg-white px-1 border dark:bg-slate-800">Enter</kbd></span>
+            <span>Execute: <kbd className="rounded bg-white px-1 border dark:bg-slate-800">Enter</kbd></span>
           </div>
           <span>Close: <kbd className="rounded bg-white px-1 border dark:bg-slate-800">Esc</kbd></span>
         </div>

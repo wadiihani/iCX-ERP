@@ -20,6 +20,7 @@ import {
   resolveMoroccanVisaRegime,
 } from '@/lib/ir/moroccan-visa-matrix';
 import { INITIAL_IR_PARTNERS } from '@/lib/irm/irm-data';
+import { CommunicationCopilotMenu } from './communication-copilot-menu';
 
 interface EpEditDrawerProps {
   isOpen: boolean;
@@ -137,9 +138,12 @@ export function EpEditDrawer({ isOpen, onClose, ep, onSaveEp }: EpEditDrawerProp
               {ep.full_name} • {ep.expa_ep_id} • Product: <strong className="uppercase">{ep.product}</strong>
             </p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <CommunicationCopilotMenu ep={ep} variant="compact" />
+            <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {error && (
