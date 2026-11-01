@@ -88,7 +88,7 @@ export const NivoCohortFunnel: React.FC<NivoCohortFunnelProps> = ({
         tooltip={({ part }) => {
           const raw = part.data as any;
           return (
-            <div className="bg-slate-900/95 text-white backdrop-blur-md rounded-xl p-3 shadow-xl border border-slate-700 text-xs space-y-1.5 max-w-xs text-left">
+            <div className="bg-slate-900 text-white rounded-lg p-3 border border-slate-700 text-xs space-y-1.5 max-w-xs text-left">
               <div className="flex items-center justify-between gap-3 border-b border-slate-700/80 pb-1.5">
                 <span className="font-bold text-white text-sm">
                   {raw.label}

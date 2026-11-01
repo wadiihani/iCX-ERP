@@ -89,7 +89,7 @@ export const NivoFinanceBar: React.FC<NivoFinanceBarProps> = ({
         labelTextColor="#ffffff"
         motionConfig="gentle"
         tooltip={({ data }: any) => (
-          <div className="bg-slate-900 text-white rounded-lg p-2.5 shadow-xl border border-slate-700 text-xs space-y-1">
+          <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1">
             <span className="font-bold text-white block">{data.category}</span>
             <div className="text-[11px] text-slate-300">
               Amount: <strong className={Number(data.amount) >= 0 ? 'text-emerald-400' : 'text-rose-400'}>

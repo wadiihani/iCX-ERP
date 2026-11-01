@@ -90,7 +90,7 @@ export const NivoCountryYieldBar: React.FC<NivoCountryYieldBarProps> = ({
         tooltip={({ id, value, data }) => {
           const raw = data as any;
           return (
-            <div className="bg-slate-900 text-white rounded-xl p-2.5 shadow-xl border border-slate-700 text-xs space-y-1 text-left min-w-[170px]">
+            <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1 text-left min-w-[170px]">
               <span className="font-bold text-white block border-b border-slate-800 pb-1">
                 {raw.country}
               </span>

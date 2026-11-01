@@ -99,7 +99,7 @@ export const NivoProjectCapacityBar: React.FC<NivoProjectCapacityBarProps> = ({
         tooltip={({ id, value, color, data }) => {
           const raw = data as any;
           return (
-            <div className="bg-slate-900 text-white rounded-lg p-2.5 shadow-xl border border-slate-700 text-xs space-y-1">
+            <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-white">{raw.projectName}</span>
                 <span className="px-1.5 py-0.2 rounded-xs bg-indigo-500/30 text-indigo-300 font-mono text-[10px]">

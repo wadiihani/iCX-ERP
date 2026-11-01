@@ -101,7 +101,7 @@ export const NivoStandardsBar: React.FC<NivoStandardsBarProps> = ({
         labelTextColor="#ffffff"
         motionConfig="gentle"
         tooltip={({ id, value, color, data }) => (
-          <div className="bg-slate-900 text-white rounded-lg p-2.5 shadow-xl border border-slate-700 text-xs space-y-1">
+          <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1">
             <div className="font-bold border-b border-slate-800 pb-1">
               {data.cluster}
             </div>

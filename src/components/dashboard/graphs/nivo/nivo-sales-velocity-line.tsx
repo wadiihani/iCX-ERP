@@ -109,7 +109,7 @@ export const NivoSalesVelocityLine: React.FC<NivoSalesVelocityLineProps> = ({
         useMesh={true}
         motionConfig="gentle"
         tooltip={({ point }: { point: any }) => (
-          <div className="bg-slate-900 text-white rounded-lg p-2.5 shadow-xl border border-slate-700 text-xs space-y-1">
+          <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1">
             <div className="flex items-center gap-2">
               <span
                 className="w-2.5 h-2.5 rounded-full"

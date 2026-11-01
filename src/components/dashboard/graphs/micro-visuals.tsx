@@ -9,7 +9,7 @@ const NivoDomainMicroChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-9 bg-slate-50 rounded animate-pulse mt-2 pt-2 border-t border-slate-100" />
+      <div className="w-full h-11 bg-slate-50 dark:bg-slate-800/50 rounded animate-pulse mt-2 pt-2 border-t border-slate-100 dark:border-slate-800" />
     ),
   }
 );
@@ -19,5 +19,5 @@ interface MicroVisualProps {
 }
 
 export const DomainCardMicroVisual: React.FC<MicroVisualProps> = ({ card }) => {
-  return <NivoDomainMicroChart card={card} height={36} />;
+  return <NivoDomainMicroChart card={card} height={42} />;
 };

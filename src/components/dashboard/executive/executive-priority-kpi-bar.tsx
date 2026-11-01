@@ -10,7 +10,7 @@ import {
   Building2,
   DollarSign,
   ArrowUpRight,
-  ShieldCheck,
+  ArrowRight,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { ExecutiveOutcomeCards, ExecutiveSupplyCards } from '@/lib/types/dashboard-spec';
@@ -80,7 +80,7 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
     {
       id: 'slot-capacity',
       kpiKey: 'KPI-CAP-01',
-      title: 'Active Opportunity Slots',
+      title: 'Opportunity Slots',
       value: `${supply.slotFillRate.fractionText}`,
       denominator: 'slots filled',
       achievementPct: 80.0,
@@ -131,14 +131,14 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
     <section className={clsx('space-y-2.5', className)}>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Executive KPI Overview — Priority Signals
           </h2>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
             6 core operational drivers with verified targets, formulas, and direct module links.
           </p>
         </div>
-        <span className="text-[10px] font-semibold text-slate-400">
+        <span className="text-[10px] font-medium text-slate-400">
           Click any card to inspect or drill down
         </span>
       </div>
@@ -149,12 +149,12 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
           return (
             <div
               key={kpi.id}
-              className="group relative flex flex-col justify-between rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-blue-400 hover:shadow-xs transition-all duration-150 text-left dark:border-slate-800 dark:bg-slate-900"
+              className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-3.5 hover:border-slate-300 transition-colors duration-150 text-left dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
             >
               <div>
                 {/* Header: Title & Icon */}
                 <div className="flex items-center justify-between gap-1.5 mb-1.5">
-                  <span className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">
                     {kpi.title}
                   </span>
                   <div className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-50 dark:bg-slate-800 text-slate-500 group-hover:text-blue-600 transition-colors shrink-0">
@@ -164,11 +164,11 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
 
                 {/* Primary Number */}
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white tabular-nums">
+                  <span className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
                     {kpi.value}
                   </span>
                 </div>
-                <div className="text-[11px] font-mono text-slate-400 truncate">
+                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
                   {kpi.denominator}
                 </div>
               </div>
@@ -178,10 +178,10 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
                 <div className="flex items-center justify-between text-[10px]">
                   <span
                     className={clsx(
-                      'rounded px-1.5 py-0.2 font-bold border',
+                      'rounded px-1.5 py-0.2 font-semibold border',
                       kpi.statusVariant === 'success'
-                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300'
-                        : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                        : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800'
                     )}
                   >
                     {kpi.statusLabel}
@@ -194,7 +194,7 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
                 <div className="flex items-center justify-between pt-0.5">
                   <button
                     onClick={() => onInspectKpi?.(kpi.kpiKey)}
-                    className="text-[10px] font-bold text-blue-600 hover:text-blue-800 dark:text-blue-400 flex items-center gap-0.5 cursor-pointer"
+                    className="text-[10px] font-semibold text-blue-600 hover:text-blue-800 dark:text-blue-400 flex items-center gap-0.5 cursor-pointer"
                   >
                     Inspect
                     <ArrowUpRight className="h-2.5 w-2.5" />
@@ -202,9 +202,10 @@ export const ExecutivePriorityKpiBar: React.FC<ExecutivePriorityKpiBarProps> = (
 
                   <Link
                     href={kpi.moduleHref}
-                    className="text-[10px] font-medium text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    className="text-[10px] font-medium text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center gap-1"
                   >
-                    {kpi.moduleLabel} →
+                    <span>{kpi.moduleLabel}</span>
+                    <ArrowRight className="h-2.5 w-2.5" />
                   </Link>
                 </div>
               </div>

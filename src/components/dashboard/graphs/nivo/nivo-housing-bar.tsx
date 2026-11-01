@@ -85,7 +85,7 @@ export const NivoHousingBar: React.FC<NivoHousingBarProps> = ({
         labelTextColor={(bar: any) => (bar.id === 'vacantBeds' ? '#475569' : '#ffffff')}
         motionConfig="gentle"
         tooltip={({ id, value, color, data }) => (
-          <div className="bg-slate-900 text-white rounded-lg p-2.5 shadow-xl border border-slate-700 text-xs space-y-1">
+          <div className="bg-slate-900 text-white rounded-lg p-2.5 border border-slate-700 text-xs space-y-1">
             <span className="font-bold text-white block">{data.property}</span>
             <div className="text-[11px] text-slate-300">
               <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: color }} />
