@@ -33,7 +33,7 @@
 | **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M3** | Status Governance & Deadline Engine | 3 plans | **Next Up** | — |
+| **M3** | Status Governance & Deadline Engine | 3 plans | **IN PROGRESS** (1/3 done) | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
 | **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
 | **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | Queued | — |
@@ -72,7 +72,16 @@
 
 ---
 
+## Phase M3 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **03-01** | Status Request Schema & Lifecycle State Machine | **COMPLETED** | Migration `20261102000006_icx_status_request_v1.sql` + `src/lib/data-integrity/status-governance.ts` + 8 unit tests (`tests/status-governance-lifecycle.test.ts`) enforcing 6 statutory request kinds, single EP isolation (INV-06), ticket reference gate, and lifecycle finite state machine |
+| **03-02** | Statutory Request Checklist Validators & Timing Engine | **Queued** | Checklist validators for early FI (T-07, T-08), extension FI (T-09), breaks (APIP clauses, English PDFs, timing requirements), and direct break eligibility (T-10) |
+| **03-03** | Deadline Engine & Radar Escalations | **Queued** | Unified `deadline` view and calculation engine: visa delivery SLA (T-12), departure support SLA, APD past RE radar (DQ-052), partner SLAs (DQ-060, DQ-061), ECB/ICB submission radar |
+
+---
+
 ## Next Action
 
-Milestones M0, M1, and M2 are fully completed with 120/120 automated tests passing.
-Proceed to Milestone M3: Status Governance & Deadline Engine (Plans 03-01, 03-02, 03-03).
+Execute Plan 03-02: Statutory Request Checklist Validators & Timing Engine (§7.1–§7.4, T-07, T-08, T-09, T-10).

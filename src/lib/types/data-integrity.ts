@@ -262,4 +262,42 @@ export interface ProofDocument {
   deleted_reason?: string | null;
 }
 
+export type StatusRequestKind =
+  | 'early_fi'
+  | 'extension_fi'
+  | 'break_apd'
+  | 'break_re'
+  | 'break_fi'
+  | 'break_co';
+
+export type StatusRequestLifecycle =
+  | 'draft'
+  | 'ready'
+  | 'submitted'
+  | 'approved'
+  | 'rejected'
+  | 'applied_in_expa';
+
+export interface StatusRequest {
+  id: string; // uuid
+  exchange_id: string; // references Exchange(id)
+  ep_id: string; // references Ep(id) (INV-06)
+  kind: StatusRequestKind;
+  current_status: StatusRequestLifecycle;
+  desired_date?: string | null; // YYYY-MM-DD
+  reason: string;
+  apip_clause_ref?: string | null;
+  ticket_ref?: string | null; // mandatory when submitted
+  checklist_state: Record<string, boolean>;
+  evidence_proof_ids: string[]; // references ProofDocument(id)
+  owner_id: string; // references Member(id) (INV-03)
+  created_at: string;
+  submitted_at?: string | null;
+  decided_at?: string | null;
+  applied_at?: string | null;
+  rejection_reason?: string | null;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
 
