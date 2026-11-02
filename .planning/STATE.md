@@ -30,8 +30,8 @@
 
 | Milestone | Title | Plans | Status | Completion Date |
 |---|---|---|---|---|
-| **M0** | Foundation & Invariants | 3 plans | **In Progress** (2/3 done) | — |
-| **M1** | Master Tracker & Reconciliation | 3 plans | Queued | — |
+| **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
+| **M1** | Master Tracker & Reconciliation | 3 plans | **Next Up** | — |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | Queued | — |
 | **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
@@ -48,10 +48,11 @@
 |---|---|---|---|
 | **00-01** | Core Schema DDL, Enums & Relational Tables | **COMPLETED** | Migration `20261102000001_icx_data_integrity_tracking_v1.sql` + TS types `src/lib/types/data-integrity.ts` + 34 unit tests |
 | **00-02** | Database Integrity Triggers & Append-Only Guarantees | **COMPLETED** | Migration `20261102000002_icx_data_integrity_triggers_v1.sql` + `src/lib/data-integrity/invariants.ts` + 15 unit tests (INV-01, INV-02, INV-05, INV-09, DQ-080) |
-| **00-03** | Rule Registry Seed, RBAC & Acceptance Test Harness | **Ready for Execution** | Statutory rule seeds + RBAC policies + Acceptance Tests T-01..T-20 harness |
+| **00-03** | Rule Registry Seed, RBAC & Acceptance Test Harness | **COMPLETED** | Migration `20261102000003_icx_rule_registry_seed_and_rbac_v1.sql` + `src/lib/data-integrity/rules.ts` + `src/lib/data-integrity/rbac.ts` + 13 acceptance tests (T-01, T-02, T-03, T-16, T-18, T-19) |
 
 ---
 
 ## Next Action
 
-Execute Plan 00-03: Rule Registry Seed, RBAC & Acceptance Test Harness.
+Milestone M0 is complete with 62/62 automated tests passing.
+Proceed to Milestone M1 (Master Tracker & Reconciliation) or dispatch Plan 01-01 planning.
