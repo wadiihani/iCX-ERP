@@ -175,7 +175,7 @@ export interface StandardDef {
   delivered_by: string;
   mandatory: boolean;
   yop_question?: string | null;
-  answer_options?: Record<string, unknown> | null;
+  answer_options?: string[] | Record<string, unknown> | null;
 }
 
 export interface StandardCheck {

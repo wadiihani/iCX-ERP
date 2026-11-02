@@ -3,9 +3,9 @@
 ## Project Overview
 
 - **Milestone Cycle**: Rebuild v1.0 (from `iCX_Data_Integrity_Tracking_Spec.md`)
-- **Active Milestone**: **M0 — Foundation & Invariants**
-- **Status**: Planning complete, ready for milestone execution
-- **Last Updated**: 2026-11-02
+- **Active Milestone**: **M2 — Exchange Standards & Proof Vault**
+- **Status**: Milestone M2 in progress (Plan 02-01 complete)
+- **Last Updated**: 2026-11-03
 
 ---
 
@@ -32,7 +32,7 @@
 |---|---|---|---|---|
 | **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M2** | Exchange Standards & Proof Vault | 3 plans | **Next Up** | — |
+| **M2** | Exchange Standards & Proof Vault | 3 plans | **IN PROGRESS** (1/3 done) | — |
 | **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
 | **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
@@ -62,7 +62,16 @@
 
 ---
 
+## Phase M2 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **02-01** | Exchange Standards Parallel-Truth Service | **COMPLETED** | `src/lib/data-integrity/standards-service.ts` + 10 unit tests (`tests/exchange-standards-service.test.ts`) enforcing parallel truth, INV-05 write-once EP survey answers, `std_delivery_pct`, `completion_readiness`, and DQ-055 mismatch detection |
+| **02-02** | Standards Checklist Validation Engine & Computed Metrics | **Queued** | Detailed checklist item validation for standards #4–#15 (§6.2), checklist completeness calculation, and quality verification |
+| **02-03** | Proof Document Vault & Dead Link Detection | **Queued** | `proof_document` table, SHA-256 hash chaining, Google Drive link validator, dead link detection (DQ-083), Acceptance Test T-20 |
+
+---
+
 ## Next Action
 
-Milestone M1 is complete with 87/87 automated tests passing across M0 & M1.
-Proceed to Milestone M2 (Exchange Standards & Proof Vault) or dispatch Plan 02-01 planning.
+Execute Plan 02-02: Standards Checklist Validation Engine & Computed Metrics (§6.2).
