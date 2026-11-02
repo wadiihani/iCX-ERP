@@ -30,7 +30,7 @@
 
 | Milestone | Title | Plans | Status | Completion Date |
 |---|---|---|---|---|
-| **M0** | Foundation & Invariants | 3 plans | **Next Up** | — |
+| **M0** | Foundation & Invariants | 3 plans | **In Progress** (1/3 done) | — |
 | **M1** | Master Tracker & Reconciliation | 3 plans | Queued | — |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | Queued | — |
 | **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
@@ -42,6 +42,16 @@
 
 ---
 
+## Phase M0 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **00-01** | Core Schema DDL, Enums & Relational Tables | **COMPLETED** | Migration `20261102000001_icx_data_integrity_tracking_v1.sql` + TS types `src/lib/types/data-integrity.ts` + 34 unit tests |
+| **00-02** | Database Integrity Triggers & Append-Only Guarantees | **Ready for Execution** | Triggers for INV-01 (no hard deletes), INV-02 (append-only history), INV-05 (write-once EP answers), INV-09 (universal audit), DQ-080 (status sync) |
+| **00-03** | Rule Registry Seed, RBAC & Acceptance Test Harness | Queued | Statutory rule seeds + RBAC policies + Acceptance Tests T-01..T-20 harness |
+
+---
+
 ## Next Action
 
-Execute `/gsd-plan-phase M0` or dispatch Milestone M0 Foundation execution.
+Execute Plan 00-02: Database Integrity Triggers & Append-Only Guarantees.
