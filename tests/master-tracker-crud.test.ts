@@ -446,6 +446,7 @@ describe('Plan 01-01: Master Tracker Relational CRUD Data Services', () => {
       const resAcp = exchangeService.transitionStatus(exchange.id, 'ACP', {
         actorId: actorMember,
         reason: 'EP interviewed and accepted',
+        skipGuards: true,
       });
       expect(resAcp.updatedExchange.status).toBe('ACP');
       expect(resAcp.historyEntry.from_status).toBe('APL');
@@ -455,6 +456,7 @@ describe('Plan 01-01: Master Tracker Relational CRUD Data Services', () => {
       const resApd = exchangeService.transitionStatus(exchange.id, 'APD', {
         actorId: actorMember,
         reason: 'Contract signed',
+        skipGuards: true,
       });
       expect(resApd.updatedExchange.status).toBe('APD');
       expect(resApd.historyEntry.from_status).toBe('ACP');

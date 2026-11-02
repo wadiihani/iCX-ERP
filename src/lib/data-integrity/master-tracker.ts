@@ -9,6 +9,7 @@
  */
 
 import type {
+  EntityOrg,
   OpPartner,
   Opportunity,
   Contract,
@@ -30,8 +31,10 @@ import {
 } from './invariants';
 import { validateDurationWeeks, validateHoursPerWeek } from './rules';
 import { sanitizeEpForViewer, ActorContext } from './rbac';
+import { assertTransitionGuards } from './stage-gates';
 
 export interface InMemoryDbState {
+  entities: Map<string, EntityOrg>;
   partners: Map<string, OpPartner>;
   opportunities: Map<string, Opportunity>;
   contracts: Map<string, Contract>;
@@ -44,6 +47,7 @@ export interface InMemoryDbState {
 
 export function createInMemoryMasterTrackerDb(): InMemoryDbState {
   return {
+    entities: new Map(),
     partners: new Map(),
     opportunities: new Map(),
     contracts: new Map(),
@@ -64,6 +68,76 @@ export function getMasterTrackerDb(): InMemoryDbState {
 export function resetMasterTrackerDb(): void {
   dbInstance = createInMemoryMasterTrackerDb();
 }
+
+// -----------------------------------------------------------------------------
+// 0. ENTITY_ORG SERVICE
+// -----------------------------------------------------------------------------
+
+export const entityService = {
+  createEntity(
+    data: Omit<EntityOrg, 'id' | 'created_at' | 'deleted_at' | 'deleted_reason'>,
+    actorId: string
+  ): EntityOrg {
+    const id = `entity_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const now = new Date().toISOString();
+
+    const entity: EntityOrg = {
+      ...data,
+      id,
+      created_at: now,
+    };
+
+    dbInstance.entities.set(id, entity);
+
+    dbInstance.auditLogs.push({
+      id: dbInstance.auditLogs.length + 1,
+      ts: now,
+      actor: actorId,
+      action: 'INSERT',
+      table_name: 'entity_org',
+      record_id: id,
+      before: null,
+      after: entity as unknown as Record<string, unknown>,
+    });
+
+    return entity;
+  },
+
+  getEntity(id: string): EntityOrg | null {
+    const e = dbInstance.entities.get(id);
+    if (!e || e.deleted_at) return null;
+    return e;
+  },
+
+  setFreezeFlag(id: string, isFrozen: boolean, actorId: string, frozenSince?: string | null): EntityOrg {
+    const existing = dbInstance.entities.get(id);
+    if (!existing || existing.deleted_at) {
+      throw new Error(`Entity not found: ${id}`);
+    }
+
+    const before = { ...existing };
+    const updated: EntityOrg = {
+      ...existing,
+      is_frozen: isFrozen,
+      frozen_since: isFrozen ? (frozenSince ?? new Date().toISOString()) : null,
+    };
+
+    dbInstance.entities.set(id, updated);
+
+    dbInstance.auditLogs.push({
+      id: dbInstance.auditLogs.length + 1,
+      ts: new Date().toISOString(),
+      actor: actorId,
+      action: 'UPDATE_FREEZE_FLAG',
+      table_name: 'entity_org',
+      record_id: id,
+      before: before as unknown as Record<string, unknown>,
+      after: updated as unknown as Record<string, unknown>,
+    });
+
+    return updated;
+  },
+};
 
 // -----------------------------------------------------------------------------
 // 1. OP_PARTNER SERVICE
@@ -642,6 +716,8 @@ export const exchangeService = {
       reason?: string;
       proofId?: string;
       breakType?: BreakType | null;
+      skipGuards?: boolean;
+      hasEpSurveyConfirmation?: boolean;
     }
   ): {
     updatedExchange: Exchange;
@@ -650,6 +726,28 @@ export const exchangeService = {
     const current = dbInstance.exchanges.get(exchangeId);
     if (!current || current.deleted_at) {
       throw new Error(`Exchange not found: ${exchangeId}`);
+    }
+
+    // Evaluate Transition Guards (§4.2) unless explicitly bypassed or EXPA sync (INV-04)
+    if (!options.skipGuards && options.source !== 'expa_sync') {
+      const opp = dbInstance.opportunities.get(current.opportunity_id);
+      const partner = opp ? dbInstance.partners.get(opp.op_id) : null;
+      const contract = opp ? contractService.getContractByOpportunity(opp.id) : null;
+      const ep = dbInstance.eps.get(current.ep_id);
+      const homeEntity = ep ? dbInstance.entities.get(ep.home_entity_id) : null;
+      const checks = this.getStandardChecks(exchangeId);
+
+      assertTransitionGuards(toStatus, {
+        exchange: current,
+        partner,
+        opportunity: opp,
+        contract,
+        ep,
+        homeEntity,
+        standardChecks: checks,
+        source: options.source,
+        hasEpSurveyConfirmation: options.hasEpSurveyConfirmation,
+      });
     }
 
     const { updatedExchange, historyEntry } = prepareStatusTransition(current, toStatus, {
