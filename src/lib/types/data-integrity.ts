@@ -77,6 +77,15 @@ export interface OpPartner {
   owner_id: string; // references Member(id)
   stage: OpPartnerStage;
   last_touchpoint_at?: string | null;
+  persona?: 'NGO Project Manager' | 'NGO Founder' | 'School Director' | 'Other' | string | null;
+  preferred_channel?: 'call' | 'WhatsApp' | 'email' | 'Facebook/Instagram' | 'meeting' | null;
+  objection_tags?: string[];
+  contact_person?: {
+    name?: string;
+    phone?: string;
+    email?: string;
+    role?: string;
+  } | null;
   created_at: string;
   deleted_at?: string | null;
   deleted_reason?: string | null;

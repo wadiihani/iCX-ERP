@@ -31,7 +31,7 @@
 | Milestone | Title | Plans | Status | Completion Date |
 |---|---|---|---|---|
 | **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
-| **M1** | Master Tracker & Reconciliation | 3 plans | **Next Up** | — |
+| **M1** | Master Tracker & Reconciliation | 3 plans | **In Progress** (1/3 done) | — |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | Queued | — |
 | **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
@@ -52,7 +52,16 @@
 
 ---
 
+## Phase M1 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **01-01** | Master Tracker Relational CRUD Data Layer & Services | **COMPLETED** | `src/lib/data-integrity/master-tracker.ts` + 11 unit tests (`tests/master-tracker-crud.test.ts`) enforcing INV-01, INV-03, INV-06, INV-08, INV-10, DQ-001, DQ-080 |
+| **01-02** | Stage Required-Field Validator Gates | **Ready for Execution** | Gates for Attraction, Consideration, Preparation, Experience, Post-exp (§5.1) preventing premature stage advancement |
+| **01-03** | EXPA CSV/JSON Sync & Reconciliation Engine | Queued | Schema drift check, >5% row drop quarantine guard (DQ-082), EXPA sync merge rules (DQ-040..DQ-042) |
+
+---
+
 ## Next Action
 
-Milestone M0 is complete with 62/62 automated tests passing.
-Proceed to Milestone M1 (Master Tracker & Reconciliation) or dispatch Plan 01-01 planning.
+Execute Plan 01-02: Stage Required-Field Validator Gates.
