@@ -223,3 +223,21 @@ export interface DqIssue {
   details?: Record<string, unknown>;
 }
 
+export type ImportBatchStatus = 'applied' | 'quarantined' | 'failed';
+
+export interface ImportBatch {
+  id: number; // bigserial
+  source: 'expa_csv' | 'expa_api' | 'manual_csv';
+  file_sha256: string;
+  rows_in: number;
+  rows_ok: number;
+  rows_rejected: number;
+  schema_version: string;
+  status: ImportBatchStatus;
+  quarantine_reason?: string | null;
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+
