@@ -200,3 +200,17 @@ export interface AuditLogEntry {
   after?: Record<string, unknown> | null;
   request_id?: string | null;
 }
+
+export type DqSeverity = 'Urgent' | 'Blocker' | 'Warn' | 'Review';
+
+export interface DqIssue {
+  id: number; // bigserial
+  rule_id: string; // e.g., 'DQ-081', 'DQ-080'
+  subject: string;
+  severity: DqSeverity;
+  detected_at: string;
+  resolved_at?: string | null;
+  owner_id?: string | null; // references Member(id)
+  details?: Record<string, unknown>;
+}
+
