@@ -32,7 +32,7 @@
 |---|---|---|---|---|
 | **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M2** | Exchange Standards & Proof Vault | 3 plans | **IN PROGRESS** (1/3 done) | — |
+| **M2** | Exchange Standards & Proof Vault | 3 plans | **IN PROGRESS** (2/3 done) | — |
 | **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
 | **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
@@ -67,11 +67,11 @@
 | Plan | Title | Status | Details |
 |---|---|---|---|
 | **02-01** | Exchange Standards Parallel-Truth Service | **COMPLETED** | `src/lib/data-integrity/standards-service.ts` + 10 unit tests (`tests/exchange-standards-service.test.ts`) enforcing parallel truth, INV-05 write-once EP survey answers, `std_delivery_pct`, `completion_readiness`, and DQ-055 mismatch detection |
-| **02-02** | Standards Checklist Validation Engine & Computed Metrics | **Queued** | Detailed checklist item validation for standards #4–#15 (§6.2), checklist completeness calculation, and quality verification |
+| **02-02** | Standards Checklist Validation Engine & Computed Metrics | **COMPLETED** | `src/lib/data-integrity/standards-checklist.ts` + 8 unit tests (`tests/standards-checklist.test.ts`) enforcing §6.2 statutory checklist items for standards #4–#15, checklist completeness delivery gate, and §6.4 home entity co-delivery tracking |
 | **02-03** | Proof Document Vault & Dead Link Detection | **Queued** | `proof_document` table, SHA-256 hash chaining, Google Drive link validator, dead link detection (DQ-083), Acceptance Test T-20 |
 
 ---
 
 ## Next Action
 
-Execute Plan 02-02: Standards Checklist Validation Engine & Computed Metrics (§6.2).
+Execute Plan 02-03: Proof Document Vault & Dead Link Detection (§6.4, §8, T-20).
