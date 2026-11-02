@@ -16,6 +16,7 @@ import {
   epService,
   exchangeService,
   resetMasterTrackerDb,
+  getMasterTrackerDb,
 } from '../src/lib/data-integrity/master-tracker';
 import type { Member } from '../src/lib/types/data-integrity';
 
