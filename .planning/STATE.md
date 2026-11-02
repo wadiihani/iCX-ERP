@@ -3,8 +3,8 @@
 ## Project Overview
 
 - **Milestone Cycle**: Rebuild v1.0 (from `iCX_Data_Integrity_Tracking_Spec.md`)
-- **Active Milestone**: **M2 — Exchange Standards & Proof Vault**
-- **Status**: Milestone M2 in progress (Plan 02-01 complete)
+- **Active Milestone**: **M3 — Status Governance & Deadline Engine**
+- **Status**: Milestone M2 complete; ready for Milestone M3 execution
 - **Last Updated**: 2026-11-03
 
 ---
@@ -32,8 +32,8 @@
 |---|---|---|---|---|
 | **M0** | Foundation & Invariants | 3 plans | **COMPLETED** (3/3 done) | 2026-11-02 |
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M2** | Exchange Standards & Proof Vault | 3 plans | **IN PROGRESS** (2/3 done) | — |
-| **M3** | Status Governance & Deadline Engine | 3 plans | Queued | — |
+| **M2** | Exchange Standards & Proof Vault | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
+| **M3** | Status Governance & Deadline Engine | 3 plans | **Next Up** | — |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | Queued | — |
 | **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
 | **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | Queued | — |
@@ -68,10 +68,11 @@
 |---|---|---|---|
 | **02-01** | Exchange Standards Parallel-Truth Service | **COMPLETED** | `src/lib/data-integrity/standards-service.ts` + 10 unit tests (`tests/exchange-standards-service.test.ts`) enforcing parallel truth, INV-05 write-once EP survey answers, `std_delivery_pct`, `completion_readiness`, and DQ-055 mismatch detection |
 | **02-02** | Standards Checklist Validation Engine & Computed Metrics | **COMPLETED** | `src/lib/data-integrity/standards-checklist.ts` + 8 unit tests (`tests/standards-checklist.test.ts`) enforcing §6.2 statutory checklist items for standards #4–#15, checklist completeness delivery gate, and §6.4 home entity co-delivery tracking |
-| **02-03** | Proof Document Vault & Dead Link Detection | **Queued** | `proof_document` table, SHA-256 hash chaining, Google Drive link validator, dead link detection (DQ-083), Acceptance Test T-20 |
+| **02-03** | Proof Document Vault & Dead Link Detection | **COMPLETED** | Migration `20261102000005_icx_proof_vault_v1.sql` + `src/lib/data-integrity/proof-vault.ts` + 8 unit tests (`tests/proof-vault-integrity.test.ts`) enforcing SHA-256 tamper detection, amber unproven clearance, and Acceptance Test T-20 (DQ-083 dead link scanner) |
 
 ---
 
 ## Next Action
 
-Execute Plan 02-03: Proof Document Vault & Dead Link Detection (§6.4, §8, T-20).
+Milestones M0, M1, and M2 are fully completed with 120/120 automated tests passing.
+Proceed to Milestone M3: Status Governance & Deadline Engine (Plans 03-01, 03-02, 03-03).

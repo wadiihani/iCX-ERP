@@ -240,4 +240,26 @@ export interface ImportBatch {
   deleted_reason?: string | null;
 }
 
+export type ProofVerificationStatus =
+  | 'verified'
+  | 'dead_link'
+  | 'checksum_mismatch'
+  | 'unverified';
+
+export interface ProofDocument {
+  id: string; // uuid
+  file_name: string;
+  mime_type: string;
+  file_size_bytes: number;
+  drive_url: string;
+  sha256_hash: string;
+  uploaded_by: string; // references Member(id)
+  uploaded_at: string;
+  last_verified_at?: string | null;
+  verification_status: ProofVerificationStatus;
+  metadata?: Record<string, unknown>;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
 
