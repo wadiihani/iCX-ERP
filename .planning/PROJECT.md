@@ -1,46 +1,60 @@
-# AIESEC iCX ERP — Hub-Based Operational Integrity Platform
+# AIESEC iCX Data Integrity & Tracking System
 
-## What This Is
+## Project Context & Charter
 
-An all-in-one operational tracking and enterprise resource planning application tailored for **AIESEC in Rabat** (`LC Rabat` · `MC Morocco`) and extensible across all Moroccan and international Local Committees. It connects business development, partner commitments, international relations (IR), project portfolio management, opportunity and slot capacity, exchange participant (EP) processing, exchange delivery, customer experience (CXP), quality standards, finance, and team execution into one auditable, high-reliability workflow.
-
-## Central Operating Principle
-
-> **One connected operational record from first partner contact to completed exchange, with an accountable owner, reliable evidence, clear next action, and measurable experience quality at every stage.**
-
-## Primary Knowledge Sources
-
-1. **AIESEC Hub Core** (`https://www.hub.aiesec.org/`): The AIESEC Way, Leadership Development Model, AIESEC 2030, Global Academies, and functional hubs.
-2. **Exchange Hub** (`https://www.hub.aiesec.org/exchange-hub`): Refreshed Exchange Standards, Global Exchange Summit guidance (Exchange Planning, SnD, Delivery, MX, EwA, Sales), IR Bootcamp, GT & GV Academies.
-3. **GV Hub Resources**: Project Portfolio linking projects to SDGs, activities, intended outputs, and delivery evidence.
-4. **IM Hub** (`https://www.hub.aiesec.org/im-hub`): EXPA process guides, status definitions, application flows, EXPA permissions, UTM source tracking, and analytics.
-5. **ICB Hub** (`https://www.hub.aiesec.org/icb-hub`): Portfolio integrity, customer centricity, ECB performance, and governance resources.
-6. **Functional Hub**: BD, MX, Finance (AFPM), OD, EwA, IM, and ICB knowledge.
-
-## Engineering & Policy Guardrails (The 12 Coding Agent Rules)
-
-1. **Inspect before editing**: Read actual code, migrations, RLS policies, and tests; do not assume prior audit items are defects without verification.
-2. **No whole-app rewrite by default**: Preserve the Next.js 14 App Router, TypeScript, Tailwind, and Supabase architecture.
-3. **Reconcile specification conflicts**: Explicitly document and resolve discrepancies between master spec, skills guide, old blueprint, and live code.
-4. **No fictional AIESEC policy**: Store rules with confidence classifications (`VERIFIED_OFFICIAL`, `CONFIRMED_LOCAL`, `PROPOSED`, `NEEDS_VERIFICATION`, `RETIRED`). Unverified rules never trigger automated rejections.
-5. **No hardcoded live metrics**: Every KPI must be computed from source database records and support full drill-down.
-6. **No fake functionality**: Every button or affordance must perform its advertised action or be explicitly disabled with an explanation.
-7. **Protect current data**: Migrations must be reversible, preserve existing records, and include rollback plans.
-8. **Enforce security on the server/database**: RLS and server action authorization; client-side hiding is not security.
-9. **Test each vertical slice**: Unit, integration, and E2E tests before marking work complete.
-10. **Show evidence**: For every completed task, report files changed, migration changes, test results, limitations, and verification steps.
-11. **Keep tasks small**: Vertical phase execution with strict P0 exit gates.
-12. **Do not mutate EXPA unofficially**: Use the read-sync engine and Human-in-the-Loop Action Outbox; no unofficial automated scraping.
-
-## Delivery Phases Overview
-
-- **Phase 11**: Global Layout, 4-Group Sidebar Navigation & Zero-CTA Dashboard (Completed 2026-10-29)
-- **Phase 12**: Member Management, Team Handovers & Team Standards (`TeSt`)
-- **Phase 13**: Data Integrity, B2B Partner CRM & Partner Standards Register
-- **Phase 14**: Project Portfolio (iGV/iGTa/iGTe), Opportunities & Capacity Waves
-- **Phase 15**: IR Supply Pipeline, EXPA Alignment & EP Funnel Lifecycle
-- **Phase 16**: Refreshed Exchange Standards, CXP, Human-Verified Visa & Case Vault
-- **Phase 17**: AFPM Finance Controls, Unified Task Engine & KPI Dictionary
+- **Owner**: Wadii Hani (Na9ach) — LCVP iGV, AIESEC in Rabat (EB 26.2)
+- **Specification**: `iCX_Data_Integrity_Tracking_Spec.md` v1.0
+- **Primary Mission**: Build a production enterprise **Tracker + CRM + PRM** that eliminates "data flux" (any silent change, loss, duplication, or drift of a record between people, systems, or time).
+- **Scope**: iGV first (programme = `GV`). `GTa`/`GTe` supported by the same unified schema behind a feature flag.
+- **Governing Sources**:
+  - `S0`: iCX Master Resource Directory
+  - `S1`: 3.8 iCX Standards Delivery (Exchange Standards #1–#16)
+  - `S2`: ECBA 2026 · EP Status: Breaks, Early FI, Late FI
+  - `S3`: ECBA 2026 · Executing the ICB Audit Check & Unfreezing (13 audit documents)
+  - `S4`: ECBA 2026 · Setting the Bar: CS Minimums & Extramiles
+  - `S5`: 4.3 Partner Management (Partner Standards #1–#8)
+  - `S6`: 2.5 Supply & Demand (IR clustering, IR plan, E2E analytics)
+  - `S7`: 3.5 iGV Sales (Funnel conversions, buyer personas, GV criteria)
+  - `S8`: 3.7 iCX Synergy Management (RACI matrices & cross-functional handoffs)
+  - `S9`: ECBA 2026 · Navigating APIP & AEPP (Freeze clauses, ECB report deadlines)
 
 ---
-*Updated: 2026-10-29 from `AIESEC_iCX_ERP_Hub_Based_Improvement_Roadmap.md`*
+
+## High-Level Outcomes (G1–G7)
+
+| ID | Outcome | How Proven |
+|---|---|---|
+| **G1** | **No record is ever lost** | Soft-delete only (`deleted_at`), append-only history, nightly snapshots, import row-count drop guard |
+| **G2** | **Every record has an accountable owner** | `owner_id` mandatory; DQ-010/DQ-011 blockers prevent unowned records |
+| **G3** | **Tracker agrees with EXPA on status and dates** | Automated reconciliation job + DQ-040..042 discrepancy handlers |
+| **G4** | **Every deadline is computed from policy, not memory** | Nightly deadline engine (§8) computing T-7, T-2, T-0, and overdue alerts |
+| **G5** | **Handoff between stakeholders loses nothing** | Auto-generated Handoff Packet JSON + printable view + acknowledgement gate (§12) |
+| **G6** | **Rule changes do not corrupt historical data** | Versioned rule registry (§3.4) with `effective_from` / `effective_to` dates |
+| **G7** | **Leadership sees data health at a glance** | Integrity Console (§14) with Data Health Score (0–100) and 14 drill-down charts |
+
+---
+
+## Non-Negotiable Integrity Invariants (INV-01–INV-11)
+
+- **INV-01**: **No hard deletes.** Delete sets `deleted_at` + `deleted_reason` + actor. Trigger/API blocks physical `DELETE`.
+- **INV-02**: **Append-only history.** Status changes and audit events write only new immutable rows (`status_history`, `audit_log`).
+- **INV-03**: **Every record has an active `owner_id`.** Mandatory foreign key; deactivated owners trigger auto-handoff tasks.
+- **INV-04**: **EXPA is source of truth for status and dates; Tracker is source of truth for operations.** Tracker owns proofs, standards tracking, partner relations, and quality cases.
+- **INV-05**: **EP-reported answers are immutable.** Write-once, import-only YOP/survey responses (never altered by AIESEC).
+- **INV-06**: **One EP per request/ticket.** Hard constraint on status change requests.
+- **INV-07**: **Frozen entity cannot process exchange operations.** `entity.is_frozen` blocks APD processing; ICB reference required.
+- **INV-08**: **Rules are versioned.** No hard-coded business policy numbers; all read from `rule_registry`.
+- **INV-09**: **Every change is attributable.** Comprehensive `audit_log` capturing actor, table, before/after JSON, and timestamp.
+- **INV-10**: **Customer data is confidential.** Strict RBAC, PII redaction for non-owners, and mandatory export logging.
+- **INV-11**: **No scattered sheets / no WhatsApp-only cases.** All customer issues exist only when timestamped in `case_quality`.
+
+---
+
+## System Architecture & Technical Stack
+
+- **Frontend & App Framework**: Next.js 14 App Router, TypeScript, React 18, Tailwind CSS.
+- **UI Kit & Design Language**: Xenon UI Kit (`@xenon-kit/web` + `@phosphor-icons/react`) adhering to [AGENTS.md](file:///c:/Users/HP/Desktop/ERP/AGENTS.md): 1px hairlines, no artificial drop-shadows or gradients, high-contrast tabular typography (`tabular-nums`), and restrained styling.
+- **Data Visualizations**: High-performance interactive Nivo chart library (`@nivo/bar`, `@nivo/line`, `@nivo/funnel`).
+- **Backend & Database**: PostgreSQL / Supabase, Row Level Security (RLS), triggers, automated backups.
+- **Validation & Integrity**: Zod schemas, automated nightly DQ scan engine (DQ-001..DQ-084).
+- **Test Infrastructure**: Vitest test suites (ensuring 100% pass on all 20 acceptance tests T-01..T-20) and Playwright E2E.
