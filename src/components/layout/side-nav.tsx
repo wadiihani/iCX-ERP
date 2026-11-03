@@ -54,6 +54,76 @@ export function SideNav() {
 
   const navigationGroups: NavGroup[] = [
     {
+      id: 'icx-integrity',
+      title: 'iCX Data Integrity System',
+      items: [
+        {
+          id: 'console',
+          title: 'Integrity Console & Health',
+          href: '/',
+          icon: ShieldCheck,
+          badge: 'Console',
+          badgeColor: 'border-lime-500/30 text-lime-400 bg-lime-950/20',
+        },
+        {
+          id: 'tracker-stages',
+          title: 'Master Tracker & Stages',
+          href: '/tracker',
+          icon: LayoutDashboard,
+          badge: 'Flow',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'standards-vault',
+          title: 'Standards & Proof Vault',
+          href: '/standards',
+          icon: ShieldCheck,
+          badge: '16 Stds',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'status-radar',
+          title: 'Status & Deadline Radar',
+          href: '/status-governance',
+          icon: Bell,
+          badge: 'SLA',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'partners-ir',
+          title: 'Partners & IR Ecosystem',
+          href: '/partners',
+          icon: Globe2,
+          badge: 'PRM',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'quality-cs',
+          title: 'Quality Cases & CS Mins',
+          href: '/quality-cases',
+          icon: AlertTriangle,
+          badge: 'Cases',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'compliance-gate',
+          title: 'Compliance & Freeze Gate',
+          href: '/compliance',
+          icon: Database,
+          badge: 'ICB',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+        {
+          id: 'handoff-dr',
+          title: 'Ownership RACI & DR',
+          href: '/handoff',
+          icon: CheckSquare,
+          badge: 'Handoff',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
+        },
+      ],
+    },
+    {
       id: 'command',
       title: 'Command Center',
       items: [
@@ -63,23 +133,23 @@ export function SideNav() {
           href: '/',
           icon: LayoutDashboard,
           badge: 'Live',
-          badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'my-tasks',
           title: 'My Tasks & Handoffs',
-          href: '/admin',
+          href: '/handoff',
           icon: CheckSquare,
           badge: 'Queue',
-          badgeColor: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'action-alerts',
           title: 'Action Alerts',
-          href: '/admin#alerts',
+          href: '/status-governance',
           icon: Bell,
           badge: 'Alerts',
-          badgeColor: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
       ],
     },
@@ -90,34 +160,34 @@ export function SideNav() {
         {
           id: 'partners',
           title: '2. B2B Partner CRM & Deals',
-          href: '/sales',
+          href: '/partners',
           icon: Building2,
-          badge: '18 Deals',
-          badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300',
+          badge: 'Partners',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'sales-pipeline',
           title: 'Sales Pipeline Board',
-          href: '/sales/pipeline',
+          href: '/partners',
           icon: TrendingUp,
-          badge: 'Kanban',
-          badgeColor: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300',
+          badge: 'PRM',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'opportunities',
           title: '3. Contracts, Opps & Slots',
-          href: '/opportunities',
+          href: '/tracker',
           icon: Briefcase,
-          badge: '64 Slots',
-          badgeColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300',
+          badge: 'Opps',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'sponsors',
           title: '4. CSR Sponsors & Inst.',
-          href: '/sales#sponsors',
+          href: '/partners',
           icon: Handshake,
           badge: 'CSR',
-          badgeColor: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
       ],
     },
@@ -128,42 +198,42 @@ export function SideNav() {
         {
           id: 'eps',
           title: '6. EPs, Matching & Visa',
-          href: '/crm',
+          href: '/tracker',
           icon: Users,
-          badge: '42 EPs',
-          badgeColor: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300',
+          badge: 'EPs',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'ir-partners',
           title: '5. IR Partners & Quotas',
-          href: '/opportunities/irm',
+          href: '/partners',
           icon: Globe2,
-          badge: '12 IR',
-          badgeColor: 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-950/40 dark:text-teal-300',
+          badge: 'IR',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'standards',
           title: '7. 18 Exchange Standards',
-          href: '/accommodation#standards',
+          href: '/standards',
           icon: ShieldCheck,
-          badge: '18 Stds',
-          badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300',
+          badge: '16 Stds',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'housing-pickups',
           title: '8. Housing (#7) & Pickups (#6)',
-          href: '/accommodation',
+          href: '/standards',
           icon: Home,
-          badge: 'Beds',
-          badgeColor: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300',
+          badge: 'Host',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'cases',
           title: '9. ECB/ICB Cases & Annex 2',
-          href: '/admin#cases',
+          href: '/quality-cases',
           icon: AlertTriangle,
-          badge: 'ECB',
-          badgeColor: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300',
+          badge: 'Cases',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
       ],
     },
@@ -174,26 +244,26 @@ export function SideNav() {
         {
           id: 'finance',
           title: '10. AFPM Finance & Invoicing',
-          href: '/dashboards',
+          href: '/compliance',
           icon: DollarSign,
           badge: 'AFPM',
-          badgeColor: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'members',
           title: '11. Member Engagement & TeSt',
-          href: '/members',
+          href: '/handoff',
           icon: GraduationCap,
-          badge: 'TeSt',
-          badgeColor: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300',
+          badge: 'RACI',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'audit-outbox',
           title: '12. 360° Comm & Audit Logs',
-          href: '/outbox',
+          href: '/status-governance',
           icon: Database,
           badge: 'Audit',
-          badgeColor: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
       ],
     },
@@ -207,7 +277,7 @@ export function SideNav() {
           onClick: () => setDataSettingsOpen(true),
           icon: Settings,
           badge: 'System',
-          badgeColor: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
         {
           id: 'roles-access',
@@ -215,7 +285,7 @@ export function SideNav() {
           href: '/admin/roles-and-access',
           icon: Shield,
           badge: 'RBAC',
-          badgeColor: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300',
+          badgeColor: 'border-slate-700 text-slate-300 bg-slate-800/40',
         },
       ],
     },
@@ -225,20 +295,20 @@ export function SideNav() {
     <aside
       className={`flex flex-col border-r border-slate-200 bg-white transition-all duration-200 ease-in-out dark:border-slate-800 dark:bg-slate-900 z-40 ${
         isSidebarOpen
-          ? 'fixed inset-y-0 left-0 w-64 lg:static lg:w-64 shadow-xl lg:shadow-none'
+          ? 'fixed inset-y-0 left-0 w-64 lg:static lg:w-64'
           : 'hidden lg:flex lg:w-16'
       }`}
     >
       {/* Brand Header */}
       <div className="flex h-14 items-center justify-between border-b border-slate-200 px-3.5 dark:border-slate-800 shrink-0">
         <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-aiesec-darkblue via-aiesec-blue to-sky-400 text-white shadow-md shadow-blue-500/25 font-extrabold text-xs tracking-tight ring-1 ring-white/20">
-            AI
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-lime-500/40 bg-lime-950/30 text-lime-400 font-normal text-xs tracking-tight">
+            iCX
           </div>
           {isSidebarOpen && (
             <div className="flex flex-col truncate">
-              <span className="font-bold text-xs tracking-tight text-slate-900 dark:text-white">
-                iCX ERP Workspace
+              <span className="font-normal text-xs tracking-tight text-slate-900 dark:text-white">
+                iCX Data Integrity ERP
               </span>
               <span className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
                 {currentLc} · Mandate 26.2
@@ -264,7 +334,7 @@ export function SideNav() {
         {navigationGroups.map((group) => (
           <div key={group.id} className="space-y-0.5">
             {isSidebarOpen && (
-              <div className="px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              <div className="px-2.5 py-1 text-[9px] font-normal uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 {group.title}
               </div>
             )}
@@ -283,7 +353,7 @@ export function SideNav() {
                     key={item.id}
                     onClick={item.onClick}
                     title={!isSidebarOpen ? item.title : undefined}
-                    className={`group flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer ${
+                    className={`group flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-normal text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition-colors cursor-pointer ${
                       !isSidebarOpen ? 'justify-center' : ''
                     }`}
                   >
@@ -293,7 +363,7 @@ export function SideNav() {
                         <span className="truncate">{item.title}</span>
                         {item.badge && (
                           <span
-                            className={`ml-auto rounded border px-1.5 py-0.2 text-[9px] font-semibold ${item.badgeColor}`}
+                            className={`ml-auto rounded border px-1.5 py-0.2 text-[9px] font-normal ${item.badgeColor}`}
                           >
                             {item.badge}
                           </span>
@@ -309,16 +379,16 @@ export function SideNav() {
                   key={item.id}
                   href={item.href || '#'}
                   title={!isSidebarOpen ? item.title : undefined}
-                  className={`group flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                  className={`group flex items-center gap-2.5 rounded px-2.5 py-1.5 text-xs font-normal transition-colors border ${
                     isActive
-                      ? 'bg-blue-50/80 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 font-semibold shadow-2xs border-l-2 border-blue-600'
-                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                      ? 'bg-lime-950/20 text-lime-400 border-lime-500/30'
+                      : 'text-slate-700 border-transparent hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
                 >
                   <Icon
                     className={`h-4 w-4 shrink-0 transition-colors ${
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400'
+                        ? 'text-lime-400'
                         : 'text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                     }`}
                   />
@@ -328,7 +398,7 @@ export function SideNav() {
                       <span className="truncate">{item.title}</span>
                       {item.badge && (
                         <span
-                          className={`ml-auto rounded border px-1.5 py-0.2 text-[9px] font-semibold ${item.badgeColor}`}
+                          className={`ml-auto rounded border px-1.5 py-0.2 text-[9px] font-normal ${item.badgeColor}`}
                         >
                           {item.badge}
                         </span>
@@ -348,11 +418,11 @@ export function SideNav() {
         {isSidebarOpen ? (
           <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-2 dark:border-slate-800 dark:bg-slate-800/40">
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[9px] font-normal uppercase tracking-wider text-slate-400">
                 Persona (RBAC)
               </span>
               <span
-                className={`rounded border px-1.5 py-0.2 text-[9px] font-bold ${roleConfig.badgeColor}`}
+                className={`rounded border px-1.5 py-0.2 text-[9px] font-normal ${roleConfig.badgeColor}`}
               >
                 {roleConfig.label}
               </span>
@@ -365,7 +435,7 @@ export function SideNav() {
           <div className="flex justify-center">
             <div
               title={`Role: ${roleConfig.label}`}
-              className="flex h-6 w-6 items-center justify-center rounded bg-slate-100 text-slate-600 text-[9px] font-bold dark:bg-slate-800 dark:text-slate-300"
+              className="flex h-6 w-6 items-center justify-center rounded bg-slate-100 text-slate-600 text-[9px] font-normal dark:bg-slate-800 dark:text-slate-300"
             >
               {roleConfig.role.slice(0, 2)}
             </div>
