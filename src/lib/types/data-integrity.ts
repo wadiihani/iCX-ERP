@@ -45,10 +45,24 @@ export type StandardTrackedStatus =
   | 'not_delivered'
   | 'n_a';
 
+export type MemberRole =
+  | 'lcvp'
+  | 'lcvp_igv'
+  | 'lcvp_icx'
+  | 'ecb'
+  | 'ecb_auditor'
+  | 'admin'
+  | 'mm'
+  | 'tl'
+  | 'member'
+  | 'finance'
+  | 'auditor'
+  | string;
+
 export interface Member {
   id: string; // uuid
   name: string;
-  role: string;
+  role: MemberRole;
   active: boolean;
   team_id?: string | null;
   created_at: string;
@@ -581,6 +595,56 @@ export interface CsKpiReport {
   compensationByType: Record<string, number>;
   recurrenceRatePct: number;
 }
+
+// =============================================================================
+// COMPLIANCE CALENDAR & ICB FREEZE GATE (§11 MODULE F, S3, S9, D10, T-11)
+// =============================================================================
+
+export type ComplianceKind =
+  | 'icb_audit_doc'
+  | 'ecb_quarterly_report'
+  | 'unfreezing_submission'
+  | 'internal_audit';
+
+export type ComplianceResult = 'passed' | 'failed' | 'pending' | 'waived';
+
+export interface IcbAuditDocDef {
+  doc_number: number;
+  title: string;
+  section: string;
+  description: string;
+}
+
+export interface ComplianceItem {
+  id: string; // uuid
+  entity_id: string; // references EntityOrg(id)
+  kind: ComplianceKind;
+  doc_number?: number | null;
+  title: string;
+  section: string;
+  due_at: string;
+  submitted_at?: string | null;
+  result: ComplianceResult;
+  pass_pct?: number | null;
+  evidence_ids: string[];
+  violation_level?: number | null;
+  notes?: string | null;
+  source_link?: string | null;
+  owner_id: string; // references Member(id)
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+export interface FreezeEntityPayload {
+  entity_id: string;
+  is_frozen: boolean;
+  icb_audit_reference_link: string;
+  reason: string;
+  actor_id: string;
+  actor_role?: MemberRole;
+}
+
 
 
 

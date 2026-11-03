@@ -3,8 +3,8 @@
 ## Project Overview
 
 - **Milestone Cycle**: Rebuild v1.0 (from `iCX_Data_Integrity_Tracking_Spec.md`)
-- **Active Milestone**: **M6 — Compliance Calendar & ICB Freeze Gate**
-- **Status**: Milestone M5 complete; ready for Milestone M6 execution
+- **Active Milestone**: **M7 — Data Quality Engine & Integrity Console**
+- **Status**: Milestone M6 complete; ready for Milestone M7 execution
 - **Last Updated**: 2026-11-03
 
 ---
@@ -36,8 +36,8 @@
 | **M3** | Status Governance & Deadline Engine | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M5** | Quality Cases & CS Minimums | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | **IN PROGRESS** (0/2 done) | — |
-| **M7** | Data Quality Engine & Integrity Console | 3 plans | Queued | — |
+| **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | **COMPLETED** (2/2 done) | 2026-11-03 |
+| **M7** | Data Quality Engine & Integrity Console | 3 plans | **IN PROGRESS** (0/3 done) | — |
 | **M8** | Ownership Handoff & Disaster Recovery | 4 plans | Queued | — |
 
 ---
@@ -102,6 +102,15 @@
 
 ---
 
+## Phase M6 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **06-01** | Compliance Item Schema & 13 Statutory ICB Documents | **COMPLETED** | Migration `20261102000012_icx_compliance_calendar_v1.sql` + `src/lib/data-integrity/compliance-calendar.ts` + 9 unit tests (`tests/compliance-calendar.test.ts`) enforcing 13 statutory ICB docs (APIP Annex 4), evidence uploads, and scorecard |
+| **06-02** | ICB Freeze Gate Authority & Unfreezing Workflow | **COMPLETED** | Decision D10 freeze authority (LCVP iGV / ECB only), mandatory ICB audit reference link, Acceptance Test T-11 approval blocking (INV-07), and unfreezing workflow |
+
+---
+
 ## Next Action
 
-Execute Plan 06-01: Compliance Item Schema & 13 ICB Audit Documents (§11 Module F, S3, APIP Annex 4).
+Execute Plan 07-01: Data Quality Rules Suite (DQ-001..DQ-083) & Nightly Scanner Engine (§13.2).
