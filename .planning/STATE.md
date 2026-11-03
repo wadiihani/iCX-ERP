@@ -34,7 +34,7 @@
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M3** | Status Governance & Deadline Engine | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M4** | Partner PRM & IR Ecosystem | 3 plans | **Next Up** | — |
+| **M4** | Partner PRM & IR Ecosystem | 3 plans | **IN PROGRESS** (1/3 done) | — |
 | **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
 | **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | Queued | — |
 | **M7** | Data Quality Engine & Integrity Console | 3 plans | Queued | — |
@@ -82,7 +82,16 @@
 
 ---
 
+## Phase M4 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **04-01** | Partner Standards per Opportunity & Account Management | **COMPLETED** | Migration `20261102000008_icx_partner_standards_v1.sql` + `src/lib/data-integrity/partner-standards.ts` + 12 unit tests (`tests/partner-standards.test.ts`) enforcing 8 statutory partner standards (#1–#8), review separation, closing timing, and DQ-062 NPS prerequisites |
+| **04-02** | Partner Touchpoint Logging & Buyer Personas | **Queued** | Touchpoint logging (monthly call, site visit, lc touchpoint, newsletter, quarterly review), §5.2 buyer persona tags, objection tags, and funnel conversions |
+| **04-03** | IR Partner Record, 2×2 Clustering & E2E Analytics | **Queued** | Define/Analyze/Promote/Deliver/Track, 2×2 clustering matrix (upscale/grow/understand/invest), E2E customer flow analytics and standards delivery |
+
+---
+
 ## Next Action
 
-Milestones M0, M1, M2, and M3 are fully completed with 140/140 automated tests passing.
-Proceed to Milestone M4: Partner PRM & IR Ecosystem (Plans 04-01, 04-02, 04-03).
+Execute Plan 04-02: Partner Touchpoint Logging & Buyer Personas (§5.2, §9.2).

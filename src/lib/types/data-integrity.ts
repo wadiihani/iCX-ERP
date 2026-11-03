@@ -329,5 +329,38 @@ export interface DeadlineItem {
   deleted_reason?: string | null;
 }
 
+export interface PartnerStandardDef {
+  std_no: number; // 1 to 8
+  name: string;
+  stage: FlowStage;
+  rule_description: string;
+}
+
+export interface PartnerStandardCheck {
+  opportunity_id: string; // references Opportunity(id)
+  std_no: number; // 1 to 8
+  delivered: boolean;
+  delivered_at?: string | null;
+  delivered_by?: string | null; // references Member(id)
+  meeting_logged_at?: string | null;
+  meeting_notes?: string | null;
+  criteria_met: Record<string, unknown>;
+  proof_id?: string | null; // references ProofDocument(id)
+  metadata?: Record<string, unknown>;
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+export interface PartnerNpsPrerequisites {
+  partner_id: string;
+  expa_org_id?: number | null;
+  has_linked_employees: boolean;
+  partner_portal_signup: boolean;
+  is_eligible_for_nps: boolean;
+  missing_prerequisites: string[];
+}
+
+
 
 
