@@ -56,18 +56,21 @@ export default function QualityCasesPage() {
         caseId,
         {
           final_agreement_id: 'agr_remedy_settled_2026',
-          closure_notes: 'Portable HVAC auxiliary unit installed. EP confirmed satisfactory cooling.',
+          closure_notes: 'Auxiliary cooling unit delivered. EP confirmed satisfactory conditions.',
           compensation_amount: 0,
         },
         'usr_wadii_hani'
       );
       loadData();
-      setActionNotice('Quality case successfully resolved with all mandatory closure gates verified (INV-05 / DQ-071).');
-    } catch (err: any) {
-      setActionNotice(`Resolution rejected by invariant guard: ${err.message}`);
+      setActionNotice('Quality case successfully resolved with all mandatory closure gates verified (DQ-070 / DQ-071).');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Resolution rejected';
+      setActionNotice(`Resolution rejected by invariant guard: ${msg}`);
     }
   };
 
+  const openCases = cases.filter((c) => !c.closed_at);
+  const resolvedCases = cases.filter((c) => Boolean(c.closed_at));
   const totalCompensation = cases.reduce((acc, c) => acc + (c.compensation_amount || 0), 0);
 
   return (
@@ -77,10 +80,10 @@ export default function QualityCasesPage() {
         <Group justify="space-between" align="center" wrap>
           <Stack gap={4}>
             <Heading level={1} styleKey="title1">
-              Quality Cases & Customer Service Minimums (§8 & §12)
+              Quality Cases & Customer Support Minimums (§10)
             </Heading>
             <Text styleKey="callout" tone="muted">
-              Annex 2 Protocols · 5 Mandatory Closure Fields (INV-05 / T-09) · CS Minimums 1–3
+              Annex 2 Protocols · 5 Mandatory Closure Fields (DQ-070 / DQ-071) · 4 CS Minimums
             </Text>
           </Stack>
           <Group gap={8}>
@@ -110,50 +113,53 @@ export default function QualityCasesPage() {
         </Alert>
       )}
 
-      {/* Customer Service Minimums (CS1, CS2, CS3) KPI Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 4 Customer Service Minimums Metric Row (§10 Drive S4) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Surface variant="default" padding="md">
-          <Group justify="space-between" align="center">
-            <Text styleKey="caption1" tone="muted">
-              CS MINIMUM 1: 24H RESPONSE
-            </Text>
-            <Icon size="sm">
-              <Clock weight="thin" />
-            </Icon>
-          </Group>
-          <div className="text-2xl font-light text-lime-400 mt-2">100% On-Time</div>
+          <Text styleKey="caption1" tone="muted">
+            CS MINIMUM 1: CENTRAL INTAKE
+          </Text>
+          <div className="text-xl font-light text-slate-100 mt-2">
+            {cases.length > 0 ? `${cases.length} Logged` : 'No cases'}
+          </div>
           <Text styleKey="caption2" tone="muted" className="mt-1">
-            Average acknowledgment turnaround: 4.2 hours.
+            Centralized intake across all LCs.
           </Text>
         </Surface>
 
         <Surface variant="default" padding="md">
-          <Group justify="space-between" align="center">
-            <Text styleKey="caption1" tone="muted">
-              CS MINIMUM 2: 48H STATEMENT
-            </Text>
-            <Icon size="sm">
-              <Clock weight="thin" />
-            </Icon>
-          </Group>
-          <div className="text-2xl font-light text-lime-400 mt-2">100% On-Time</div>
+          <Text styleKey="caption1" tone="muted">
+            CS MINIMUM 2: RECORD LINKAGE
+          </Text>
+          <div className="text-xl font-light text-slate-100 mt-2">
+            {cases.length > 0 ? '100% Linked' : 'No data'}
+          </div>
           <Text styleKey="caption2" tone="muted" className="mt-1">
-            Official position statement delivered &lt; 24h.
+            Mandatory join to exchange record.
           </Text>
         </Surface>
 
         <Surface variant="default" padding="md">
-          <Group justify="space-between" align="center">
-            <Text styleKey="caption1" tone="muted">
-              CS MINIMUM 3: 10D SETTLEMENT
-            </Text>
-            <Icon size="sm">
-              <Clock weight="thin" />
-            </Icon>
-          </Group>
-          <div className="text-2xl font-light text-slate-200 mt-2">Active Protocol</div>
+          <Text styleKey="caption1" tone="muted">
+            CS MINIMUM 3: POSITION STATEMENT
+          </Text>
+          <div className="text-xl font-light text-slate-100 mt-2">
+            {openCases.length > 0 ? `${openCases.length} Pending` : 'Up to date'}
+          </div>
           <Text styleKey="caption2" tone="muted" className="mt-1">
-            Total exposure: {totalCompensation} MAD claimed.
+            Official position documentation.
+          </Text>
+        </Surface>
+
+        <Surface variant="default" padding="md">
+          <Text styleKey="caption1" tone="muted">
+            CS MINIMUM 4: CLOSURE & SETTLEMENT
+          </Text>
+          <div className="text-xl font-light text-slate-100 mt-2">
+            {totalCompensation > 0 ? `${totalCompensation} MAD` : '0 MAD'}
+          </div>
+          <Text styleKey="caption2" tone="muted" className="mt-1">
+            Total active compensation exposure.
           </Text>
         </Surface>
       </div>
@@ -179,7 +185,7 @@ export default function QualityCasesPage() {
 
           {cases.length === 0 ? (
             <div className="py-8 text-center text-slate-400">
-              <Text tone="muted">Zero open quality cases. All exchanges in high standing.</Text>
+              <Text tone="muted">No quality cases on file. All exchange experiences in good standing.</Text>
             </div>
           ) : (
             <Table>
@@ -242,10 +248,10 @@ export default function QualityCasesPage() {
       <Surface variant="default" padding="lg">
         <Stack gap={12}>
           <Heading level={3} styleKey="title3">
-            Mandatory Closure Audit Checklist (INV-05 / Acceptance Test T-09)
+            Mandatory Closure Audit Checklist (AEPP Annex 2 / §10.1)
           </Heading>
           <Text styleKey="footnote" tone="muted">
-            Under Moroccan statutory law and AEPP Annex 2, no quality case may transition to RESOLVED without all 5 fields cryptographically recorded:
+            Per AEPP Annex 2 and ICB Quality Protocols (§10.1), no quality case may transition to closed status without completing all 5 mandatory closure fields:
           </Text>
 
           <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 mt-2">

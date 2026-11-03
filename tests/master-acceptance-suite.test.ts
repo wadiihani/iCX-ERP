@@ -751,17 +751,28 @@ describe('AIESEC iCX ERP — Master Acceptance Test Suite (§16 T-01..T-20)', ()
   });
 
   // ===========================================================================
-  // T-16: Versioned Rules Evaluation (INV-08)
+  // T-16: Versioned Rules Evaluation (INV-08 & v2.0 Q8)
   // ===========================================================================
-  it('T-16: Given GV opportunity of 5 weeks, then passes under 4-8 rule; fails under legacy 6-8 rule (INV-08)', () => {
-    // Under 2026 ECBA rule (effective from 2026-01-01): 4-8 weeks
-    const rule2026 = validateDurationWeeks('GV', 5, '2026-06-01');
-    expect(rule2026.valid).toBe(true);
-    expect(rule2026.min).toBe(4);
-    expect(rule2026.max).toBe(8);
+  it('T-16: Given GV opportunity, validates [4, 6, 8] allowed values; evaluates legacy 6-8 rule with fixture (INV-08, Q8)', () => {
+    // Under 2026 rule (v2.0 Q8): allowed values [4, 6, 8] weeks; 5 and 7 are invalid
+    expect(validateDurationWeeks('GV', 4, '2026-06-01').valid).toBe(true);
+    expect(validateDurationWeeks('GV', 6, '2026-06-01').valid).toBe(true);
+    expect(validateDurationWeeks('GV', 8, '2026-06-01').valid).toBe(true);
+    expect(validateDurationWeeks('GV', 5, '2026-06-01').valid).toBe(false);
+    expect(validateDurationWeeks('GV', 7, '2026-06-01').valid).toBe(false);
 
-    // Under legacy 2025 rule (effective until 2025-12-31): 6-8 weeks -> 5 weeks FAILS
-    const rule2025 = validateDurationWeeks('GV', 5, '2025-06-01');
+    // Under legacy fixture rule: 6-8 weeks min/max -> 5 weeks FAILS
+    const legacyFixture: RuleRegistryEntry[] = [
+      {
+        key: 'gv.duration_weeks',
+        value: { min: 6, max: 8 },
+        effective_from: '2020-01-01',
+        effective_to: '2025-12-31',
+        source: 'S1, S7 (Legacy fixture)',
+        note: 'Legacy GV duration rule (6-8 weeks)',
+      },
+    ];
+    const rule2025 = validateDurationWeeks('GV', 5, '2025-06-01', legacyFixture);
     expect(rule2025.valid).toBe(false);
     expect(rule2025.min).toBe(6);
     expect(rule2025.max).toBe(8);

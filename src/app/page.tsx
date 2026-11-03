@@ -46,15 +46,25 @@ import { complianceService } from '@/lib/data-integrity/compliance-calendar';
 import type { DqIssue, IntegrityConsoleSummary } from '@/lib/types/data-integrity';
 
 export default function IntegrityConsolePage() {
-  const [summary, setSummary] = useState<IntegrityConsoleSummary | null>(null);
-  const [issues, setIssues] = useState<DqIssue[]>([]);
+  const [summary, setSummary] = useState<IntegrityConsoleSummary>(() => {
+    ensureDemoDataSeeded();
+    return integrityConsoleService.getConsoleSummary();
+  });
+  const [issues, setIssues] = useState<DqIssue[]>(() => dataQualityService.listIssues());
   const [selectedSeverity, setSelectedSeverity] = useState<string>('ALL');
   const [actionNotice, setActionNotice] = useState<string | null>(null);
   const [snapshotResult, setSnapshotResult] = useState<string | null>(null);
-  const [isFrozen, setIsFrozen] = useState<boolean>(false);
+  const [isFrozen, setIsFrozen] = useState<boolean>(() => {
+    const db = getMasterTrackerDb();
+    const rabatEntity = Array.from(db.entities.values()).find((e) => e.name === 'AIESEC in Rabat');
+    return Boolean(rabatEntity?.is_frozen);
+  });
+  const [hasRecords, setHasRecords] = useState<boolean>(() => {
+    const db = getMasterTrackerDb();
+    return Array.from(db.exchanges.values()).filter((e) => !e.deleted_at).length > 0;
+  });
 
   useEffect(() => {
-    ensureDemoDataSeeded();
     refreshData();
   }, []);
 
@@ -66,6 +76,7 @@ export default function IntegrityConsolePage() {
     const db = getMasterTrackerDb();
     const rabatEntity = Array.from(db.entities.values()).find((e) => e.name === 'AIESEC in Rabat');
     setIsFrozen(Boolean(rabatEntity?.is_frozen));
+    setHasRecords(Array.from(db.exchanges.values()).filter((e) => !e.deleted_at).length > 0);
   };
 
   const handleRunScan = () => {
@@ -84,14 +95,6 @@ export default function IntegrityConsolePage() {
     const bundle = fullExportService.generateFullExportBundle('ALL', 'usr_wadii_hani');
     setActionNotice(`Statutory export bundle generated at ${bundle.exported_at} (Manifest SHA-256: ${bundle.manifest.manifestChecksum.slice(0, 16)}...)`);
   };
-
-  if (!summary) {
-    return (
-      <div className="p-6">
-        <Text tone="muted">Initializing iCX Data Integrity Workspace...</Text>
-      </div>
-    );
-  }
 
   const { healthScore } = summary;
   const filteredIssues = selectedSeverity === 'ALL'
@@ -187,13 +190,27 @@ export default function IntegrityConsolePage() {
               </Text>
             </Stack>
             <Group gap={12} align="center">
-              <Badge variant="lime" size="md">
-                Grade {healthScore.grade}
-              </Badge>
-              <div className="text-3xl font-light tracking-tight text-lime-400">
-                {healthScore.overallScore}
-                <span className="text-xs text-slate-500 font-normal"> / 100</span>
-              </div>
+              {hasRecords && healthScore.overallScore > 0 ? (
+                <>
+                  <Badge variant="lime" size="md">
+                    Grade {healthScore.grade}
+                  </Badge>
+                  <div className="text-3xl font-light tracking-tight text-lime-400">
+                    {healthScore.overallScore}
+                    <span className="text-xs text-slate-500 font-normal"> / 100</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Badge variant="neutral" size="md">
+                    No data
+                  </Badge>
+                  <div className="text-3xl font-light tracking-tight text-slate-500">
+                    --
+                    <span className="text-xs text-slate-600 font-normal"> / 100</span>
+                  </div>
+                </>
+              )}
             </Group>
           </Group>
 
@@ -206,7 +223,9 @@ export default function IntegrityConsolePage() {
                 COMPLETENESS (35% Weight)
               </Text>
               <div className="text-xl font-light text-slate-200 mt-1">
-                {healthScore.dimensions.completeness.score.toFixed(1)}%
+                {hasRecords && healthScore.dimensions.completeness.score > 0
+                  ? `${healthScore.dimensions.completeness.score.toFixed(1)}%`
+                  : 'No data'}
               </div>
               <Text styleKey="caption2" tone="muted" className="mt-1">
                 Required statutory fields filled
@@ -218,7 +237,9 @@ export default function IntegrityConsolePage() {
                 FRESHNESS (25% Weight)
               </Text>
               <div className="text-xl font-light text-slate-200 mt-1">
-                {healthScore.dimensions.freshness.score.toFixed(1)}%
+                {hasRecords && healthScore.dimensions.freshness.score > 0
+                  ? `${healthScore.dimensions.freshness.score.toFixed(1)}%`
+                  : 'No data'}
               </div>
               <Text styleKey="caption2" tone="muted" className="mt-1">
                 No stale exchanges &gt; 14 days
@@ -230,7 +251,9 @@ export default function IntegrityConsolePage() {
                 EXPA PARITY (25% Weight)
               </Text>
               <div className="text-xl font-light text-slate-200 mt-1">
-                {healthScore.dimensions.expaConsistency.score.toFixed(1)}%
+                {hasRecords && healthScore.dimensions.expaConsistency.score > 0
+                  ? `${healthScore.dimensions.expaConsistency.score.toFixed(1)}%`
+                  : 'No data'}
               </div>
               <Text styleKey="caption2" tone="muted" className="mt-1">
                 Synced timestamps & status parity
@@ -242,7 +265,9 @@ export default function IntegrityConsolePage() {
                 OWNERSHIP (15% Weight)
               </Text>
               <div className="text-xl font-light text-slate-200 mt-1">
-                {healthScore.dimensions.ownership.score.toFixed(1)}%
+                {hasRecords && healthScore.dimensions.ownership.score > 0
+                  ? `${healthScore.dimensions.ownership.score.toFixed(1)}%`
+                  : 'No data'}
               </div>
               <Text styleKey="caption2" tone="muted" className="mt-1">
                 RACI assigned to active members
@@ -264,7 +289,7 @@ export default function IntegrityConsolePage() {
                 </Icon>
               </Group>
               <Text styleKey="caption1" tone="muted">
-                5 Lifecycle flow stages (Attraction to Post-exp), Stage-gate validations
+                5 Lifecycle flow stages (Attraction to Post-exp), Stage-field validations
               </Text>
             </Stack>
           </Surface>
@@ -350,7 +375,11 @@ export default function IntegrityConsolePage() {
 
           {filteredIssues.length === 0 ? (
             <div className="py-8 text-center text-slate-400">
-              <Text tone="muted">No issues detected for severity filter: {selectedSeverity}. All rules passing.</Text>
+              <Text tone="muted">
+                {issues.length === 0
+                  ? 'No active data quality issues detected. Run statutory scan to re-evaluate.'
+                  : `No issues detected for severity filter: ${selectedSeverity}.`}
+              </Text>
             </div>
           ) : (
             <Table>

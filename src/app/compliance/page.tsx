@@ -38,6 +38,7 @@ interface ScorecardView {
   totalDocs: number;
   passedDocs: number;
   overallPassPct: number;
+  isCompliant: boolean;
 }
 
 export default function ComplianceCalendarPage() {
@@ -63,6 +64,7 @@ export default function ComplianceCalendarPage() {
       totalDocs: sc.totalDocs,
       passedDocs: sc.passedDocs,
       overallPassPct: sc.overallPassPct,
+      isCompliant: sc.isCompliant,
     });
     setItems(sc.items);
   };
@@ -88,8 +90,9 @@ export default function ComplianceCalendarPage() {
           ? 'Entity successfully placed under ICB Statutory Data Freeze (Read-Only Mode).'
           : 'ICB Statutory Freeze released. Normal operational writes resumed.'
       );
-    } catch (err: any) {
-      setActionNotice(`Freeze toggle rejected: ${err.message}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Toggle failed';
+      setActionNotice(`Freeze toggle rejected: ${msg}`);
     }
   };
 
@@ -103,9 +106,9 @@ export default function ComplianceCalendarPage() {
               <LockKey weight="thin" />
             </Icon>
             <Stack gap={2}>
-              <Text styleKey="headline">ICB Data Freeze Active on Entity</Text>
+              <Text styleKey="headline">ICB Statutory Data Freeze Active (INV-07)</Text>
               <Text styleKey="footnote" tone="muted">
-                Audit lock in effect for AIESEC in Rabat under authority of LCVP iGV (Wadii Hani).
+                Read-only mode active: All new exchange approvals and realizations are strictly locked.
               </Text>
             </Stack>
           </Group>
@@ -203,48 +206,63 @@ export default function ComplianceCalendarPage() {
                 13 Statutory ICB Documents Checklist (APIP Annex 4 / T-10)
               </Heading>
               <Text styleKey="footnote" tone="muted">
-                Scorecard: {items.length} documents cataloged · Overall compliance rate: {scorecard?.overallPassPct || 100}%
+                Scorecard: {items.length > 0 ? `${scorecard?.passedDocs ?? 0} of ${scorecard?.totalDocs ?? items.length} verified · Overall compliance rate: ${scorecard?.overallPassPct ?? 0}%` : 'No compliance documents cataloged (0/13)'}
               </Text>
             </Stack>
-            <Badge variant="lime" size="sm">
-              Annex 4 Fully Audited
-            </Badge>
+            {scorecard?.isCompliant ? (
+              <Badge variant="success" size="sm">Fully Audited (13/13)</Badge>
+            ) : items.length === 0 ? (
+              <Badge variant="neutral" size="sm">No Data</Badge>
+            ) : (
+              <Badge variant="neutral" size="sm">{scorecard?.passedDocs ?? 0}/13 Verified</Badge>
+            )}
           </Group>
 
           <Divider />
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>Document Title</TableHead>
-                <TableHead>Section</TableHead>
-                <TableHead>Submission Due Date</TableHead>
-                <TableHead>Audit Result</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-mono text-xs">{item.doc_number ?? item.id.slice(0, 6)}</TableCell>
-                  <TableCell className="text-xs font-normal text-slate-200">
-                    {item.title}
-                  </TableCell>
-                  <TableCell className="text-xs font-mono text-slate-400">
-                    {item.section}
-                  </TableCell>
-                  <TableCell className="text-xs font-mono text-slate-400">
-                    {item.due_at || 'Statutory Cycle'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={item.result === 'passed' ? 'success' : 'neutral'} size="sm">
-                      {item.result.toUpperCase()}
-                    </Badge>
-                  </TableCell>
+          {items.length === 0 ? (
+            <div className="py-8 text-center text-slate-400">
+              <Text tone="muted">No ICB documents cataloged yet.</Text>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>#</TableHead>
+                  <TableHead>Document Title</TableHead>
+                  <TableHead>Statutory Section</TableHead>
+                  <TableHead>Audit Result</TableHead>
+                  <TableHead>Pass Score</TableHead>
+                  <TableHead>Accountable Owner</TableHead>
+                  <TableHead>Due Date</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {items.map((doc) => (
+                  <TableRow key={doc.id}>
+                    <TableCell className="font-mono text-xs">{doc.doc_number ?? '—'}</TableCell>
+                    <TableCell className="text-xs font-normal text-slate-200">{doc.title}</TableCell>
+                    <TableCell className="text-xs text-slate-400">{doc.section}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={doc.result === 'passed' ? 'success' : doc.result === 'failed' ? 'danger' : 'neutral'}
+                        size="sm"
+                      >
+                        {doc.result}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs">
+                      {doc.pass_pct !== null && doc.pass_pct !== undefined ? `${doc.pass_pct}%` : '—'}
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-300">{doc.owner_id}</TableCell>
+                    <TableCell className="text-xs text-slate-400 font-mono">
+                      {doc.due_at ? doc.due_at.slice(0, 10) : '—'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </Stack>
       </Surface>
     </div>

@@ -40,13 +40,22 @@ import type { Exchange, Ep, Opportunity, FlowStage } from '@/lib/types/data-inte
 
 export default function MasterTrackerPage() {
   const [activeTab, setActiveTab] = useState<string>('all');
-  const [exchanges, setExchanges] = useState<Exchange[]>([]);
-  const [epMap, setEpMap] = useState<Map<string, Ep>>(new Map());
-  const [opMap, setOpMap] = useState<Map<string, Opportunity>>(new Map());
+  const [exchanges, setExchanges] = useState<Exchange[]>(() => {
+    ensureDemoDataSeeded();
+    const db = getMasterTrackerDb();
+    return Array.from(db.exchanges.values()).filter((e) => !e.deleted_at);
+  });
+  const [epMap, setEpMap] = useState<Map<string, Ep>>(() => {
+    const db = getMasterTrackerDb();
+    return new Map(db.eps);
+  });
+  const [opMap, setOpMap] = useState<Map<string, Opportunity>>(() => {
+    const db = getMasterTrackerDb();
+    return new Map(db.opportunities);
+  });
   const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   useEffect(() => {
-    ensureDemoDataSeeded();
     loadData();
   }, []);
 
@@ -90,7 +99,7 @@ export default function MasterTrackerPage() {
               Master Tracker & Exchange Flow Stages (§5 Module A)
             </Heading>
             <Text styleKey="callout" tone="muted">
-              5 Statutory Lifecycle Stages · Gate Validations (G0..G4) · Zero Hard Deletes (INV-01)
+              5 Statutory Lifecycle Stages (Attraction to Post-Exp) · Zero Hard Deletes (INV-01)
             </Text>
           </Stack>
           <Group gap={8}>
@@ -173,7 +182,11 @@ export default function MasterTrackerPage() {
 
           {filteredExchanges.length === 0 ? (
             <div className="py-8 text-center text-slate-400">
-              <Text tone="muted">No exchanges in {activeTab.replace('_', ' ')} stage.</Text>
+              <Text tone="muted">
+                {activeTab === 'all'
+                  ? 'No exchanges in active stages.'
+                  : `No exchanges in ${activeTab.replace('_', ' ')} stage.`}
+              </Text>
             </div>
           ) : (
             <Table>

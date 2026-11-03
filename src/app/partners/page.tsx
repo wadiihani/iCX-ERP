@@ -44,12 +44,17 @@ const PARTNER_STANDARDS = [
 ];
 
 export default function PartnersAndIrPage() {
-  const [partners, setPartners] = useState<OpPartner[]>([]);
-  const [irPartners, setIrPartners] = useState<IrPartner[]>([]);
+  const [partners, setPartners] = useState<OpPartner[]>(() => {
+    ensureDemoDataSeeded();
+    const db = getMasterTrackerDb();
+    return Array.from(db.partners.values()).filter((p) => !p.deleted_at);
+  });
+  const [irPartners, setIrPartners] = useState<IrPartner[]>(() => {
+    return irEcosystemService.listIrPartners();
+  });
   const [selectedCluster, setSelectedCluster] = useState<string>('ALL');
 
   useEffect(() => {
-    ensureDemoDataSeeded();
     loadData();
   }, []);
 
@@ -103,8 +108,8 @@ export default function PartnersAndIrPage() {
                 Host institutions, NGOs, and social enterprises in Rabat
               </Text>
             </Stack>
-            <Badge variant="lime" size="sm">
-              Mandate 26.2 Accounts
+            <Badge variant={partners.length > 0 ? 'lime' : 'neutral'} size="sm">
+              {partners.length > 0 ? `${partners.length} Active Accounts` : 'No Accounts'}
             </Badge>
           </Group>
 
@@ -122,44 +127,52 @@ export default function PartnersAndIrPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {partners.map((partner) => (
-                <TableRow key={partner.id}>
-                  <TableCell>
-                    <Stack gap={2}>
-                      <span className="font-normal text-slate-200">{partner.name}</span>
-                      <span className="text-[11px] text-slate-400 font-mono">{partner.id.slice(0, 12)}</span>
-                    </Stack>
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-300">
-                    {partner.type} · {partner.city}
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-300">{partner.owner_id}</TableCell>
-                  <TableCell>
-                    <Stack gap={1}>
-                      <span className="text-xs text-slate-200">{partner.contact_person?.name || 'TBD'}</span>
-                      <span className="text-[11px] text-slate-400">{partner.contact_person?.phone}</span>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Group gap={4}>
-                      {PARTNER_STANDARDS.map((s) => (
-                        <span
-                          key={s.id}
-                          title={`${s.id}: ${s.name}`}
-                          className="px-1.5 py-0.5 text-[10px] rounded border border-lime-500/30 bg-lime-950/30 text-lime-400 font-mono"
-                        >
-                          {s.id}
-                        </span>
-                      ))}
-                    </Group>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="lime" size="sm">
-                      {partner.stage}
-                    </Badge>
+              {partners.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-slate-400">
+                    <Text tone="muted">No B2B operational partners registered.</Text>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                partners.map((partner) => (
+                  <TableRow key={partner.id}>
+                    <TableCell>
+                      <Stack gap={2}>
+                        <span className="font-normal text-slate-200">{partner.name}</span>
+                        <span className="text-[11px] text-slate-400 font-mono">{partner.id.slice(0, 12)}</span>
+                      </Stack>
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-300">
+                      {partner.type} · {partner.city}
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-300">{partner.owner_id}</TableCell>
+                    <TableCell>
+                      <Stack gap={1}>
+                        <span className="text-xs text-slate-200">{partner.contact_person?.name || 'TBD'}</span>
+                        <span className="text-[11px] text-slate-400">{partner.contact_person?.phone}</span>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Group gap={4}>
+                        {PARTNER_STANDARDS.map((s) => (
+                          <span
+                            key={s.id}
+                            title={`${s.id}: ${s.name}`}
+                            className="px-1.5 py-0.5 text-[10px] rounded border border-lime-500/30 bg-lime-950/30 text-lime-400 font-mono"
+                          >
+                            {s.id}
+                          </span>
+                        ))}
+                      </Group>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="lime" size="sm">
+                        {partner.stage}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </Stack>
@@ -174,7 +187,7 @@ export default function PartnersAndIrPage() {
                 International Relations (IR) 2×2 Ecosystem (§13)
               </Heading>
               <Text styleKey="footnote" tone="muted">
-                Strategic clustering by volume & conversion: Scale, Grow, Invest, Understand
+                Strategic clustering (supply vs market readiness): Upscale, Grow, Invest, Understand
               </Text>
             </Stack>
 
@@ -194,31 +207,37 @@ export default function PartnersAndIrPage() {
 
           <Divider />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredIrPartners.map((ir) => (
-              <div
-                key={ir.id}
-                className="border border-slate-800 p-4 rounded bg-slate-900/40 space-y-3"
-              >
-                <Group justify="space-between" align="center">
-                  <Badge variant={ir.cluster === 'upscale' ? 'lime' : 'neutral'} size="sm">
-                    {ir.cluster.toUpperCase()}
-                  </Badge>
-                  <span className="text-xs font-mono text-lime-400">Target: {ir.re_growth_target}</span>
-                </Group>
+          {filteredIrPartners.length === 0 ? (
+            <div className="py-8 text-center text-slate-400">
+              <Text tone="muted">No IR partnerships in {selectedCluster.toUpperCase()} cluster.</Text>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {filteredIrPartners.map((ir) => (
+                <div
+                  key={ir.id}
+                  className="border border-slate-800 p-4 rounded bg-slate-900/40 space-y-3"
+                >
+                  <Group justify="space-between" align="center">
+                    <Badge variant={ir.cluster === 'upscale' ? 'lime' : 'neutral'} size="sm">
+                      {ir.cluster.toUpperCase()}
+                    </Badge>
+                    <span className="text-xs font-mono text-lime-400">Target: {ir.re_growth_target}</span>
+                  </Group>
 
-                <div>
-                  <div className="text-sm font-normal text-slate-200">{ir.strategy || 'Strategic Entity Partner'}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Status: {ir.tracker_status} · Review: {ir.review_frequency}</div>
-                </div>
+                  <div>
+                    <div className="text-sm font-normal text-slate-200">{ir.strategy || 'Strategic Entity Partner'}</div>
+                    <div className="text-xs text-slate-400 mt-0.5">Status: {ir.tracker_status} · Review: {ir.review_frequency}</div>
+                  </div>
 
-                <div className="border-t border-slate-800 pt-2 flex justify-between text-xs text-slate-400">
-                  <span>Owner: {ir.owner_id}</span>
-                  <span className="font-mono text-[11px]">{ir.id.slice(0, 10)}</span>
+                  <div className="border-t border-slate-800 pt-2 flex justify-between text-xs text-slate-400">
+                    <span>Owner: {ir.owner_id}</span>
+                    <span className="font-mono text-[11px]">{ir.id.slice(0, 10)}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Stack>
       </Surface>
     </div>

@@ -8,31 +8,26 @@
 
 import type { Programme, RuleRegistryEntry } from '../types/data-integrity';
 
-export interface MinMaxRule {
+export type MinMaxRule = {
   min: number;
   max: number;
-}
+};
+
+export type DurationRuleValue = MinMaxRule | number[];
 
 /**
  * Seed rule entries reflecting the statutory rules table (§3.4)
+ * Updated per iCX Data Integrity Build Plan v2.0 (Q8: GV duration allowed values [4, 6, 8], single rule, no legacy row in production)
  */
 export const STATUTORY_RULE_SEEDS: RuleRegistryEntry[] = [
-  // GV Duration: Legacy 6-8 weeks until 2025-12-31; ECBA update 4-8 weeks from 2026-01-01
+  // GV Duration: allowed values [4, 6, 8] weeks per v2.0 Q8 (no legacy row in production; 5 and 7 are invalid)
   {
     key: 'gv.duration_weeks',
-    value: { min: 6, max: 8 },
+    value: [4, 6, 8],
     effective_from: '2020-01-01',
-    effective_to: '2025-12-31',
-    source: 'S1, S7',
-    note: 'Legacy GV duration rule (6-8 weeks)',
-  },
-  {
-    key: 'gv.duration_weeks',
-    value: { min: 4, max: 8 },
-    effective_from: '2026-01-01',
     effective_to: null,
-    source: 'S9',
-    note: 'ECBA 2026 update: GV duration changed to 4-8 weeks',
+    source: 'S9, Q8',
+    note: 'v2.0 Q8: GV duration options are 4, 6 or 8 weeks only',
   },
 
   // GTe Short Experience Weeks
@@ -217,13 +212,27 @@ export function validateDurationWeeks(
   valid: boolean;
   min: number;
   max: number;
+  allowedValues?: number[];
   ruleVersion: string;
 } {
   if (programme === 'GV') {
-    const rule = getEffectiveRule<MinMaxRule>('gv.duration_weeks', evaluationDate, customRules);
+    const rule = getEffectiveRule<DurationRuleValue>('gv.duration_weeks', evaluationDate, customRules);
     if (!rule || !rule.value) {
       throw new Error('Missing rule definition for gv.duration_weeks');
     }
+
+    if (Array.isArray(rule.value)) {
+      const allowed = rule.value;
+      const valid = allowed.includes(weeks);
+      return {
+        valid,
+        min: Math.min(...allowed),
+        max: Math.max(...allowed),
+        allowedValues: allowed,
+        ruleVersion: `${rule.source} (Effective from: ${rule.effective_from}${rule.effective_to ? ' to ' + rule.effective_to : ''})`,
+      };
+    }
+
     const { min, max } = rule.value;
     const valid = weeks >= min && weeks <= max;
     return {

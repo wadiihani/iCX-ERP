@@ -147,17 +147,28 @@ describe('Milestone M0: Full Acceptance Test Harness', () => {
     });
   });
 
-  // Acceptance Test T-16: Versioned Rules Evaluation (INV-08)
-  describe('T-16: Versioned Rule Evaluation (GV 4-8 vs 6-8 weeks)', () => {
-    it('Given GV opportunity of 5 weeks, passes under the 2026+ rule (4–8 weeks)', () => {
-      const result2026 = validateDurationWeeks('GV', 5, '2026-07-01');
-      expect(result2026.valid).toBe(true);
-      expect(result2026.min).toBe(4);
-      expect(result2026.max).toBe(8);
+  // Acceptance Test T-16: Versioned Rules Evaluation (INV-08 & v2.0 Q8)
+  describe('T-16: Versioned Rule Evaluation (GV [4, 6, 8] weeks per Q8)', () => {
+    it('Given GV opportunity, validates [4, 6, 8] allowed values; 5 and 7 fail under v2.0 Q8', () => {
+      expect(validateDurationWeeks('GV', 4, '2026-07-01').valid).toBe(true);
+      expect(validateDurationWeeks('GV', 6, '2026-07-01').valid).toBe(true);
+      expect(validateDurationWeeks('GV', 8, '2026-07-01').valid).toBe(true);
+      expect(validateDurationWeeks('GV', 5, '2026-07-01').valid).toBe(false);
+      expect(validateDurationWeeks('GV', 7, '2026-07-01').valid).toBe(false);
     });
 
-    it('Given GV opportunity of 5 weeks, fails under the legacy rule (6–8 weeks) for historical date', () => {
-      const resultHistorical = validateDurationWeeks('GV', 5, '2024-07-01');
+    it('Given GV opportunity of 5 weeks, fails under the legacy rule fixture (6–8 weeks)', () => {
+      const legacyFixture = [
+        {
+          key: 'gv.duration_weeks',
+          value: { min: 6, max: 8 },
+          effective_from: '2020-01-01',
+          effective_to: '2025-12-31',
+          source: 'S1, S7',
+          note: 'Legacy GV duration rule (6-8 weeks)',
+        },
+      ];
+      const resultHistorical = validateDurationWeeks('GV', 5, '2024-07-01', legacyFixture);
       expect(resultHistorical.valid).toBe(false);
       expect(resultHistorical.min).toBe(6);
       expect(resultHistorical.max).toBe(8);

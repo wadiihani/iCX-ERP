@@ -290,9 +290,12 @@ export const opportunityService = {
         evaluationDate ?? new Date()
       );
       if (!durCheck.valid) {
+        const allowedDesc = durCheck.allowedValues
+          ? `[${durCheck.allowedValues.join(', ')}] weeks`
+          : `${durCheck.min}-${durCheck.max} weeks`;
         throw new InvariantViolationError(
           'INV-08',
-          `Duration of ${data.duration_weeks} weeks is invalid for ${data.programme} (allowed: ${durCheck.min}-${durCheck.max} weeks, rule version: ${durCheck.ruleVersion})`
+          `Duration of ${data.duration_weeks} weeks is invalid for ${data.programme} (allowed: ${allowedDesc}, rule version: ${durCheck.ruleVersion})`
         );
       }
     }
