@@ -35,6 +35,10 @@ export function resetProofVaultDb(): void {
   proofVaultDb.dqIssues = [];
 }
 
+export function getProofVaultDb(): ProofVaultDbStore {
+  return proofVaultDb;
+}
+
 export function computeSha256(content: string | Buffer): string {
   return createHash('sha256').update(content).digest('hex');
 }
@@ -138,6 +142,13 @@ export const proofVaultService = {
     const doc = proofVaultDb.documents.get(id);
     if (!doc || doc.deleted_at) return undefined;
     return doc;
+  },
+
+  /**
+   * Lists all active proof documents in the vault.
+   */
+  listProofs(): ProofDocument[] {
+    return Array.from(proofVaultDb.documents.values()).filter((d) => !d.deleted_at);
   },
 
   /**

@@ -701,6 +701,97 @@ export interface IntegrityConsoleSummary {
   totalCompensationMAD: number;
 }
 
+// =============================================================================
+// OWNERSHIP, HANDOFF & DISASTER RECOVERY (§12, §13.3, §16 T-14, T-15, T-19)
+// =============================================================================
+
+export interface RaciMatrix {
+  responsible?: string[];
+  accountable: string; // Member ID
+  consulted?: string[];
+  informed?: string[];
+}
+
+export type SynergyTag = 'marketing' | 'b2b' | 'tm_mxp' | 'finance_legal';
+
+export type HandoffStatus =
+  | 'initiated'
+  | 'packet_generated'
+  | 'reviewed_by_outgoing'
+  | 'acknowledged_by_incoming'
+  | 'transferred'
+  | 'completed'
+  | 'reopened';
+
+export type HandoffScope = 'individual' | 'team' | 'department' | 'term_transition';
+
+export interface HandoffPacket {
+  generated_at: string;
+  outgoing_owner_id: string;
+  incoming_owner_id: string;
+  scope: HandoffScope;
+  openExchangesByStage: Record<FlowStage, Exchange[]>;
+  overdueDeadlines: Record<string, unknown>[];
+  openRequests: StatusRequest[];
+  openCases: CaseQuality[];
+  partners: OpPartner[];
+  irPartners: IrPartner[];
+  openDqIssues: DqIssue[];
+  proofIndex: ProofDocument[];
+  changeLog30d: AuditLogEntry[];
+  accessList: { member_id: string; role: MemberRole }[];
+}
+
+export interface HandoffRecord {
+  id: string;
+  scope: HandoffScope;
+  outgoing_owner_id: string;
+  incoming_owner_id: string;
+  status: HandoffStatus;
+  packet: HandoffPacket;
+  outgoing_reviewed_at?: string | null;
+  incoming_acknowledged_at?: string | null;
+  transferred_at?: string | null;
+  transferred_counts: Record<string, number>;
+  watch_period_ends_at?: string | null;
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+export interface SnapshotManifest {
+  timestamp: string;
+  environment: string;
+  tables: Record<string, { rowCount: number; sha256: string }>;
+  totalRows: number;
+  manifestChecksum: string;
+}
+
+export interface FullExportBundle {
+  exported_at: string;
+  actor_id: string;
+  scope: string;
+  manifest: SnapshotManifest;
+  tables: Record<string, unknown[]>;
+  proofIndex: ProofDocument[];
+  handoffPacket?: HandoffPacket | null;
+  ruleRegistryState: Record<string, unknown>;
+}
+
+export interface HandoffTask {
+  id: string;
+  rule_id: 'DQ-010' | 'DQ-011';
+  record_id: string;
+  record_type: string;
+  previous_owner_id?: string;
+  assigned_manager_id: string;
+  status: 'pending' | 'in_progress' | 'resolved';
+  created_at: string;
+  resolved_at?: string | null;
+}
+
+
+
 
 
 
