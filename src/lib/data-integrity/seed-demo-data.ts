@@ -15,30 +15,47 @@ import {
 import { proofVaultService } from './proof-vault';
 import { complianceService } from './compliance-calendar';
 import { qualityCaseService } from './quality-cases';
-import { irEcosystemService } from './ir-ecosystem';
+import { irEcosystemService, getIrEcosystemDb } from './ir-ecosystem';
 import { dataQualityService } from './data-quality';
 
 let isSeeded = false;
 
 export function ensureDemoDataSeeded(): void {
   const db = getMasterTrackerDb();
-  if (isSeeded && db.exchanges.size > 0) return;
+  if (isSeeded || db.exchanges.size > 0) {
+    isSeeded = true;
+    return;
+  }
 
   const actor = 'usr_wadii_hani';
 
-  // 1. Primary LC Entity Org
-  let lcOrg = Array.from(db.entities.values()).find((e) => e.name === 'AIESEC in Rabat');
-  if (!lcOrg) {
-    lcOrg = entityService.createEntity(
-      {
-        name: 'AIESEC in Rabat',
-        kind: 'LC',
-        country: 'Morocco',
-        is_frozen: false,
-      },
-      actor
-    );
-  }
+  // Helper to retrieve or create entity orgs idempotently
+  const getOrCreateEntity = (
+    name: string,
+    country: string,
+    kind: 'LC' | 'MC' = 'MC'
+  ) => {
+    let ent = Array.from(db.entities.values()).find((e) => e.name === name);
+    if (!ent) {
+      ent = entityService.createEntity(
+        {
+          name,
+          kind,
+          country,
+          is_frozen: false,
+        },
+        actor
+      );
+    }
+    return ent;
+  };
+
+  // 1. Primary LC Host Entity & Sending Partner MCs
+  const lcOrg = getOrCreateEntity('AIESEC in Rabat', 'Morocco', 'LC');
+  const brazilOrg = getOrCreateEntity('AIESEC in Brazil', 'Brazil', 'MC');
+  const germanyOrg = getOrCreateEntity('AIESEC in Germany', 'Germany', 'MC');
+  const egyptOrg = getOrCreateEntity('AIESEC in Egypt', 'Egypt', 'MC');
+  const taiwanOrg = getOrCreateEntity('AIESEC in Taiwan', 'Taiwan', 'MC');
 
   // 2. Seed 13 Statutory ICB Documents for Rabat
   complianceService.seedIcbAuditCatalogue(lcOrg.id, 'usr_wadii_hani', actor, '2026-06-30');
@@ -124,12 +141,12 @@ export function ensureDemoDataSeeded(): void {
     actor
   );
 
-  // 5. Exchange Participants (EPs)
+  // 5. Exchange Participants (EPs with distinct international home entities)
   const ep1 = epService.createEp(
     {
       expa_ep_id: 2849102,
       full_name: 'Maria Clara Silva',
-      home_entity_id: lcOrg.id,
+      home_entity_id: brazilOrg.id,
       contact: {
         email: 'maria.silva@aiesec.net',
         phone: '+55 11 98765 4321',
@@ -144,7 +161,7 @@ export function ensureDemoDataSeeded(): void {
     {
       expa_ep_id: 2850314,
       full_name: 'Lucas Heinrich Müller',
-      home_entity_id: lcOrg.id,
+      home_entity_id: germanyOrg.id,
       contact: {
         email: 'lucas.mueller@aiesec.de',
         phone: '+49 170 1234567',
@@ -159,7 +176,7 @@ export function ensureDemoDataSeeded(): void {
     {
       expa_ep_id: 2861944,
       full_name: 'Fatima Al-Mansoor',
-      home_entity_id: lcOrg.id,
+      home_entity_id: egyptOrg.id,
       contact: {
         email: 'fatima.mansoor@aiesec.eg',
         phone: '+20 100 555 4321',
@@ -174,7 +191,7 @@ export function ensureDemoDataSeeded(): void {
     {
       expa_ep_id: 2874109,
       full_name: 'Alex Yi-Ting Chen',
-      home_entity_id: lcOrg.id,
+      home_entity_id: taiwanOrg.id,
       contact: {
         email: 'alex.chen@aiesec.tw',
         phone: '+886 912 345 678',
@@ -185,7 +202,7 @@ export function ensureDemoDataSeeded(): void {
     actor
   );
 
-  // 6. Exchanges
+  // 6. Exchanges across Lifecycle Stages
   const res1 = exchangeService.createExchange(
     {
       ep_id: ep1.id,
@@ -300,58 +317,73 @@ export function ensureDemoDataSeeded(): void {
     actor
   );
 
-  // 9. IR Partners
-  irEcosystemService.createIrPartner(
-    {
-      home_entity_id: lcOrg.id,
-      owner_id: 'usr_wadii_hani',
-      cluster: 'upscale',
-      re_growth_target: 12,
-      tracker_status: 'active',
-      review_frequency: 'biweekly',
-      strategy: 'AIESEC in Brazil — Scale high conversion supply',
-    },
-    actor
+  // 9. IR Partners (Distinct international Home Entities per §9.3 & §12.1)
+  const irDb = getIrEcosystemDb();
+  const activeIrHomeEntityIds = new Set(
+    Array.from(irDb.irPartners.values())
+      .filter((p) => !p.deleted_at)
+      .map((p) => p.home_entity_id)
   );
 
-  irEcosystemService.createIrPartner(
-    {
-      home_entity_id: lcOrg.id,
-      owner_id: 'usr_sarah_idrissi',
-      cluster: 'grow',
-      re_growth_target: 8,
-      tracker_status: 'active',
-      review_frequency: 'monthly',
-      strategy: 'AIESEC in Germany — Structured expansion',
-    },
-    actor
-  );
+  if (!activeIrHomeEntityIds.has(brazilOrg.id)) {
+    irEcosystemService.createIrPartner(
+      {
+        home_entity_id: brazilOrg.id,
+        owner_id: 'usr_wadii_hani',
+        cluster: 'upscale',
+        re_growth_target: 12,
+        tracker_status: 'active',
+        review_frequency: 'biweekly',
+        strategy: 'AIESEC in Brazil — Scale high conversion supply',
+      },
+      actor
+    );
+  }
 
-  irEcosystemService.createIrPartner(
-    {
-      home_entity_id: lcOrg.id,
-      owner_id: 'usr_yassine_tazi',
-      cluster: 'invest',
-      re_growth_target: 5,
-      tracker_status: 'active',
-      review_frequency: 'monthly',
-      strategy: 'AIESEC in Taiwan — Seed pilot relations',
-    },
-    actor
-  );
+  if (!activeIrHomeEntityIds.has(germanyOrg.id)) {
+    irEcosystemService.createIrPartner(
+      {
+        home_entity_id: germanyOrg.id,
+        owner_id: 'usr_sarah_idrissi',
+        cluster: 'grow',
+        re_growth_target: 8,
+        tracker_status: 'active',
+        review_frequency: 'monthly',
+        strategy: 'AIESEC in Germany — Structured expansion',
+      },
+      actor
+    );
+  }
 
-  irEcosystemService.createIrPartner(
-    {
-      home_entity_id: lcOrg.id,
-      owner_id: 'usr_wadii_hani',
-      cluster: 'understand',
-      re_growth_target: 6,
-      tracker_status: 'active',
-      review_frequency: 'quarterly',
-      strategy: 'AIESEC in Egypt — Synergize Arab Region ties',
-    },
-    actor
-  );
+  if (!activeIrHomeEntityIds.has(taiwanOrg.id)) {
+    irEcosystemService.createIrPartner(
+      {
+        home_entity_id: taiwanOrg.id,
+        owner_id: 'usr_yassine_tazi',
+        cluster: 'invest',
+        re_growth_target: 5,
+        tracker_status: 'active',
+        review_frequency: 'monthly',
+        strategy: 'AIESEC in Taiwan — Seed pilot relations',
+      },
+      actor
+    );
+  }
+
+  if (!activeIrHomeEntityIds.has(egyptOrg.id)) {
+    irEcosystemService.createIrPartner(
+      {
+        home_entity_id: egyptOrg.id,
+        owner_id: 'usr_wadii_hani',
+        cluster: 'understand',
+        re_growth_target: 6,
+        tracker_status: 'active',
+        review_frequency: 'quarterly',
+        strategy: 'AIESEC in Egypt — Synergize Arab Region ties',
+      },
+      actor
+    );
+  }
 
   // 10. Run Data Quality Scan to populate DQ radar
   dataQualityService.runDataQualityScan();
