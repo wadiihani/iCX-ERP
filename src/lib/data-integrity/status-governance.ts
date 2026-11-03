@@ -17,6 +17,7 @@ import {
   InvariantViolationError,
 } from './invariants';
 import { getMasterTrackerDb } from './master-tracker';
+import { statusValidatorService } from './status-validators';
 
 /**
  * Storage for status requests in memory
@@ -63,6 +64,7 @@ export interface TransitionLifecycleOptions {
   ticket_ref?: string;
   rejection_reason?: string;
   timestamp?: string;
+  enforceStatutoryChecklist?: boolean;
 }
 
 export const statusGovernanceService = {
@@ -234,6 +236,10 @@ export const statusGovernanceService = {
       }
       updated.ticket_ref = ticketRef;
       updated.submitted_at = now;
+
+      if (options.enforceStatutoryChecklist) {
+        statusValidatorService.assertRequestReadyForSubmission(updated, now);
+      }
     } else if (targetStatus === 'approved') {
       updated.decided_at = now;
       updated.rejection_reason = null;
@@ -263,6 +269,39 @@ export const statusGovernanceService = {
     });
 
     return updated;
+  },
+
+  /**
+   * Submits request to national/Zendesk ticketing with full statutory checklist verification (§7.1–§7.4, DQ-057).
+   */
+  submitRequestWithChecklistValidation(
+    id: string,
+    actorId: string,
+    ticketRef: string,
+    options?: { submittedAt?: string; currentDateStr?: string }
+  ): StatusRequest {
+    const existing = statusRequestDb.requests.get(id);
+    if (!existing || existing.deleted_at) {
+      throw new Error(`Status request '${id}' not found or has been soft-deleted.`);
+    }
+
+    if (existing.current_status === 'draft') {
+      this.transitionLifecycle(id, 'ready', actorId);
+    }
+
+    const readyReq = statusRequestDb.requests.get(id)!;
+    const submitTime = options?.submittedAt ?? new Date().toISOString();
+    statusValidatorService.assertRequestReadyForSubmission(
+      readyReq,
+      submitTime,
+      options?.currentDateStr
+    );
+
+    return this.transitionLifecycle(id, 'submitted', actorId, {
+      ticket_ref: ticketRef,
+      timestamp: submitTime,
+      enforceStatutoryChecklist: true,
+    });
   },
 
   /**

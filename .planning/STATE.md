@@ -77,11 +77,11 @@
 | Plan | Title | Status | Details |
 |---|---|---|---|
 | **03-01** | Status Request Schema & Lifecycle State Machine | **COMPLETED** | Migration `20261102000006_icx_status_request_v1.sql` + `src/lib/data-integrity/status-governance.ts` + 8 unit tests (`tests/status-governance-lifecycle.test.ts`) enforcing 6 statutory request kinds, single EP isolation (INV-06), ticket reference gate, and lifecycle finite state machine |
-| **03-02** | Statutory Request Checklist Validators & Timing Engine | **Queued** | Checklist validators for early FI (T-07, T-08), extension FI (T-09), breaks (APIP clauses, English PDFs, timing requirements), and direct break eligibility (T-10) |
+| **03-02** | Statutory Request Checklist Validators & Timing Engine | **COMPLETED** | `src/lib/data-integrity/status-validators.ts` + 5 unit tests (`tests/status-request-validators.test.ts`) enforcing early FI checklist & T-07/T-08, extension timing T-09, APD aged overdue T-10, and English PDF proof requirements |
 | **03-03** | Deadline Engine & Radar Escalations | **Queued** | Unified `deadline` view and calculation engine: visa delivery SLA (T-12), departure support SLA, APD past RE radar (DQ-052), partner SLAs (DQ-060, DQ-061), ECB/ICB submission radar |
 
 ---
 
 ## Next Action
 
-Execute Plan 03-02: Statutory Request Checklist Validators & Timing Engine (§7.1–§7.4, T-07, T-08, T-09, T-10).
+Execute Plan 03-03: Deadline Engine & Radar Escalations (§8, §13.2, §16 T-12, DQ-030, DQ-052, DQ-053, DQ-056).
