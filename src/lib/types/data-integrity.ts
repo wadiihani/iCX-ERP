@@ -80,6 +80,9 @@ export interface OpPartner {
   persona?: 'NGO Project Manager' | 'NGO Founder' | 'School Director' | 'Other' | string | null;
   preferred_channel?: 'call' | 'WhatsApp' | 'email' | 'Facebook/Instagram' | 'meeting' | null;
   objection_tags?: string[];
+  funnel_stage?: PartnerFunnelStage | null;
+  next_action?: string | null;
+  next_action_due_at?: string | null;
   contact_person?: {
     name?: string;
     phone?: string;
@@ -360,6 +363,59 @@ export interface PartnerNpsPrerequisites {
   is_eligible_for_nps: boolean;
   missing_prerequisites: string[];
 }
+
+export type PartnerPersona =
+  | 'NGO Project Manager'
+  | 'NGO Founder'
+  | 'School Director'
+  | 'Other';
+
+export type PreferredChannel =
+  | 'call'
+  | 'WhatsApp'
+  | 'email'
+  | 'Facebook/Instagram'
+  | 'meeting';
+
+export type ObjectionTag =
+  | 'payment-before-value'
+  | 'bad past experience'
+  | 'no budget'
+  | 'no accommodation/food'
+  | 'low priority';
+
+export type PartnerFunnelStage =
+  | 'lead'
+  | 'called'
+  | 'meeting'
+  | 'open created'
+  | 'contract signed'
+  | 'hosting'
+  | 'retained'
+  | 'lost';
+
+export type TouchpointType =
+  | 'monthly_call'
+  | 'site_visit'
+  | 'lc_touchpoint'
+  | 'newsletter'
+  | 'quarterly_review';
+
+export interface PartnerTouchpoint {
+  id: string; // uuid
+  partner_id: string; // references OpPartner(id)
+  type: TouchpointType;
+  occurred_at: string;
+  actor_id: string; // references Member(id)
+  notes: string;
+  next_action?: string | null;
+  next_action_due_at?: string | null;
+  metadata?: Record<string, unknown>;
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
 
 
 
