@@ -300,4 +300,34 @@ export interface StatusRequest {
   deleted_reason?: string | null;
 }
 
+export type DeadlineCategory = 'exchange' | 'partner' | 'compliance' | 'case';
+
+export type DeadlineStatus =
+  | 'upcoming'
+  | 'notice'
+  | 'warning'
+  | 'urgent'
+  | 'overdue'
+  | 'resolved';
+
+export type EscalationLevel = 'owner' | 'lcvp' | 'lcp';
+
+export interface DeadlineItem {
+  id: string;
+  category: DeadlineCategory;
+  subject: string;
+  due_at: string; // ISO date / timestamptz
+  rule_key: string;
+  owner_id: string; // references Member(id)
+  source: string;
+  status: DeadlineStatus;
+  escalation_level: EscalationLevel;
+  entity_id: string;
+  metadata?: Record<string, unknown>;
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+
 
