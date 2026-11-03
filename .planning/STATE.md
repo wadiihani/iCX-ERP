@@ -3,8 +3,8 @@
 ## Project Overview
 
 - **Milestone Cycle**: Rebuild v1.0 (from `iCX_Data_Integrity_Tracking_Spec.md`)
-- **Active Milestone**: **M4 — Partner PRM & IR Ecosystem**
-- **Status**: Milestone M3 complete; ready for Milestone M4 execution
+- **Active Milestone**: **M5 — Quality Cases & CS Minimums**
+- **Status**: Milestone M4 complete; ready for Milestone M5 execution
 - **Last Updated**: 2026-11-03
 
 ---
@@ -34,8 +34,8 @@
 | **M1** | Master Tracker & Reconciliation | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M2** | Exchange Standards & Proof Vault | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M3** | Status Governance & Deadline Engine | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M4** | Partner PRM & IR Ecosystem | 3 plans | **IN PROGRESS** (2/3 done) | — |
-| **M5** | Quality Cases & CS Minimums | 3 plans | Queued | — |
+| **M4** | Partner PRM & IR Ecosystem | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
+| **M5** | Quality Cases & CS Minimums | 3 plans | **IN PROGRESS** (0/3 done) | — |
 | **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | Queued | — |
 | **M7** | Data Quality Engine & Integrity Console | 3 plans | Queued | — |
 | **M8** | Ownership Handoff & Disaster Recovery | 4 plans | Queued | — |
@@ -88,10 +88,10 @@
 |---|---|---|---|
 | **04-01** | Partner Standards per Opportunity & Account Management | **COMPLETED** | Migration `20261102000008_icx_partner_standards_v1.sql` + `src/lib/data-integrity/partner-standards.ts` + 12 unit tests (`tests/partner-standards.test.ts`) enforcing 8 statutory partner standards (#1–#8), review separation, closing timing, and DQ-062 NPS prerequisites |
 | **04-02** | Partner Touchpoint Logging & Buyer Personas | **COMPLETED** | Migration `20261102000009_icx_partner_touchpoints_v1.sql` + `src/lib/data-integrity/partner-touchpoints.ts` + 6 unit tests (`tests/partner-touchpoints.test.ts`) enforcing touchpoint logging, automatic SLA sync (DQ-060), buyer personas, objection tags, and funnel conversions |
-| **04-03** | IR Partner Record, 2×2 Clustering & E2E Analytics | **Queued** | Define/Analyze/Promote/Deliver/Track, 2×2 clustering matrix (upscale/grow/understand/invest), E2E customer flow analytics and standards delivery |
+| **04-03** | IR Partner Record, 2×2 Clustering & E2E Analytics | **COMPLETED** | Migration `20261102000010_icx_ir_partner_v1.sql` + `src/lib/data-integrity/ir-ecosystem.ts` + 9 unit tests (`tests/ir-partner-clustering.test.ts`) enforcing 5 IR lifecycle groups, 2×2 clustering matrix (`upscale`/`grow`/`understand`/`invest`), E2E customer flow analytics, standards co-delivery, and stuck EP radar (D7) |
 
 ---
 
 ## Next Action
 
-Execute Plan 04-03: IR Partner Record, 2×2 Clustering & E2E Customer Flow Analytics (§9.3).
+Execute Plan 05-01: Quality Cases Schema & CS Minimums Data Layer (§10 Module E, CS Minimums 1–4).

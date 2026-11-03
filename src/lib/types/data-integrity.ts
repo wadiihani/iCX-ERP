@@ -416,6 +416,106 @@ export interface PartnerTouchpoint {
   deleted_reason?: string | null;
 }
 
+// =============================================================================
+// INTERNATIONAL RELATIONS (IR) PARTNER ECOSYSTEM & 2×2 CLUSTERING (§9.3)
+// =============================================================================
+
+export type IrCluster = 'upscale' | 'grow' | 'understand' | 'invest';
+
+export type IrTrackerStatus = 'active' | 'in_discussion' | 'paused' | 'archived';
+
+export type IrReviewFrequency = 'weekly' | 'biweekly' | 'monthly' | 'quarterly';
+
+export interface IrPartner {
+  id: string; // uuid
+  home_entity_id: string; // references EntityOrg(id)
+  owner_id: string; // references Member(id)
+  
+  // Define
+  purpose?: string | null;
+  partnership_goals?: string[] | null;
+  
+  // Analyze
+  persona?: string | null;
+  timeline?: Record<string, unknown> | null;
+  result_history?: Record<string, unknown> | null;
+  custom_supply_threshold?: number | null;
+  custom_readiness_threshold?: number | null;
+  
+  // Promote
+  physical_content?: string[] | null;
+  digital_content?: string[] | null;
+  comms_channels?: string[] | null;
+  
+  // Deliver
+  re_growth_target: number;
+  process_time_target_days?: number | null;
+  standards_codelivery_notes?: string | null;
+  strategy?: string | null;
+  
+  // Track
+  tracker_status: IrTrackerStatus;
+  routines?: string[] | null;
+  review_frequency: IrReviewFrequency;
+  network_touchpoints?: Record<string, unknown>[] | null;
+  investment?: string | null;
+  last_review_at?: string | null;
+  cluster: IrCluster;
+  
+  // Audit & Invariant fields
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+export interface IrClusterAnalysis {
+  cluster: IrCluster;
+  supply: number; // applicants received from them (iCX)
+  marketReadiness: number; // our opportunities available (iCX)
+  supplyThreshold: number;
+  readinessThreshold: number;
+  isHighSupply: boolean;
+  isHighReadiness: boolean;
+  meaning: string;
+}
+
+export interface IrCustomerFlowAnalytics {
+  attraction: number; // Open EPs
+  consideration: number; // APL + ACP
+  preparation: number; // APD
+  experience: number; // RE
+  postExperience: number; // FI + CO
+  total: number;
+  aplToAcpConversionPct: number;
+  acpToApdConversionPct: number;
+  apdToReConversionPct: number;
+  reToCoConversionPct: number;
+  avgProcessTimeDays: {
+    aplToApd: number | null;
+    apdToRe: number | null;
+  };
+}
+
+export interface IrStandardsDeliveryAnalytics {
+  totalExchanges: number;
+  hostStandardsDeliveredPct: number; // #4–#15
+  homeStandardsDeliveredPct: number; // #1–#3, #16
+  overallDeliveryPct: number;
+  byStandard: Record<number, { name: string; deliveredPct: number; deliveredBy: string }>;
+}
+
+export interface StuckEp {
+  epId: string;
+  fullName: string;
+  exchangeId: string;
+  status: ExStatus;
+  currentStage: FlowStage;
+  idleDays: number;
+  ownerId: string;
+  stuckReason: string;
+}
+
+
 
 
 
