@@ -229,13 +229,21 @@ export interface AuditLogEntry {
 
 export type DqSeverity = 'Urgent' | 'Blocker' | 'Warn' | 'Review';
 
+export type DqStatus = 'open' | 'resolved' | 'auto_resolved' | 'ignored';
+
 export interface DqIssue {
   id: number; // bigserial
-  rule_id: string; // e.g., 'DQ-081', 'DQ-080'
+  rule_id: string; // e.g., 'DQ-001' .. 'DQ-084'
   subject: string;
   severity: DqSeverity;
+  status?: DqStatus;
+  table_name?: string | null;
+  record_id?: string | null;
   detected_at: string;
+  sla_due_at?: string | null;
   resolved_at?: string | null;
+  resolved_by?: string | null;
+  resolution_note?: string | null;
   owner_id?: string | null; // references Member(id)
   details?: Record<string, unknown>;
 }
@@ -644,6 +652,55 @@ export interface FreezeEntityPayload {
   actor_id: string;
   actor_role?: MemberRole;
 }
+
+// =============================================================================
+// DATA QUALITY ENGINE & INTEGRITY CONSOLE (§13.2, §14)
+// =============================================================================
+
+export type HealthGrade = 'A' | 'B' | 'C' | 'D' | 'F';
+
+export interface HealthDimensionScore {
+  score: number; // 0-100
+  weight: number; // 0-1
+  weightedScore: number; // score * weight
+  details: Record<string, number | string | boolean>;
+}
+
+export interface DataHealthScoreResult {
+  overallScore: number; // 0-100
+  grade: HealthGrade;
+  calculatedAt: string;
+  dimensions: {
+    completeness: HealthDimensionScore; // 35%
+    freshness: HealthDimensionScore; // 25%
+    expaConsistency: HealthDimensionScore; // 25%
+    ownership: HealthDimensionScore; // 15%
+  };
+  blockerCount: number;
+  urgentCount: number;
+  warnCount: number;
+  reviewCount: number;
+}
+
+export interface IntegrityConsoleSummary {
+  healthScore: DataHealthScoreResult;
+  openIssuesBySeverity: Record<DqSeverity, number>;
+  openIssuesByOwner: Record<string, number>;
+  stalenessByStage: Record<FlowStage, { total: number; stale: number; stalePct: number }>;
+  completenessByStage: Record<FlowStage, { requiredCount: number; filledCount: number; completenessPct: number }>;
+  reconciliationMismatchCount: number;
+  orphanedRecordsCount: number;
+  deadlinesNext14DaysCount: number;
+  openRequestsCount: number;
+  overallStandardsDeliveryPct: number;
+  standardsMismatchCount: number;
+  totalPartners: number;
+  partnersWithOverdueTouchpoint: number;
+  irClustersCount: Record<IrCluster, number>;
+  openCasesCount: number;
+  totalCompensationMAD: number;
+}
+
 
 
 
