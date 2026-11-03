@@ -3,8 +3,8 @@
 ## Project Overview
 
 - **Milestone Cycle**: Rebuild v1.0 (from `iCX_Data_Integrity_Tracking_Spec.md`)
-- **Active Milestone**: **M5 — Quality Cases & CS Minimums**
-- **Status**: Milestone M4 complete; ready for Milestone M5 execution
+- **Active Milestone**: **M6 — Compliance Calendar & ICB Freeze Gate**
+- **Status**: Milestone M5 complete; ready for Milestone M6 execution
 - **Last Updated**: 2026-11-03
 
 ---
@@ -35,8 +35,8 @@
 | **M2** | Exchange Standards & Proof Vault | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M3** | Status Governance & Deadline Engine | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
 | **M4** | Partner PRM & IR Ecosystem | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
-| **M5** | Quality Cases & CS Minimums | 3 plans | **IN PROGRESS** (0/3 done) | — |
-| **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | Queued | — |
+| **M5** | Quality Cases & CS Minimums | 3 plans | **COMPLETED** (3/3 done) | 2026-11-03 |
+| **M6** | Compliance Calendar & ICB Freeze Gate | 2 plans | **IN PROGRESS** (0/2 done) | — |
 | **M7** | Data Quality Engine & Integrity Console | 3 plans | Queued | — |
 | **M8** | Ownership Handoff & Disaster Recovery | 4 plans | Queued | — |
 
@@ -92,6 +92,16 @@
 
 ---
 
+## Phase M5 Execution Status
+
+| Plan | Title | Status | Details |
+|---|---|---|---|
+| **05-01** | Quality Cases Schema & CS Minimums Data Layer | **COMPLETED** | Migration `20261102000011_icx_quality_cases_v1.sql` + `src/lib/data-integrity/quality-cases.ts` + CS Minimum 1 (centralised support & response-time tracking) + CS Minimum 2 (exchange / EP dossier joins) |
+| **05-02** | Mandatory Closure Gates & Financial Proofs (T-13, DQ-071) | **COMPLETED** | Verification of 5 mandatory closure fields (§10.1), timestamped resolution steps, and Acceptance Test T-13 financial proof gate (DQ-071) |
+| **05-03** | CS Minimums KPI Reporting & Monthly Views | **COMPLETED** | `computeCsKpis` engine calculating avg resolution time, open cases count, total compensation by classification & type (including S9 migration fines), and case recurrence rate |
+
+---
+
 ## Next Action
 
-Execute Plan 05-01: Quality Cases Schema & CS Minimums Data Layer (§10 Module E, CS Minimums 1–4).
+Execute Plan 06-01: Compliance Item Schema & 13 ICB Audit Documents (§11 Module F, S3, APIP Annex 4).

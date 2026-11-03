@@ -515,6 +515,74 @@ export interface StuckEp {
   stuckReason: string;
 }
 
+// =============================================================================
+// QUALITY CASES & CUSTOMER SUPPORT (CS) MINIMUMS (§10 MODULE E, S4, S9)
+// =============================================================================
+
+export type CaseClassification = 'policy_breach' | 'expectation_gap' | 'other';
+
+export type CompensationType =
+  | 'refund'
+  | 'reimbursement'
+  | 'migration_fine'
+  | 'goodwill'
+  | 'other';
+
+export interface ResolutionStep {
+  step_no: number;
+  action_taken: string;
+  description: string;
+  timestamp: string; // ISO timestamptz
+  actor_id: string; // references Member(id)
+}
+
+export interface CaseQuality {
+  id: string; // uuid
+  exchange_id: string; // references Exchange(id)
+  title: string;
+  description: string;
+  classification: CaseClassification;
+  opened_at: string;
+  first_response_at?: string | null;
+  closed_at?: string | null;
+  resolution_steps: ResolutionStep[];
+  compensation_amount: number;
+  currency: string;
+  compensation_type?: CompensationType | null;
+  financial_proof_id?: string | null;
+  final_agreement_id?: string | null;
+  recurrence_of?: string | null; // references CaseQuality(id)
+  owner_id: string; // references Member(id)
+  created_at: string;
+  deleted_at?: string | null;
+  deleted_reason?: string | null;
+}
+
+export interface ExchangeCaseDossier {
+  exchange: Exchange;
+  ep: Ep;
+  opportunity: Opportunity;
+  cases: CaseQuality[];
+  statusRequests: StatusRequest[];
+  totalCompensationMAD: number;
+  hasOpenCases: boolean;
+  hasPolicyBreach: boolean;
+}
+
+export interface CsKpiReport {
+  month: string; // YYYY-MM
+  totalCases: number;
+  openCasesCount: number;
+  closedCasesCount: number;
+  avgResolutionTimeDays: number | null;
+  avgFirstResponseHours: number | null;
+  totalCompensationAmount: number;
+  compensationByClassification: Record<CaseClassification, number>;
+  compensationByType: Record<string, number>;
+  recurrenceRatePct: number;
+}
+
+
 
 
 
