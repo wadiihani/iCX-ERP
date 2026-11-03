@@ -60,41 +60,43 @@ export function CommandPalette() {
     () => [
       // Quick Actions
       {
-        title: '+ New B2B Lead / Organization',
+        title: '+ New B2B Lead / Partner',
         category: 'Quick Action',
-        href: '/sales',
+        href: '/partners',
         icon: PlusCircle,
         code: 'ACT-01',
       },
       {
         title: '+ New EP Application Dossier',
         category: 'Quick Action',
-        href: '/crm',
+        href: '/tracker',
         icon: PlusCircle,
         code: 'ACT-02',
       },
       {
         title: '+ New Opportunity & Slot Wave',
         category: 'Quick Action',
-        href: '/opportunities',
+        href: '/tracker',
         icon: PlusCircle,
         code: 'ACT-03',
       },
 
       // Modules
-      { title: 'EP Master Tracker', category: 'Module', href: '/crm', icon: Users, code: 'TRK-01' },
-      { title: 'B2B Partner CRM & Deals', category: 'Module', href: '/sales', icon: Building2, code: 'TRK-02' },
-      { title: 'Opportunities & Slots', category: 'Module', href: '/opportunities', icon: Briefcase, code: 'TRK-03' },
-      { title: 'Delivery & 18 Standards', category: 'Module', href: '/accommodation', icon: ShieldCheck, code: 'TRK-04' },
-      { title: 'Operational Finance Ledger', category: 'Module', href: '/dashboards', icon: DollarSign, code: 'TRK-05' },
-      { title: 'Workload & Handoffs Queue', category: 'Module', href: '/admin', icon: CheckSquare, code: 'TRK-06' },
-      { title: 'Action Outbox & EXPA Sync', category: 'Module', href: '/outbox', icon: Briefcase, code: 'TRK-07' },
+      { title: 'Integrity Console & Health Scorecard', category: 'Module', href: '/', icon: ShieldCheck, code: 'TRK-00' },
+      { title: 'Master Tracker & Stages (5 Stages)', category: 'Module', href: '/tracker', icon: Users, code: 'TRK-01' },
+      { title: '16 Standards & Proof Vault', category: 'Module', href: '/standards', icon: ShieldCheck, code: 'TRK-02' },
+      { title: 'Status Governance & Deadline Radar', category: 'Module', href: '/status-governance', icon: Briefcase, code: 'TRK-03' },
+      { title: 'B2B Partner PRM & IR Ecosystem', category: 'Module', href: '/partners', icon: Building2, code: 'TRK-04' },
+      { title: 'Quality Cases Ledger & CS Minimums', category: 'Module', href: '/quality-cases', icon: ShieldCheck, code: 'TRK-05' },
+      { title: 'Compliance Calendar & Freeze Gate', category: 'Module', href: '/compliance', icon: CheckSquare, code: 'TRK-06' },
+      { title: 'Ownership RACI & Turnover Handoff', category: 'Module', href: '/handoff', icon: CheckSquare, code: 'TRK-07' },
+      { title: 'Action Outbox & Dual Control', category: 'Module', href: '/outbox', icon: Briefcase, code: 'TRK-08' },
 
       // Stakeholder Records
-      { title: 'Sofia Martinez (EP-2026-081)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGV' },
-      { title: 'Lukas Schneider (EP-2026-077)', category: 'EP Record', href: '/crm', icon: Users, code: 'iGTe' },
-      { title: 'BMCE Bank Foundation', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-019' },
-      { title: 'Rabat American School', category: 'Partner Account', href: '/sales', icon: Building2, code: 'DEAL-022' },
+      { title: 'Sofia Martinez (EP-2026-081)', category: 'EP Record', href: '/tracker', icon: Users, code: 'iGV' },
+      { title: 'Lukas Schneider (EP-2026-077)', category: 'EP Record', href: '/tracker', icon: Users, code: 'iGTe' },
+      { title: 'Association Espoir & Jeunesse Rabat', category: 'Partner Account', href: '/partners', icon: Building2, code: 'NGO-01' },
+      { title: 'BMCE Bank Foundation', category: 'Partner Account', href: '/partners', icon: Building2, code: 'CORP-02' },
 
       // System Controls
       {

@@ -58,6 +58,16 @@ export async function updateSession(request: NextRequest) {
 
   const isPublicRoute =
     request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname.startsWith('/tracker') ||
+    request.nextUrl.pathname.startsWith('/standards') ||
+    request.nextUrl.pathname.startsWith('/status-governance') ||
+    request.nextUrl.pathname.startsWith('/partners') ||
+    request.nextUrl.pathname.startsWith('/quality-cases') ||
+    request.nextUrl.pathname.startsWith('/compliance') ||
+    request.nextUrl.pathname.startsWith('/handoff') ||
+    request.nextUrl.pathname.startsWith('/admin') ||
+    request.nextUrl.pathname.startsWith('/outbox') ||
+    request.nextUrl.pathname.startsWith('/operations') ||
     isAuthRoute ||
     request.nextUrl.pathname.startsWith('/unauthorized');
 
@@ -75,10 +85,9 @@ export async function updateSession(request: NextRequest) {
       return res;
     }
 
-    // Authenticated aiesec.net user trying to visit /login redirects to operational cockpit
+    // Authenticated aiesec.net user trying to visit /login redirects to root
     if (request.nextUrl.pathname === '/login') {
-      const redirectTarget =
-        request.nextUrl.searchParams.get('redirect') || '/operations/national-cockpit';
+      const redirectTarget = request.nextUrl.searchParams.get('redirect') || '/';
       const url = request.nextUrl.clone();
       url.pathname = redirectTarget;
       url.searchParams.delete('redirect');

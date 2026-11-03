@@ -65,19 +65,18 @@ export function TopNavBar() {
   const pathSegments = pathname.split('/').filter(Boolean);
   const getBreadcrumbTitle = (seg: string) => {
     const titles: Record<string, string> = {
-      crm: 'EP Master Tracker',
-      sales: 'B2B Partner CRM',
-      pipeline: 'Sales Pipeline Board',
-      opportunities: 'Contracts, Opps & Slots',
-      irm: 'IR Partners & Quotas',
-      accommodation: 'Exchange Delivery & Standards',
-      dashboards: 'Operational Finance',
+      tracker: 'Master Tracker & Stages',
+      standards: '16 Standards & Proof Vault',
+      'status-governance': 'Status Requests & Deadline Radar',
+      partners: 'B2B Partner PRM & IR Ecosystem',
+      'quality-cases': 'Quality Cases & CS Minimums',
+      compliance: 'Compliance Checklist & Freeze Gate',
+      handoff: 'Mandate Turnover & DR Vault',
       admin: 'Workload & Handoffs',
       'roles-and-access': 'Access Permissions (RBAC)',
-      members: 'Member Engagement & TeSt',
-      outbox: 'Action Outbox & Sync',
-      organizations: 'Partner Accounts Directory',
-      'role-view': 'Functional Workflow Hubs',
+      outbox: 'Action Outbox & Dual Approval',
+      crm: 'EP Master Tracker',
+      sales: 'B2B Partner CRM',
     };
     return titles[seg] || seg.charAt(0).toUpperCase() + seg.slice(1);
   };
@@ -88,7 +87,7 @@ export function TopNavBar() {
       label: 'New B2B Partner Lead',
       category: 'External BD',
       icon: Building2,
-      targetHref: '/sales',
+      targetHref: '/partners',
       intakeType: 'partner',
     },
     {
@@ -96,7 +95,7 @@ export function TopNavBar() {
       label: 'New B2B Contact',
       category: 'External BD',
       icon: UserPlus,
-      targetHref: '/sales',
+      targetHref: '/partners',
       intakeType: 'contact',
     },
     {
@@ -104,7 +103,7 @@ export function TopNavBar() {
       label: 'New Contract & Opportunity',
       category: 'External BD',
       icon: FileText,
-      targetHref: '/opportunities',
+      targetHref: '/tracker',
       intakeType: 'contract_opp',
     },
     {
@@ -112,7 +111,7 @@ export function TopNavBar() {
       label: 'New EP Profile / Applicant',
       category: 'Internal Ops',
       icon: Users,
-      targetHref: '/crm',
+      targetHref: '/tracker',
       intakeType: 'ep',
     },
     {
@@ -120,7 +119,7 @@ export function TopNavBar() {
       label: 'New IR Partner Agreement',
       category: 'Internal Ops',
       icon: Globe2,
-      targetHref: '/opportunities/irm',
+      targetHref: '/partners',
       intakeType: 'ir',
     },
     {
@@ -128,7 +127,7 @@ export function TopNavBar() {
       label: 'New Housing Bed / Provider',
       category: 'Internal Ops',
       icon: Home,
-      targetHref: '/accommodation',
+      targetHref: '/standards',
       intakeType: 'accomm',
     },
     {
@@ -136,7 +135,7 @@ export function TopNavBar() {
       label: 'New Quality Case / Incident',
       category: 'Governance & ECB',
       icon: AlertTriangle,
-      targetHref: '/admin#cases',
+      targetHref: '/quality-cases',
       intakeType: 'case',
     },
   ];

@@ -16,7 +16,7 @@ import { createClient } from '@/lib/supabase/client';
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/operations/national-cockpit';
+  const redirectUrl = searchParams.get('redirect') || '/';
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
