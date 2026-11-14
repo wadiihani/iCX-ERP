@@ -1,0 +1,11 @@
+{
+  "name": "aiesec-icx-command-center",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "npm --prefix apps/web run dev",
+    "build:web": "npm --prefix apps/web run build",
+    "dev:api": "python -m uvicorn app.main:app --app-dir services/api --reload --port 8000",
+    "test:api": "python -m pytest services/api/tests"
+  }
+}

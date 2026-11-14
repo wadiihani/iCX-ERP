@@ -44,6 +44,9 @@ coverage/
 .DS_Store
 Thumbs.db
 *.pem
+*.db
+*.sqlite
+*.sqlite3
 
 # Debug logs
 logs/

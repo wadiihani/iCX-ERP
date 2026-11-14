@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--surface-0: 248 250 252;
+		--surface-1: 255 255 255;
+		--surface-2: 241 245 249;
+		--surface-3: 226 232 240;
+		--surface-border: 203 213 225;
+
+		--content-primary: 15 23 42;
+		--content-secondary: 71 85 105;
+		--content-muted: 148 163 184;
+	}
+
+	.dark {
+		--surface-0: 9 13 22;
+		--surface-1: 15 23 42;
+		--surface-2: 24 35 60;
+		--surface-3: 35 50 85;
+		--surface-border: 30 41 69;
+
+		--content-primary: 248 250 252;
+		--content-secondary: 148 163 184;
+		--content-muted: 100 116 139;
+	}
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: rgb(var(--surface-3) / 0.7);
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: rgb(var(--surface-3) / 1);
+}

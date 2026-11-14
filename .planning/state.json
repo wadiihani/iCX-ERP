@@ -1,0 +1,58 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": null,
+  "phases": [
+    {
+      "number": "1",
+      "name": "Foundation, Application Shell & Authentication",
+      "status": "in_progress"
+    },
+    {
+      "number": "2",
+      "name": "Organizations, PRM & Contracts",
+      "status": "pending"
+    },
+    {
+      "number": "3",
+      "name": "Opportunities, Products (iGV/iGTa/iGTe) & IRM",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "CRM, Applications & Matching Engine",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Exchange Operations & Customer Experience (CXP)",
+      "status": "pending"
+    },
+    {
+      "number": "6",
+      "name": "Operational Finance, Legalities & Command Center Analytics",
+      "status": "pending"
+    },
+    {
+      "number": "7",
+      "name": "LangGraph AI Architecture & Approval Center",
+      "status": "pending"
+    },
+    {
+      "number": "8",
+      "name": "Temporal Durable Workflows & EXPA Sync Adapter",
+      "status": "pending"
+    },
+    {
+      "number": "9",
+      "name": "End-to-End Verification, Security Hardening & Production Deployment",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd-progress --next",
+    "label": "Advance to the next step (plan phase 1)",
+    "reason": "Phase 1 of 10 — needs a plan"
+  },
+  "updated_at": "2026-11-14T17:20:45.069Z"
+}
