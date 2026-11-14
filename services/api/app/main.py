@@ -6,10 +6,23 @@ from app.modules.identity.models import User, Role, Permission, UserRoleAssignme
 from app.modules.organizations.models import Organization, OrganizationContact
 from app.modules.prm.models import PRMLead, PRMActivity
 from app.modules.contracts.models import Contract, OperationalRisk
+from app.modules.opportunities.models import (
+    Opportunity,
+    OpportunityIGVDetails,
+    OpportunityIGTDetails,
+    OpportunitySlot,
+)
+from app.modules.irm.models import (
+    SendingEntity,
+    VisaFeasibilityAssessment,
+    IRMPartnership,
+)
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
 from app.modules.contracts.router import router as contracts_router
+from app.modules.opportunities.router import router as opportunities_router
+from app.modules.irm.router import router as irm_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -48,3 +61,5 @@ app.include_router(identity_router, prefix=f"{settings.API_V1_STR}/auth", tags=[
 app.include_router(organizations_router, prefix=f"{settings.API_V1_STR}", tags=["Organizations & PRM"])
 app.include_router(prm_router, prefix=f"{settings.API_V1_STR}", tags=["PRM & Partner Leads"])
 app.include_router(contracts_router, prefix=f"{settings.API_V1_STR}", tags=["Contracts & Legal Compliance"])
+app.include_router(opportunities_router, prefix=f"{settings.API_V1_STR}", tags=["Opportunities & Products"])
+app.include_router(irm_router, prefix=f"{settings.API_V1_STR}", tags=["International Relations Management (IRM)"])
