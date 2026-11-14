@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { auth } from '$lib/stores/auth.svelte';
 
-	let email = $state('');
-	let password = $state('');
+	let email = $state('lcp.admin@aiesec.net');
+	let password = $state('AdminPass123!');
 	let isSubmitting = $state(false);
 	let errorMessage = $state<string | null>(null);
 
@@ -23,6 +23,12 @@
 			errorMessage = auth.error || 'Authentication failed. Please verify credentials.';
 		}
 		isSubmitting = false;
+	}
+
+	function fillCredentials(demoEmail: string) {
+		email = demoEmail;
+		password = 'AdminPass123!';
+		errorMessage = null;
 	}
 </script>
 
@@ -78,7 +84,7 @@
 				<button
 					type="submit"
 					disabled={isSubmitting}
-					class="w-full py-2.5 px-4 rounded-lg bg-brand-blue hover:bg-brand-navy text-white font-medium text-sm transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
+					class="w-full py-2.5 px-4 rounded-lg bg-brand-blue hover:bg-brand-navy text-white font-medium text-sm transition-colors shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
 				>
 					{#if isSubmitting}
 						<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -93,7 +99,48 @@
 			</div>
 		</form>
 
-		<div class="mt-8 pt-6 border-t border-surface-border text-center">
+		<!-- Quick Demo Role Selectors -->
+		<div class="mt-6 pt-5 border-t border-surface-border">
+			<p class="text-[11px] font-semibold text-content-secondary uppercase tracking-wider mb-2.5 text-center">
+				Quick Demo Roles (Click to fill)
+			</p>
+			<div class="grid grid-cols-2 gap-2 text-xs">
+				<button
+					type="button"
+					onclick={() => fillCredentials('lcp.admin@aiesec.net')}
+					class="p-2 rounded-lg bg-surface-0 hover:bg-surface-2 text-left transition-colors border border-surface-border cursor-pointer group"
+				>
+					<span class="font-bold text-content-primary block group-hover:text-brand-blue">LCP Admin</span>
+					<span class="text-[10px] text-content-muted block truncate">lcp.admin@aiesec.net</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => fillCredentials('lcvp.icx@aiesec.net')}
+					class="p-2 rounded-lg bg-surface-0 hover:bg-surface-2 text-left transition-colors border border-surface-border cursor-pointer group"
+				>
+					<span class="font-bold text-content-primary block group-hover:text-brand-blue">LCVP iCX</span>
+					<span class="text-[10px] text-content-muted block truncate">lcvp.icx@aiesec.net</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => fillCredentials('vp.finance@aiesec.net')}
+					class="p-2 rounded-lg bg-surface-0 hover:bg-surface-2 text-left transition-colors border border-surface-border cursor-pointer group"
+				>
+					<span class="font-bold text-content-primary block group-hover:text-brand-blue">Finance VP</span>
+					<span class="text-[10px] text-content-muted block truncate">vp.finance@aiesec.net</span>
+				</button>
+				<button
+					type="button"
+					onclick={() => fillCredentials('tl.igv@aiesec.net')}
+					class="p-2 rounded-lg bg-surface-0 hover:bg-surface-2 text-left transition-colors border border-surface-border cursor-pointer group"
+				>
+					<span class="font-bold text-content-primary block group-hover:text-brand-blue">Team Leader</span>
+					<span class="text-[10px] text-content-muted block truncate">tl.igv@aiesec.net</span>
+				</button>
+			</div>
+		</div>
+
+		<div class="mt-6 pt-4 border-t border-surface-border text-center">
 			<p class="text-[11px] text-content-muted">
 				Protected under AIESEC Rabat Data Governance &bull; Zero Leakage Policy
 			</p>

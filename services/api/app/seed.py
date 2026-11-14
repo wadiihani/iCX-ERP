@@ -111,12 +111,17 @@ def seed_database(db=None):
         # 2. USERS
         print("-> Seeding Users across roles...")
         users_info = [
-            ("admin@aiesec.org.ma", "AdminSecret123", "Amine Benjelloun", "LCP_ADMIN"),
-            ("lcvp.icx@aiesec.org.ma", "IcxLeader2026!", "Khadija Mansouri", "LCVP_ICX"),
-            ("lcvp.fnl@aiesec.org.ma", "FinanceSafe2026!", "Mehdi Alami", "LCVP_FNL"),
-            ("tl.igv@aiesec.org.ma", "VolunteerLead2026!", "Zineb Tazi", "TEAM_LEADER"),
-            ("bd.member@aiesec.org.ma", "PartnerBiz2026!", "Yassine Berrada", "BD_MEMBER"),
-            ("cx.member@aiesec.org.ma", "Delivery2026!", "Salma Chraibi", "CX_MEMBER"),
+            ("admin@aiesec.org.ma", "AdminPass123!", "Amine Benjelloun", "LCP_ADMIN"),
+            ("admin@aiesec.net", "AdminPass123!", "Amine Benjelloun", "LCP_ADMIN"),
+            ("lcp.admin@aiesec.net", "AdminPass123!", "Amine Benjelloun (LCP)", "LCP_ADMIN"),
+            ("lcvp.icx@aiesec.org.ma", "AdminPass123!", "Khadija Mansouri", "LCVP_ICX"),
+            ("lcvp.icx@aiesec.net", "AdminPass123!", "Khadija Mansouri (LCVP iCX)", "LCVP_ICX"),
+            ("lcvp.fnl@aiesec.org.ma", "AdminPass123!", "Mehdi Alami", "LCVP_FNL"),
+            ("vp.finance@aiesec.net", "AdminPass123!", "Mehdi Alami (VP Finance)", "LCVP_FNL"),
+            ("tl.igv@aiesec.org.ma", "AdminPass123!", "Zineb Tazi", "TEAM_LEADER"),
+            ("tl.igv@aiesec.net", "AdminPass123!", "Zineb Tazi (TL iGV)", "TEAM_LEADER"),
+            ("bd.member@aiesec.org.ma", "AdminPass123!", "Yassine Berrada", "BD_MEMBER"),
+            ("cx.member@aiesec.org.ma", "AdminPass123!", "Salma Chraibi", "CX_MEMBER"),
         ]
         users_map = {}
         for email, pwd, name, role_id in users_info:
