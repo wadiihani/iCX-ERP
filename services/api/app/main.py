@@ -59,6 +59,17 @@ from app.modules.ai.models import (
     KnowledgeChunk,
 )
 from app.modules.approvals.models import ApprovalProposal
+from app.modules.workflows.models import (
+    TemporalWorkflowExecution,
+    TemporalActivityLog,
+    OperationalEscalation,
+)
+from app.modules.expa.models import (
+    EXPASyncRun,
+    EXPAStagedRecord,
+    EXPAReconciliationRecord,
+    EXPAGatedMutation,
+)
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
@@ -75,6 +86,8 @@ from app.modules.legalities.router import router as legalities_router
 from app.modules.analytics.router import router as analytics_router
 from app.modules.ai.router import router as ai_router
 from app.modules.approvals.router import router as approvals_router
+from app.modules.workflows.router import router as workflows_router
+from app.modules.expa.router import router as expa_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -125,3 +138,5 @@ app.include_router(legalities_router, prefix=f"{settings.API_V1_STR}", tags=["Le
 app.include_router(analytics_router, prefix=f"{settings.API_V1_STR}", tags=["Command Center Analytics"])
 app.include_router(ai_router, prefix=f"{settings.API_V1_STR}", tags=["AI Copilots & Governance"])
 app.include_router(approvals_router, prefix=f"{settings.API_V1_STR}", tags=["Human Approval Center"])
+app.include_router(workflows_router, prefix=f"{settings.API_V1_STR}", tags=["Temporal Workflows & SLA Engine"])
+app.include_router(expa_router, prefix=f"{settings.API_V1_STR}", tags=["Isolated EXPA Sync & Reconciliation"])
