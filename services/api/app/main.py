@@ -17,12 +17,22 @@ from app.modules.irm.models import (
     VisaFeasibilityAssessment,
     IRMPartnership,
 )
+from app.modules.crm.models import ExchangeParticipant, EPDocument
+from app.modules.applications.models import (
+    Application,
+    ApplicationScreening,
+    OPInterview,
+    AcceptanceNote,
+    SEPaymentProof,
+)
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
 from app.modules.contracts.router import router as contracts_router
 from app.modules.opportunities.router import router as opportunities_router
 from app.modules.irm.router import router as irm_router
+from app.modules.crm.router import router as crm_router
+from app.modules.applications.router import router as applications_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -63,3 +73,5 @@ app.include_router(prm_router, prefix=f"{settings.API_V1_STR}", tags=["PRM & Par
 app.include_router(contracts_router, prefix=f"{settings.API_V1_STR}", tags=["Contracts & Legal Compliance"])
 app.include_router(opportunities_router, prefix=f"{settings.API_V1_STR}", tags=["Opportunities & Products"])
 app.include_router(irm_router, prefix=f"{settings.API_V1_STR}", tags=["International Relations Management (IRM)"])
+app.include_router(crm_router, prefix=f"{settings.API_V1_STR}", tags=["CRM & EP Directory"])
+app.include_router(applications_router, prefix=f"{settings.API_V1_STR}", tags=["Applications & Screening Pipeline"])
