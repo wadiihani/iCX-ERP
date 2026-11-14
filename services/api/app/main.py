@@ -25,6 +25,21 @@ from app.modules.applications.models import (
     AcceptanceNote,
     SEPaymentProof,
 )
+from app.modules.exchanges.models import (
+    Exchange,
+    ExchangeChecklist,
+    ExchangeIncident,
+)
+from app.modules.logistics.models import (
+    ArrivalLogistics,
+    AccommodationUnit,
+    ExchangeAccommodation,
+)
+from app.modules.cxp.models import (
+    ExchangeStandardsFulfillment,
+    PartnerStandardsEvaluation,
+    ExchangeCompletion,
+)
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
@@ -33,6 +48,9 @@ from app.modules.opportunities.router import router as opportunities_router
 from app.modules.irm.router import router as irm_router
 from app.modules.crm.router import router as crm_router
 from app.modules.applications.router import router as applications_router
+from app.modules.exchanges.router import router as exchanges_router
+from app.modules.logistics.router import router as logistics_router
+from app.modules.cxp.router import router as cxp_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -75,3 +93,6 @@ app.include_router(opportunities_router, prefix=f"{settings.API_V1_STR}", tags=[
 app.include_router(irm_router, prefix=f"{settings.API_V1_STR}", tags=["International Relations Management (IRM)"])
 app.include_router(crm_router, prefix=f"{settings.API_V1_STR}", tags=["CRM & EP Directory"])
 app.include_router(applications_router, prefix=f"{settings.API_V1_STR}", tags=["Applications & Screening Pipeline"])
+app.include_router(exchanges_router, prefix=f"{settings.API_V1_STR}", tags=["Exchange Operations"])
+app.include_router(logistics_router, prefix=f"{settings.API_V1_STR}", tags=["Arrivals & Accommodation Logistics"])
+app.include_router(cxp_router, prefix=f"{settings.API_V1_STR}", tags=["Customer Experience & Standards (18)"])
