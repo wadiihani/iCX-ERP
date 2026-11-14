@@ -6,15 +6,15 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
 
 ## Phases
 
-- [ ] **Phase 1: Foundation, Application Shell & Authentication** - Monorepo architecture, FastAPI backend foundation, PostgreSQL schema, SvelteKit + Svelte 5 application shell with dark/light theme, RBAC, and audit trail.
-- [ ] **Phase 2: Organizations, PRM & Contracts** - B2B partner acquisition pipeline, organization directory, BANT qualification, contact management, and versioned contract repository.
-- [ ] **Phase 3: Opportunities, Products (iGV/iGTa/iGTe) & IRM** - Opportunity builder, product-specific validators, capacity-controlled slots, IR Sending Entity directory, and visa feasibility register.
-- [ ] **Phase 4: CRM, Applications & Matching Engine** - EP directory with PII masking, 9-stage application screening workflow, OP interview recording, dual-status state machine, and CSV/XLSX import engine.
-- [ ] **Phase 5: Exchange Operations & Customer Experience (CXP)** - Exchange operational milestones, accommodation & arrival logistics board, 18 Exchange Standards with 13 mandatory gates, 10 Partner Standards, and deterministic completion calculation.
-- [ ] **Phase 6: Operational Finance, Legalities & Command Center Analytics** - Deterministic pricing calculators, payment milestone tracking, financial approval queue, IAC audit readiness, and dense operational analytics dashboards.
-- [ ] **Phase 7: LangGraph AI Architecture & Approval Center** - Multi-agent LangGraph system, pgvector RAG knowledge vault, specialized copilots (EP screening, partner/IR intelligence, risk auditing), and human-in-the-loop Approval Center.
-- [ ] **Phase 8: Temporal Durable Workflows & EXPA Sync Adapter** - Temporal workflows for SLA timers and cascades, isolated EXPA sync adapter, and data reconciliation console.
-- [ ] **Phase 9: End-to-End Verification, Security Hardening & Production Deployment** - Full acceptance test suite, synthetic data seeding, security audits, Docker deployment configuration, and operational handover documentation.
+- [x] **Phase 1: Foundation, Application Shell & Authentication** - Monorepo architecture, FastAPI backend foundation, PostgreSQL schema, SvelteKit + Svelte 5 application shell with dark/light theme, RBAC, and audit trail.
+- [x] **Phase 2: Organizations, PRM & Contracts** - B2B partner acquisition pipeline, organization directory, BANT qualification, contact management, and versioned contract repository.
+- [x] **Phase 3: Opportunities, Products (iGV/iGTa/iGTe) & IRM** - Opportunity builder, product-specific validators, capacity-controlled slots, IR Sending Entity directory, and visa feasibility register.
+- [x] **Phase 4: CRM, Applications & Matching Engine** - EP directory with PII masking, 9-stage application screening workflow, OP interview recording, dual-status state machine, and CSV/XLSX import engine.
+- [x] **Phase 5: Exchange Operations & Customer Experience (CXP)** - Exchange operational milestones, accommodation & arrival logistics board, 18 Exchange Standards with 13 mandatory gates, 10 Partner Standards, and deterministic completion calculation.
+- [x] **Phase 6: Operational Finance, Legalities & Command Center Analytics** - Deterministic pricing calculators, payment milestone tracking, financial approval queue, IAC audit readiness, and dense operational analytics dashboards.
+- [x] **Phase 7: LangGraph AI Architecture & Approval Center** - Multi-agent LangGraph system, pgvector RAG knowledge vault, specialized copilots (EP screening, partner/IR intelligence, risk auditing), and human-in-the-loop Approval Center.
+- [x] **Phase 8: Temporal Durable Workflows & EXPA Sync Adapter** - Temporal workflows for SLA timers and cascades, isolated EXPA sync adapter, and data reconciliation console.
+- [x] **Phase 9: End-to-End Verification, Security Hardening & Production Deployment** - Full acceptance test suite, synthetic data seeding, security audits, Docker deployment configuration, and operational handover documentation.
 
 ---
 
@@ -30,9 +30,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   3. User can sign in, receive a secure session/JWT, and access role-gated routes based on their assigned role.
   4. Application shell renders a modern dark-first theme with a functional light mode toggle, collapsible navigation, and responsive mobile layout.
 **Plans**: 3 plans
-- [ ] 01-01: Monorepo scaffolding, FastAPI backend setup, database migration engine, and base schema.
-- [ ] 01-02: Authentication system, JWT/session middleware, RBAC engine, and append-only audit logging.
-- [ ] 01-03: SvelteKit + Svelte 5 application shell, Tailwind tokens, Bits UI primitives, navigation, and theme provider.
+- [x] 01-01: Monorepo scaffolding, FastAPI backend setup, database migration engine, and base schema.
+- [x] 01-02: Authentication system, JWT/session middleware, RBAC engine, and append-only audit logging.
+- [x] 01-03: SvelteKit + Svelte 5 application shell, Tailwind tokens, Bits UI primitives, navigation, and theme provider.
 
 ### Phase 2: Organizations, PRM & Contracts
 **Goal**: Deliver the B2B partner relationship management system for local hosting companies and NGOs, including pipeline tracking, BANT qualification, contact management, and contracts.
@@ -44,9 +44,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   3. Contracts can be drafted, linked to organizations, versioned with terms, and monitored for expiration.
   4. All partner mutations produce immutable audit log entries and update team workload views.
 **Plans**: 3 plans
-- [ ] 02-01: Organization and contact data models, repositories, and FastAPI REST endpoints.
-- [ ] 02-02: PRM pipeline management, BANT qualification logic, meeting notes, and follow-up task generator.
-- [ ] 02-03: Contract repository, document metadata linking, versioning, and Svelte 5 PRM dashboard views.
+- [x] 02-01: Organization and contact data models, repositories, and FastAPI REST endpoints.
+- [x] 02-02: PRM pipeline management, BANT qualification logic, meeting notes, and follow-up task generator.
+- [x] 02-03: Contract repository, document metadata linking, versioning, and Svelte 5 PRM dashboard views.
 
 ### Phase 3: Opportunities, Products (iGV/iGTa/iGTe) & IRM
 **Goal**: Implement the opportunity builder with distinct product-specific validations, capacity-locked slots, and the International Relations Management (IRM) subsystem.
@@ -58,9 +58,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   3. Opportunity slots prevent overbooking under concurrent access via database locking.
   4. IR directory catalogs foreign Sending Entities (MC/LCs), SnD clusters, and sourced visa feasibility notes.
 **Plans**: 3 plans
-- [ ] 03-01: Opportunity and slot database models with product sub-type tables and concurrency controls.
-- [ ] 03-02: Product rules engine enforcing iGV, iGTa, and iGTe validation invariants.
-- [ ] 03-03: IRM module for Sending Entities, SnD clustering, visa feasibility, and opportunity promotion tracking.
+- [x] 03-01: Opportunity and slot database models with product sub-type tables and concurrency controls.
+- [x] 03-02: Product rules engine enforcing iGV, iGTa, and iGTe validation invariants.
+- [x] 03-03: IRM module for Sending Entities, SnD clustering, visa feasibility, and opportunity promotion tracking.
 
 ### Phase 4: CRM, Applications & Matching Engine
 **Goal**: Build the EP directory with privacy protection, the 9-stage application screening workflow, OP interview feedback, and the dual-status state machine.
@@ -73,9 +73,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   4. Official EXPA status remains strictly decoupled from local operational readiness.
   5. Bulk CSV/XLSX import engine parses legacy sheets and EXPA exports with dry-run validation.
 **Plans**: 3 plans
-- [ ] 04-01: EP data models, PII masking service, document storage, and CSV/XLSX import engine.
-- [ ] 04-02: Application workflow, 9-stage screening engine, SLA timers, and OP interview portal.
-- [ ] 04-03: Matching engine, Acceptance Note tracking, and dual-status state machine.
+- [x] 04-01: EP data models, PII masking service, document storage, and CSV/XLSX import engine.
+- [x] 04-02: Application workflow, 9-stage screening engine, SLA timers, and OP interview portal.
+- [x] 04-03: Matching engine, Acceptance Note tracking, and dual-status state machine.
 
 ### Phase 5: Exchange Operations & Customer Experience (CXP)
 **Goal**: Deliver operational exchange delivery management, arrival and accommodation boards, 18 Exchange Standards tracking, 10 Partner Standards, and completion readiness calculations.
@@ -88,9 +88,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   4. Completion readiness is deterministically calculated; AI is prevented from marking completion autonomously.
   5. Exception workflows handle early/late finishes, break requests, and partner non-compliance.
 **Plans**: 3 plans
-- [ ] 05-01: Exchange lifecycle records, modality checklists, and incident/break case workflows.
-- [ ] 05-02: Logistics boards for airport pickups, transport, and accommodation inventory management.
-- [ ] 05-03: CXP standards engine (18 Exchange Standards, 10 Partner Standards), evidence vault, and completion calculator.
+- [x] 05-01: Exchange lifecycle records, modality checklists, and incident/break case workflows.
+- [x] 05-02: Logistics boards for airport pickups, transport, and accommodation inventory management.
+- [x] 05-03: CXP standards engine (18 Exchange Standards, 10 Partner Standards), evidence vault, and completion calculator.
 
 ### Phase 6: Operational Finance, Legalities & Command Center Analytics
 **Goal**: Build deterministic pricing calculators, payment milestone tracking, financial approval controls, and role-specific Command Center analytics dashboards.
@@ -102,9 +102,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   3. Financial approval queue prevents unauthorized fee waivers or refund disbursements.
   4. Role-specific dashboards display personal tasks, EP funnel conversion (`APP → CO`), and SLA compliance with small-sample warnings.
 **Plans**: 3 plans
-- [ ] 06-01: Financial pricing engine, payment milestone tracking, and role-protected approval queue.
-- [ ] 06-02: Operational risk register, IAC compliance audit checklists, and legal document tracking.
-- [ ] 06-03: Command Center home, dense operational tables, funnel analytics, and Apache ECharts integration.
+- [x] 06-01: Financial pricing engine, payment milestone tracking, and role-protected approval queue.
+- [x] 06-02: Operational risk register, IAC compliance audit checklists, and legal document tracking.
+- [x] 06-03: Command Center home, dense operational tables, funnel analytics, and Apache ECharts integration.
 
 ### Phase 7: LangGraph AI Architecture & Approval Center
 **Goal**: Implement the multi-agent LangGraph system with pgvector RAG, typed tool registry, and a dedicated human-in-the-loop Approval Center.
@@ -116,9 +116,9 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   3. Agents call typed, permission-checked tools; raw SQL or unrestricted ORM access is strictly blocked.
   4. Approval Center captures all consequential AI proposals (status changes, emails, financial waivers) and requires explicit human sign-off.
 **Plans**: 3 plans
-- [ ] 07-01: LangGraph infrastructure, model gateway, typed tool registry, and run observability.
-- [ ] 07-02: pgvector RAG knowledge ingestion pipeline and Policy Assistant with citation grounding.
-- [ ] 07-03: Specialist copilot agents (EP screening, partner/IR intel, risk auditor) and the human-in-the-loop Approval Center UI.
+- [x] 07-01: LangGraph infrastructure, model gateway, typed tool registry, and run observability.
+- [x] 07-02: pgvector RAG knowledge ingestion pipeline and Policy Assistant with citation grounding.
+- [x] 07-03: Specialist copilot agents (EP screening, partner/IR intel, risk auditor) and the human-in-the-loop Approval Center UI.
 
 ### Phase 8: Temporal Durable Workflows & EXPA Sync Adapter
 **Goal**: Implement Temporal durable workflows for reliable timers and cascades, and build the isolated EXPA sync adapter with reconciliation console.
@@ -131,8 +131,8 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   4. Data reconciliation console allows operators to review and resolve local vs EXPA mismatches.
   5. Direct EXPA write mutations remain strictly gated by human approval.
 **Plans**: 2 plans
-- [ ] 08-01: Temporal workflow engine, activity definitions, SLA timers, and automated reminder cascades.
-- [ ] 08-02: EXPA sync adapter, webhook/polling ingestion, reconciliation console, and gated mutation handler.
+- [x] 08-01: Temporal workflow engine, activity definitions, SLA timers, and automated reminder cascades.
+- [x] 08-02: EXPA sync adapter, webhook/polling ingestion, reconciliation console, and gated mutation handler.
 
 ### Phase 9: End-to-End Verification, Security Hardening & Production Deployment
 **Goal**: Execute comprehensive automated testing across all 12 master specification journeys, seed realistic synthetic data, perform security audits, and package with Docker Compose.
@@ -145,8 +145,8 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
   4. Production-ready Docker Compose configuration builds and runs web, API, PostgreSQL, Redis, and Temporal.
   5. Operational documentation, policy registers, and API references are complete in `docs/`.
 **Plans**: 2 plans
-- [ ] 09-01: Master E2E acceptance test suite covering all 12 operational journeys with synthetic data.
-- [ ] 09-02: Docker containerization, security hardening, documentation generation, and release packaging.
+- [x] 09-01: Master E2E acceptance test suite covering all 12 operational journeys with synthetic data.
+- [x] 09-02: Docker containerization, security hardening, documentation generation, and release packaging.
 
 ---
 
@@ -156,26 +156,16 @@ The AIESEC iCX Command Center roadmap establishes a structured engineering path 
 Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9
 
 | Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation, Application Shell & Authentication | 0/3 | In progress | - |
-| 2. Organizations, PRM & Contracts | 0/3 | Not started | - |
-| 3. Opportunities, Products (iGV/iGTa/iGTe) & IRM | 0/3 | Not started | - |
-| 4. CRM, Applications & Matching Engine | 0/3 | Not started | - |
-| 5. Exchange Operations & Customer Experience (CXP) | 0/3 | Not started | - |
-| 6. Operational Finance, Legalities & Command Center Analytics | 0/3 | Not started | - |
-| 7. LangGraph AI Architecture & Approval Center | 0/3 | Not started | - |
-| 8. Temporal Durable Workflows & EXPA Sync Adapter | 0/2 | Not started | - |
-| 9. End-to-End Verification, Security Hardening & Production Deployment | 0/2 | Not started | - |
-
-### Phase 10: foundation application shell and authentication
-
-**Goal:** [To be planned]
-**Requirements**: TBD
-**Depends on:** Phase 9
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (run /gsd-plan-phase 10 to break down)
+|---|---|---|---|
+| 1. Foundation, Application Shell & Authentication | 3/3 | Complete | 2026-11-14 |
+| 2. Organizations, PRM & Contracts | 3/3 | Complete | 2026-11-14 |
+| 3. Opportunities, Products (iGV/iGTa/iGTe) & IRM | 3/3 | Complete | 2026-11-14 |
+| 4. CRM, Applications & Matching Engine | 3/3 | Complete | 2026-11-14 |
+| 5. Exchange Operations & Customer Experience (CXP) | 3/3 | Complete | 2026-11-14 |
+| 6. Operational Finance, Legalities & Command Center Analytics | 3/3 | Complete | 2026-11-14 |
+| 7. LangGraph AI Architecture & Approval Center | 3/3 | Complete | 2026-11-14 |
+| 8. Temporal Durable Workflows & EXPA Sync Adapter | 2/2 | Complete | 2026-11-14 |
+| 9. End-to-End Verification, Security Hardening & Production Deployment | 2/2 | Complete | 2026-11-14 |
 
 ---
-*Roadmap defined: 2026-11-14*
+*Roadmap completed: 2026-11-14*

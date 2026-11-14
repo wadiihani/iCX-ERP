@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.modules.identity.models import User
-from app.modules.identity.permissions import get_current_user
+from app.modules.identity.permissions import get_current_user, require_role
 from app.modules.cxp.schemas import (
     StandardFulfillmentUpdate,
     StandardFulfillmentResponse,
@@ -56,7 +56,7 @@ def approve_completion(
     exchange_id: str,
     payload: CompletionApprovePayload = CompletionApprovePayload(),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role(["LCP_ADMIN", "LCVP_ICX", "TEAM_LEADER"])),
 ):
     comp = CXPService.approve_completion(
         db=db,
