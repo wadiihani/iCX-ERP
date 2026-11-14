@@ -40,6 +40,18 @@ from app.modules.cxp.models import (
     PartnerStandardsEvaluation,
     ExchangeCompletion,
 )
+from app.modules.finance.models import (
+    PricingRuleSet,
+    PricingCalculation,
+    PaymentObligation,
+    Payment,
+    FinancialCase,
+)
+from app.modules.legalities.models import (
+    RiskRegisterEntry,
+    IACAuditItem,
+    LegalDocument,
+)
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
@@ -51,6 +63,9 @@ from app.modules.applications.router import router as applications_router
 from app.modules.exchanges.router import router as exchanges_router
 from app.modules.logistics.router import router as logistics_router
 from app.modules.cxp.router import router as cxp_router
+from app.modules.finance.router import router as finance_router
+from app.modules.legalities.router import router as legalities_router
+from app.modules.analytics.router import router as analytics_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -96,3 +111,6 @@ app.include_router(applications_router, prefix=f"{settings.API_V1_STR}", tags=["
 app.include_router(exchanges_router, prefix=f"{settings.API_V1_STR}", tags=["Exchange Operations"])
 app.include_router(logistics_router, prefix=f"{settings.API_V1_STR}", tags=["Arrivals & Accommodation Logistics"])
 app.include_router(cxp_router, prefix=f"{settings.API_V1_STR}", tags=["Customer Experience & Standards (18)"])
+app.include_router(finance_router, prefix=f"{settings.API_V1_STR}", tags=["Operational Finance & Pricing"])
+app.include_router(legalities_router, prefix=f"{settings.API_V1_STR}", tags=["Legalities & Compliance"])
+app.include_router(analytics_router, prefix=f"{settings.API_V1_STR}", tags=["Command Center Analytics"])
