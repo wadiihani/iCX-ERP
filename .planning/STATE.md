@@ -3,10 +3,10 @@ gsd_state_version: '1.0'
 status: in_progress
 progress:
   total_phases: 9
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 25
-  completed_plans: 18
-  percent: 72
+  completed_plans: 21
+  percent: 84
 ---
 
 # Project State
@@ -16,23 +16,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-14)
 
 **Core value:** A zero-leakage, role-enforced operational single source of truth that powers the two-sided incoming exchange lifecycle—guaranteeing strict data protection, auditable human-in-the-loop AI governance, distinct product-specific workflows, and deterministic adherence to AIESEC Exchange Standards and local host legalities.  
-**Current focus:** Phase 7: LangGraph AI Multi-Agent Architecture & Approval Center
+**Current focus:** Phase 8: Temporal Durable Workflows & Isolated EXPA Sync Adapter
 
 ## Current Position
 
-Phase: 7 of 9 (LangGraph AI Multi-Agent Architecture & Approval Center)  
-Plan: 0 of 3 in current phase  
-Status: Ready to plan & execute Phase 7  
-Last activity: 2026-11-14 — Phase 6 completed & verified (44/44 pytest tests passing across all modules, Vite production build successful). Ready to plan Phase 7.
+Phase: 8 of 9 (Temporal Durable Workflows & Isolated EXPA Sync Adapter)  
+Plan: 0 of 2 in current phase  
+Status: Ready to plan & execute Phase 8  
+Last activity: 2026-11-14 — Phase 7 completed & verified (47/47 pytest tests passing across all modules, SvelteKit build successful with 0 errors). Ready to plan Phase 8.
 
-Progress: [███████░░░] 72%
+Progress: [████████░░] 84%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
+- Total plans completed: 21
 - Average duration: 15 min
-- Total execution time: 4.5 hours
+- Total execution time: 5.25 hours
 
 **By Phase:**
 
@@ -44,7 +44,7 @@ Progress: [███████░░░] 72%
 | 4. CRM & Applications | 3/3 | 45m | 15m |
 | 5. Exchange Ops & CXP | 3/3 | 45m | 15m |
 | 6. Finance & Analytics | 3/3 | 45m | 15m |
-| 7. LangGraph AI & Approvals | 0/3 | - | - |
+| 7. LangGraph AI & Approvals | 3/3 | 45m | 15m |
 | 8. Temporal & EXPA | 0/2 | - | - |
 | 9. E2E Verification & Rollout | 0/2 | - | - |
 
@@ -64,10 +64,11 @@ Decisions are logged in PROJECT.md Key Decisions table:
 - [Phase 4 CRM & Applications Complete]: EP candidate directory, role-based PII masking for sensitive fields (passport numbers and phones), duplicate candidate detection, bulk CSV/XLSX import engine with dry-run reports, 9-stage screening workflow (`APPLIED → CONTACTED → SCREENING → SHORTLISTED → SENT_TO_OP → INTERVIEW → OP_DECISION → ACCEPTED → APPROVED`), SLA clocks (48h first contact, 72h OP review), OP interview logging, Acceptance Note verification, slot allocation on match approval, and full dual-status decoupling state machine with Svelte 5 views fully verified.
 - [Phase 5 Exchange Ops & CXP Complete]: Exchange delivery lifecycle models, automatic preparation checklist template provisioning (13 physical or 6 remote), incident reporting and resolution engine, arrival logistics tracking across CMN/RBA/RAK, pickup status with automatic delivery state progression to `ARRIVED`, accommodation unit directory with landlord contacts and safety inspections, capacity-safe bed assignments (HTTP 409 Conflict if full), full 18 Standards fulfillment engine (13 mandatory + 5 optional), deterministic completion readiness evaluation (`mandatory_fulfilled == 13` AND `total_fulfilled >= 16`), and human completion approval gate synchronizing delivery status to `COMPLETED`, EXPA to `CO`, and local readiness to `DONE`. Verified with 41/41 passing tests and Vite build.
 - [Phase 6 Finance & Analytics Complete]: Deterministic pricing rulesets (`pricing_rule_sets`) and calculation engine for iGV, iGTa, and iGTe with duration tiers and discounts; payment obligations (`payment_obligations`) with milestone tracking, partial/full payment reconciliation, and receipt logging; human-gated financial approval queue (`financial_cases`) for fee waivers and refunds; 5×5 Operational Risk Register (`risk_register_entries`) with severity calculations; IAC compliance audit checklists (`iac_audit_items`); legal documents repository (`legal_documents`); and dense Command Center analytics (`/dashboard`) featuring the 6-stage EP funnel (`APP → ACC → APD → RE → FI → CO`) with small-sample detection, SLA compliance clocks, and receivables tracking. Verified with 44/44 passing tests and clean Vite build.
+- [Phase 7 LangGraph AI & Approval Center Complete]: LangGraph multi-agent architecture and execution logging (`ai_agent_runs`, `ai_agent_tool_calls`), typed permission-checked tool registry prohibiting raw SQL/ORM, local policy knowledge repository (`knowledge_documents`, `knowledge_chunks`), Grounded Policy Assistant RAG returning verified citations (`[Source: Global Compendium 2026, ...]`) and confidence tags (`[VERIFIED]`, `[OFFICIAL]`), 3 specialist copilots (EP Screening, Partner/IR Intel, Standards & Risk Auditor) strictly dispatching state mutations as `ApprovalProposal` records in status `PENDING_HUMAN_REVIEW`, Human Approval Center backend (`/api/v1/approvals`), and Svelte 5 frontend views for `/ai` and `/approvals`. Verified with 47/47 passing tests and clean Vite build.
 
 ### Pending Todos
 
-None. Phase 1 through Phase 6 complete.
+None. Phase 1 through Phase 7 complete.
 
 ### Blockers/Concerns
 
@@ -75,6 +76,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-11-14 21:54
-Stopped at: Completed Phase 6 (Plans 06-01, 06-02, 06-03). Ready to plan and execute Phase 7 (LangGraph AI Multi-Agent Architecture & Approval Center).
-Resume file: .planning/phases/07-langgraph-ai-and-approval-center/
+Last session: 2026-11-14 22:15
+Stopped at: Completed Phase 7 (Plans 07-01, 07-02, 07-03). Ready to plan and execute Phase 8 (Temporal Durable Workflows & Isolated EXPA Sync Adapter).
+Resume file: .planning/phases/08-temporal-and-expa/

@@ -52,6 +52,13 @@ from app.modules.legalities.models import (
     IACAuditItem,
     LegalDocument,
 )
+from app.modules.ai.models import (
+    AIAgentRun,
+    AIAgentToolCall,
+    KnowledgeDocument,
+    KnowledgeChunk,
+)
+from app.modules.approvals.models import ApprovalProposal
 from app.modules.identity.router import router as identity_router
 from app.modules.organizations.router import router as organizations_router
 from app.modules.prm.router import router as prm_router
@@ -66,6 +73,8 @@ from app.modules.cxp.router import router as cxp_router
 from app.modules.finance.router import router as finance_router
 from app.modules.legalities.router import router as legalities_router
 from app.modules.analytics.router import router as analytics_router
+from app.modules.ai.router import router as ai_router
+from app.modules.approvals.router import router as approvals_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -114,3 +123,5 @@ app.include_router(cxp_router, prefix=f"{settings.API_V1_STR}", tags=["Customer 
 app.include_router(finance_router, prefix=f"{settings.API_V1_STR}", tags=["Operational Finance & Pricing"])
 app.include_router(legalities_router, prefix=f"{settings.API_V1_STR}", tags=["Legalities & Compliance"])
 app.include_router(analytics_router, prefix=f"{settings.API_V1_STR}", tags=["Command Center Analytics"])
+app.include_router(ai_router, prefix=f"{settings.API_V1_STR}", tags=["AI Copilots & Governance"])
+app.include_router(approvals_router, prefix=f"{settings.API_V1_STR}", tags=["Human Approval Center"])

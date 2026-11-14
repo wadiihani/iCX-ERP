@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from services.api.tests.test_exchange_ops import setup_approved_application, get_auth_token
+from tests.test_exchange_ops import setup_approved_application, get_auth_token
 
 
 def test_18_standards_fulfillment_and_completion_gates(client):

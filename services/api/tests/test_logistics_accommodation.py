@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timezone, timedelta, date
-from services.api.tests.test_exchange_ops import setup_approved_application, get_auth_token
+from tests.test_exchange_ops import setup_approved_application, get_auth_token
 
 
 def test_arrival_pickup_and_accommodation_management(client):
